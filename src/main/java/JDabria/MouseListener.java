@@ -1,6 +1,6 @@
 package JDabria;
 
-import Commons.Tuple;
+import Commons.Math.Vector2;
 import org.jetbrains.annotations.NotNull;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -63,21 +63,21 @@ public class MouseListener {
     //</editor-fold>
 
     //<editor-fold desc="Data access methods">
-    public static @NotNull Tuple<Float, Float> GetDeltaPos(){
+    public static @NotNull Vector2 GetDeltaPos(){
         MouseListener Listener = Get();
-        return new Tuple<>((float) (Listener.lastX - Listener.XPos),
+        return new Vector2((float) (Listener.lastX - Listener.XPos),
                 (float) (Listener.lastY - Listener.YPos));
     }
 
-    public static @NotNull Tuple<Float, Float> GetPos(){
+    public static @NotNull Vector2 GetPos(){
         MouseListener Listener = Get();
-        return new Tuple<>((float) (Listener.XPos),
+        return new Vector2((float) (Listener.XPos),
                 (float) (Listener.YPos));
     }
 
-    public static @NotNull Tuple<Float, Float> GetScroll(){
+    public static @NotNull Vector2 GetScroll(){
         MouseListener Listener = Get();
-        return new Tuple<>((float) (Listener.XScroll),
+        return new Vector2((float) (Listener.XScroll),
                 (float) (Listener.YScroll));
     }
 

@@ -39,6 +39,5 @@ public class Color {
     public float R() { return Internal.x; }
     public float G() { return Internal.y; }
     public float B() { return Internal.z; }
-
-    public float A() {return Alpha;}
+    public float A() { return Alpha; }
 }
