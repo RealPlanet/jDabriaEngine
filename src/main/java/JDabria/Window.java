@@ -2,7 +2,9 @@ package JDabria;
 
 import Commons.Color;
 import Commons.Time;
-import JDabria.Events.OnNewFrame;
+import JDabria.Events.Window.IBeginFrameListener;
+import JDabria.Events.Window.IEndFrameListener;
+import JDabria.Events.Window.IUpdateFrameListener;
 import JDabria.SceneManager.SceneManager;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.Version;
@@ -31,7 +33,7 @@ public class Window {
         _Title = "Mario";
     }
 
-    public static @NotNull Window Get(){
+    public static @NotNull Window GetWindow(){
         if(_Window == null){
             _Window = new Window();
         }
@@ -113,24 +115,38 @@ public class Window {
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
-            Time.BeginFrame();
-
-            // Poll events
-            glfwPollEvents();
-
-            // clear the framebuffer
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            for(OnNewFrame Listener : NewFrameListeners){
-                if(Listener == null){
+            for (IBeginFrameListener BeginFrameListener : BeginFrameListeners) {
+                if (BeginFrameListener == null) {
                     throw new RuntimeException("OnNewFrameListener was null");
                 }
-
-                Listener.Update();
+                BeginFrameListener.OnBeginFrame();
             }
 
+            //<editor-fold desc="Begin frame operations">
+            // Poll events
+            glfwPollEvents();
+            // clear the framebuffer
+            glClear(GL_COLOR_BUFFER_BIT);
+            //</editor-fold>
+
+            for (IUpdateFrameListener newFrameListener : NewFrameListeners) {
+                if (newFrameListener == null) {
+                    throw new RuntimeException("OnNewFrameListener was null");
+                }
+                newFrameListener.OnFrameUpdate();
+            }
+
+            //<editor-fold desc="End frame operations">
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
+            //</editor-fold>
+
+            for (IEndFrameListener EndFrameListener : EndFrameListeners) {
+                if (EndFrameListener == null) {
+                    throw new RuntimeException("OnNewFrameListener was null");
+                }
+                EndFrameListener.OnEndFrame();
+            }
         }
 
         System.out.println("Application ran for " + (Time.GetTimeSinceStartOfApplication()) + " Seconds");
@@ -143,12 +159,33 @@ public class Window {
     }
     //</editor-fold>
 
-    private final ArrayList<OnNewFrame> NewFrameListeners = new ArrayList<>();
-    public static void AddNewFrameListener(OnNewFrame Listener){
-        _Window.NewFrameListeners.add(Listener);
+    //<editor-fold desc="Window Events">
+    private final ArrayList<IUpdateFrameListener> NewFrameListeners = new ArrayList<>();
+    private final ArrayList<IBeginFrameListener> BeginFrameListeners = new ArrayList<>();
+    private final ArrayList<IEndFrameListener> EndFrameListeners = new ArrayList<>();
+
+    public static void AddNewFrameListener(IUpdateFrameListener Listener){
+        GetWindow().NewFrameListeners.add(Listener);
     }
 
-    public static void RemoveNewFrameListener(OnNewFrame Listener){
-        _Window.NewFrameListeners.remove(Listener);
+    public static void RemoveNewFrameListener(IUpdateFrameListener Listener){
+        GetWindow().NewFrameListeners.remove(Listener);
     }
+
+    public static void AddBeginFrameListener(IBeginFrameListener Listener){
+        GetWindow().BeginFrameListeners.add(Listener);
+    }
+
+    public static void RemoveBeginFrameListener(IBeginFrameListener Listener){
+        GetWindow().BeginFrameListeners.remove(Listener);
+    }
+
+    public static void AddEndFrameListener(IEndFrameListener Listener){
+        GetWindow().EndFrameListeners.add(Listener);
+    }
+
+    public static void RemoveEndFrameListener(IEndFrameListener Listener){
+        GetWindow().EndFrameListeners.remove(Listener);
+    }
+    //</editor-fold>
 }
