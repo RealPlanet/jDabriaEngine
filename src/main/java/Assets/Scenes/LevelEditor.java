@@ -20,7 +20,7 @@ public class LevelEditor extends Scene {
     }
 
     @Override
-    public void Update() {
+    public void OnFrameUpdate() {
         if(!Fading && KeyListener.IsKeyPressed(KeyEvent.VK_SPACE)){
             Fading = true;
         }

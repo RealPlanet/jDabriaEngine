@@ -1,6 +1,7 @@
 package JDabria.SceneManager;
 
 import Assets.Scenes.EmptyScene;
+import JDabria.Window;
 
 /**
  *  Handles all scene operations such as switching/loading/unloading/get/set.
@@ -10,6 +11,11 @@ public class SceneManager {
     private Scene LoadedScene = null;
     private final String ScenePackageName = "Assets.Scenes.";
     public static boolean ChangingScene = false;
+
+    public enum LoadType{
+        ADDITIVE,
+        SINGLE
+    }
 
     //<editor-fold desc="Singleton">
     private static SceneManager _Instance = null;
@@ -30,30 +36,35 @@ public class SceneManager {
      * Changes current Scene to a new one using Java reflection
      * @param SceneName Scene class name to load
      */
-    public static void ChangeScene(String SceneName)    {
+    public static void ChangeScene(String SceneName) {
         SceneManager Manager = Get();
 
-        Scene Scene;
+        Scene SceneToLoad;
         try {
-            Scene = GetSceneByName(SceneName);
+            SceneToLoad = GetSceneByName(SceneName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return;
         }
 
-        //<editor-fold desc="Start scene loading">
+        //<editor-fold desc="Scene loading">
         ChangingScene = true;
-        Scene.IsLoaded = false;
+        SceneToLoad.IsLoaded = false;
 
         // If present unload current scene
         UnloadCurrentScene();
-        Scene.Init();
+        SceneToLoad.Init();
 
         /*   TODO :: Handle scene loading   */
 
-        Scene.IsLoaded = true;
+        //<editor-fold desc="Register scene events">
+        // Once scene is loaded we assign events
+        Window.AddNewFrameListener(SceneToLoad);
+        //</editor-fold>
+
+        SceneToLoad.IsLoaded = true;
         ChangingScene = false;
-        Manager.LoadedScene = Scene;
+        Manager.LoadedScene = SceneToLoad;
         //</editor-fold>
     }
 
@@ -67,7 +78,7 @@ public class SceneManager {
             return;
         }
 
-        Manager.LoadedScene.Unload();
+        Window.RemoveNewFrameListener(Manager.LoadedScene);
         Manager.LoadedScene = null;
     }
 
@@ -83,16 +94,14 @@ public class SceneManager {
         SceneClass = Class.forName(Manager.ScenePackageName+SceneName);
 
         Scene Result = new EmptyScene();
+
         try {
             Scene LoadedScene = (Scene)(SceneClass.getDeclaredConstructor().newInstance());
-            Result.Unload(); //Unload empty scene once we've loaded the requested scene
-            Result = LoadedScene; //Now overwrite the empty scene
+            Result = LoadedScene;   //Now overwrite the empty scene
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        // Should never reach this point
         return Result;
     }
 }

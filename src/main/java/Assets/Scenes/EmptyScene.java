@@ -9,7 +9,7 @@ public class EmptyScene extends Scene {
     }
 
     @Override
-    public void Update() {
+    public void OnFrameUpdate() {
 
     }
 

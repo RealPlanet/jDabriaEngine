@@ -8,7 +8,7 @@ public class Level_1 extends Scene {
     }
 
     @Override
-    public void Update() {
+    public void OnFrameUpdate() {
 
     }
 
