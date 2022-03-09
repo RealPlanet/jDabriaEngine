@@ -1,9 +1,16 @@
 package JDabria;
 
+import Commons.Color;
+import Commons.Time;
+import JDabria.Events.OnNewFrame;
+import JDabria.SceneManager.SceneManager;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -44,7 +51,7 @@ public class Window {
         glfwDestroyWindow(glfwWindow);
 
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
     private void Init() {
@@ -95,26 +102,53 @@ public class Window {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         //</editor-fold>
     }
 
     private void Loop() {
+        SceneManager.ChangeScene("LevelEditor");
+
+
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
+            Time.BeginFrame();
+
             // Poll events
             glfwPollEvents();
-            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
             // clear the framebuffer
             glClear(GL_COLOR_BUFFER_BIT);
 
-            if(KeyListener.IsKeyPressed(GLFW_KEY_SPACE))
-                System.out.println("Space is pressed!!");
+            for(OnNewFrame Listener : NewFrameListeners){
+                if(Listener == null){
+                    throw new RuntimeException("OnNewFrameListener was null");
+                }
+
+                Listener.Update();
+            }
 
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
         }
+
+        System.out.println("Application ran for " + (Time.GetTimeSinceStartOfApplication()) + " Seconds");
     }
     //</editor-fold>
+
+    //<editor-fold desc="Debug methods">
+    public static void SetWindowClearColor(@NotNull Color ClearColor){
+        glClearColor(ClearColor.R(), ClearColor.G(), ClearColor.B(), ClearColor.A());
+    }
+    //</editor-fold>
+
+    private final ArrayList<OnNewFrame> NewFrameListeners = new ArrayList<>();
+    public static void AddNewFrameListener(OnNewFrame Listener){
+        _Window.NewFrameListeners.add(Listener);
+    }
+
+    public static void RemoveNewFrameListener(OnNewFrame Listener){
+        _Window.NewFrameListeners.remove(Listener);
+    }
 }
