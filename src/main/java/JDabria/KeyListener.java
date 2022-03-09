@@ -8,7 +8,7 @@ public class KeyListener {
     private static KeyListener _Instance;
 
     //Amount of keybindings that GLFW utilizes, possibly wrong!
-    private boolean KeyPressed[] = new boolean[350];
+    private final boolean[] KeyPressed = new boolean[350];
 
     //<editor-fold desc="Singleton">
     private KeyListener(){
@@ -38,7 +38,7 @@ public class KeyListener {
     //</editor-fold>
 
     //<editor-fold desc="Data access methods">
-    public static @NotNull boolean IsKeyPressed(int KeyCode){
+    public static boolean IsKeyPressed(int KeyCode){
         KeyListener Listener = Get();
 
         // PERHAPS THROWING AN EXCEPTION MIGHT BE BETTER

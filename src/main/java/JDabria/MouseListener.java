@@ -10,7 +10,7 @@ public class MouseListener {
     private double XScroll, YScroll;
     private double XPos, YPos, lastY, lastX;
 
-    private boolean MouseButtonPressed[] = new boolean[3];
+    private final boolean[] MouseButtonPressed = new boolean[3];
     private boolean IsDragging;
 
     //<editor-fold desc="Singleton">
@@ -65,30 +65,27 @@ public class MouseListener {
     //<editor-fold desc="Data access methods">
     public static @NotNull Tuple<Float, Float> GetDeltaPos(){
         MouseListener Listener = Get();
-        Tuple<Float, Float> Result = new Tuple<Float, Float>(   (float)(Listener.lastX - Listener.XPos),
-                                                                (float)(Listener.lastY - Listener.YPos));
-        return Result;
+        return new Tuple<>((float) (Listener.lastX - Listener.XPos),
+                (float) (Listener.lastY - Listener.YPos));
     }
 
     public static @NotNull Tuple<Float, Float> GetPos(){
         MouseListener Listener = Get();
-        Tuple<Float, Float> Result = new Tuple<Float, Float>(   (float)(Listener.XPos),
-                                                                (float)(Listener.YPos));
-        return Result;
+        return new Tuple<>((float) (Listener.XPos),
+                (float) (Listener.YPos));
     }
 
     public static @NotNull Tuple<Float, Float> GetScroll(){
         MouseListener Listener = Get();
-        Tuple<Float, Float> Result = new Tuple<Float, Float>(   (float)(Listener.XScroll),
-                                                                (float)(Listener.YScroll));
-        return Result;
+        return new Tuple<>((float) (Listener.XScroll),
+                (float) (Listener.YScroll));
     }
 
-    public static @NotNull boolean IsDragging(){
+    public static boolean IsDragging(){
         return Get().IsDragging;
     }
 
-    public static @NotNull boolean IsButtonDown(int Button){
+    public static boolean IsButtonDown(int Button){
         MouseListener Listener = Get();
 
         if(Button > Listener.MouseButtonPressed.length)
