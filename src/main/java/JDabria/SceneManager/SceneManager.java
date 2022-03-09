@@ -1,6 +1,6 @@
 package JDabria.SceneManager;
 
-import Assets.Scenes.EmptyScene;
+import JDabria.AssetManager.AssetManager;
 import JDabria.Window;
 
 /**
@@ -9,12 +9,12 @@ import JDabria.Window;
  */
 public class SceneManager {
     private Scene LoadedScene = null;
-    private final String ScenePackageName = "Assets.Scenes.";
+    private static final String SCENE_PACKAGE_PREFIX = "Scenes.";
     public static boolean ChangingScene = false;
 
     public enum LoadType{
-        ADDITIVE,
-        SINGLE
+        ADDITIVE,   // Load scene on top of already loaded scenes
+        SINGLE      // Dump ALL loaded scenes and after load this scene
     }
 
     //<editor-fold desc="Singleton">
@@ -41,7 +41,7 @@ public class SceneManager {
 
         Scene SceneToLoad;
         try {
-            SceneToLoad = GetSceneByName(SceneName);
+            SceneToLoad = AssetManager.GetScene(SCENE_PACKAGE_PREFIX, SceneName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return;
@@ -86,22 +86,4 @@ public class SceneManager {
         return Get().LoadedScene;
     }
 
-    private static Scene GetSceneByName(String SceneName) throws ClassNotFoundException{
-        SceneManager Manager = Get();
-
-        Class<?> SceneClass;
-
-        SceneClass = Class.forName(Manager.ScenePackageName+SceneName);
-
-        Scene Result = new EmptyScene();
-
-        try {
-            Scene LoadedScene = (Scene)(SceneClass.getDeclaredConstructor().newInstance());
-            Result = LoadedScene;   //Now overwrite the empty scene
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return Result;
-    }
 }

@@ -28,8 +28,8 @@ public class Window {
 
     //<editor-fold desc="Singleton">
     private Window(){
-        _Width = 1440;
-        _Height = 960;
+        _Width = 800;
+        _Height = 700;
         _Title = "Mario";
     }
 
