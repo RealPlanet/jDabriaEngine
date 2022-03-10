@@ -1,7 +1,7 @@
 package JDabria;
 
-import Commons.Math.Vector2;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
@@ -63,21 +63,21 @@ public class MouseListener {
     //</editor-fold>
 
     //<editor-fold desc="Data access methods">
-    public static @NotNull Vector2 GetDeltaPos(){
+    public static @NotNull Vector2f GetDeltaPos(){
         MouseListener Listener = Get();
-        return new Vector2((float) (Listener.lastX - Listener.XPos),
+        return new Vector2f((float) (Listener.lastX - Listener.XPos),
                 (float) (Listener.lastY - Listener.YPos));
     }
 
-    public static @NotNull Vector2 GetPos(){
+    public static @NotNull Vector2f GetPos(){
         MouseListener Listener = Get();
-        return new Vector2((float) (Listener.XPos),
+        return new Vector2f((float) (Listener.XPos),
                 (float) (Listener.YPos));
     }
 
-    public static @NotNull Vector2 GetScroll(){
+    public static @NotNull Vector2f GetScroll(){
         MouseListener Listener = Get();
-        return new Vector2((float) (Listener.XScroll),
+        return new Vector2f((float) (Listener.XScroll),
                 (float) (Listener.YScroll));
     }
 

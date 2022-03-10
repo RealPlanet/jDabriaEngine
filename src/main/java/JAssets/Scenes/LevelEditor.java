@@ -1,7 +1,10 @@
 package JAssets.Scenes;
 
+import Commons.Time;
+import JDabria.Renderer.Camera;
 import JDabria.Renderer.ShaderBuilder;
 import JDabria.SceneManager.Scene;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -18,10 +21,10 @@ public class LevelEditor extends Scene {
 
     private float[] VertexArray = {
             // Position                 // Color
-            0.5f, -0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f, //Bottom right
-            -0.5f, 0.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f, // Top left
-            0.5f, 0.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // Top right
-            -0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f, //Bottom left
+            100.5f, 0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f, //Bottom right
+            0.5f, 100.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f, // Top left
+            100.5f, 100.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // Top right
+            0.5f, 0.5f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f, //Bottom left
     };
 
     //IMPORTANT: Expects counter-clockwise order
@@ -39,9 +42,13 @@ public class LevelEditor extends Scene {
 
     @Override
     public void OnFrameUpdate() {
+        Vector3f CamPosition = Camera.GetPosition();
+        Camera.SetPosition(new Vector3f(CamPosition.x - Time.DeltaTime() * 50f, CamPosition.y, CamPosition.z));
+
         //Bind shader Program
         DefaultShader.Use();
-
+        DefaultShader.UploadMat4f("uProj", Camera.GetProjMatrix());
+        DefaultShader.UploadMat4f("uView", Camera.GetViewMatrix());
         //Bind VAO
         glBindVertexArray(VaoID);
 
@@ -61,6 +68,7 @@ public class LevelEditor extends Scene {
 
     @Override
     public void Init() {
+        this.Camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f));
         DefaultShader = new ShaderBuilder("Assets/Shaders/DefaultShaderDefinition.glsl");
         DefaultShader.Compile();
 

@@ -1,7 +1,6 @@
 package JDabria;
 
 import Commons.Color;
-import Commons.Time;
 import JDabria.Events.Window.IBeginFrameListener;
 import JDabria.Events.Window.IEndFrameListener;
 import JDabria.Events.Window.IUpdateFrameListener;
@@ -20,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private static Window _Window = null; //Singleton
+    private static Window _Window = new Window(); //Singleton
 
     private final int _Width, _Height;
     private final String _Title;
@@ -28,16 +27,12 @@ public class Window {
 
     //<editor-fold desc="Singleton">
     private Window(){
-        _Width = 800;
-        _Height = 700;
+        _Width = 1920;
+        _Height = 1080;
         _Title = "Mario";
     }
 
     public static @NotNull Window GetWindow(){
-        if(_Window == null){
-            _Window = new Window();
-        }
-
         return _Window;
     }
     //</editor-fold>
@@ -69,7 +64,7 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);   //      Hide window until we are ready
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  //      Allow resize
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);  //      Start maximize
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);  //      Start maximize
         //</editor-fold>
 
         glfwWindow = glfwCreateWindow(this._Width, this._Height, this._Title, NULL, NULL);
@@ -110,7 +105,7 @@ public class Window {
 
     private void Loop() {
         SceneManager.ChangeScene("LevelEditor");
-
+        SceneManager.ChangeScene("Debug.DebugScene");
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -121,7 +116,6 @@ public class Window {
                 }
                 BeginFrameListener.OnBeginFrame();
             }
-
             //<editor-fold desc="Begin frame operations">
             // Poll events
             glfwPollEvents();
@@ -148,14 +142,12 @@ public class Window {
                 EndFrameListener.OnEndFrame();
             }
         }
-
-        System.out.println("Application ran for " + (Time.GetTimeSinceStartOfApplication()) + " Seconds");
     }
     //</editor-fold>
 
     //<editor-fold desc="Debug methods">
     public static void SetWindowClearColor(@NotNull Color ClearColor){
-        glClearColor(ClearColor.R(), ClearColor.G(), ClearColor.B(), ClearColor.A());
+        glClearColor(ClearColor.GetRed(), ClearColor.GetGreen(), ClearColor.GetBlue(), ClearColor.GetAlpha());
     }
     //</editor-fold>
 
@@ -164,11 +156,11 @@ public class Window {
     private final ArrayList<IBeginFrameListener> BeginFrameListeners = new ArrayList<>();
     private final ArrayList<IEndFrameListener> EndFrameListeners = new ArrayList<>();
 
-    public static void AddNewFrameListener(IUpdateFrameListener Listener){
+    public static void AddUpdateFrameListener(IUpdateFrameListener Listener){
         GetWindow().NewFrameListeners.add(Listener);
     }
 
-    public static void RemoveNewFrameListener(IUpdateFrameListener Listener){
+    public static void RemoveUpdateFrameListener(IUpdateFrameListener Listener){
         GetWindow().NewFrameListeners.remove(Listener);
     }
 

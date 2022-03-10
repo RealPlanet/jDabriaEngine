@@ -1,6 +1,7 @@
 package JDabria.SceneManager;
 
 import JDabria.Events.Window.IUpdateFrameListener;
+import JDabria.Renderer.Camera;
 
 /**
  * Abstract definition of a scene
@@ -8,6 +9,7 @@ import JDabria.Events.Window.IUpdateFrameListener;
  */
 public abstract class Scene implements IUpdateFrameListener {
     public boolean IsLoaded = false;
+    protected Camera Camera;
 
     public Scene(){
 

@@ -1,6 +1,7 @@
 package JDabria.SceneManager;
 
 import JDabria.AssetManager.AssetManager;
+import JDabria.Renderer.Camera;
 import JDabria.Window;
 
 /**
@@ -59,7 +60,7 @@ public class SceneManager {
 
         //<editor-fold desc="Register scene events">
         // Once scene is loaded we assign events
-        Window.AddNewFrameListener(SceneToLoad);
+        Window.AddUpdateFrameListener(SceneToLoad);
         //</editor-fold>
 
         SceneToLoad.IsLoaded = true;
@@ -78,8 +79,12 @@ public class SceneManager {
             return;
         }
 
-        Window.RemoveNewFrameListener(Manager.LoadedScene);
+        Window.RemoveUpdateFrameListener(Manager.LoadedScene);
         Manager.LoadedScene = null;
+    }
+
+    public static Camera GetActiveCamera(){
+        return Get().LoadedScene.Camera;
     }
 
     public static Scene GetCurrentScene(){

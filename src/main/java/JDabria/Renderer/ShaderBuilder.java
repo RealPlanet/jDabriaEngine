@@ -1,6 +1,11 @@
 package JDabria.Renderer;
 
+import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
+
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -99,6 +104,13 @@ public class ShaderBuilder {
 
     public void Detach(){
         glUseProgram(0);
+    }
+
+    public void UploadMat4f(String VarName, @NotNull Matrix4f mat4){
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        FloatBuffer Buffer = BufferUtils.createFloatBuffer(16);
+        mat4.get(Buffer);
+        glUniformMatrix4fv(VarLocation, false, Buffer);
     }
 
     //region Compile & Link Shaders

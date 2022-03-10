@@ -1,5 +1,6 @@
 package JAssets.Scenes.Debug;
 
+
 import Commons.Color;
 import Commons.Time;
 import JDabria.KeyListener;
@@ -12,9 +13,12 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 
 public class DebugScene extends Scene {
     private boolean Fading = false;
-    private float FadeDuration = 2.0f;
-    private final Color FadeStart = new Color();
-    private final Color CurrentFade = FadeStart;
+    private final float FadeDurationTime = 2.0f;
+    private float FadeCurrentTime = FadeDurationTime;
+
+    private final Color FadeStart = new Color(1, 1, 1, 1);
+    private Color CurrentFade = FadeStart;
+    Color c = new Color();
 
     public DebugScene(){
         System.out.println("Inside Debug Scene!");
@@ -31,19 +35,18 @@ public class DebugScene extends Scene {
         }
 
         if(Fading){
-            if(FadeDuration > 0){
+            if(FadeCurrentTime > 0){
                 float Delta = Time.DeltaTime();
-                FadeDuration -= Delta;
-                Color NewFade = new Color(  FadeStart.R() - Delta * 5,
-                        FadeStart.G() - Delta * 5,
-                        FadeStart.B() - Delta * 5,
-                        1);
-                CurrentFade.SetColor(NewFade);
+                FadeCurrentTime -= Delta;
+                Color CurrentFade = new Color(   FadeStart.GetRed() - (1 - FadeCurrentTime / FadeDurationTime),
+                                                 FadeStart.GetGreen() - (1 - FadeCurrentTime / FadeDurationTime),
+                                                 FadeStart.GetBlue() - (1 - FadeCurrentTime / FadeDurationTime),
+                                                    FadeStart.GetAlpha());
                 Window.SetWindowClearColor(CurrentFade);
                 return;
             }
 
-            SceneManager.ChangeScene("Level_1");
+            SceneManager.ChangeScene("LevelEditor");
         }
     }
 
