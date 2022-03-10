@@ -1,5 +1,6 @@
 package JAssets.Scenes;
 
+import JDabria.Renderer.ShaderBuilder;
 import JDabria.SceneManager.Scene;
 import org.lwjgl.BufferUtils;
 
@@ -13,31 +14,8 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 public class LevelEditor extends Scene {
 
     //region Shader stuff
-    // TODO :: Move to shader manager + read shader code from glsl
-    private String VertexShaderSrc = "#version 330 core\n" +
-            "// aSomething -> is an attribute\n" +
-            "// fSomething -> used by fragment shader\n" +
-            "\n" +
-            "layout (location=0) in vec3 aPos;\n" +
-            "layout (location=1) in vec4 aColor;\n" +
-            "\n" +
-            "out vec4 fColor;\n" +
-            "\n" +
-            "void main(){\n" +
-            "    fColor = aColor;\n" +
-            "    gl_Position = vec4(aPos, 1.0);\n" +
-            "}";
+    private ShaderBuilder DefaultShader;
 
-    private String FragmentShaderSrc = "#version 330\n" +
-            "\n" +
-            "in vec4 fColor;\n" +
-            "out vec4 color;\n" +
-            "\n" +
-            "void main(){\n" +
-            "    color = fColor;\n" +
-            "}";
-
-    private int VertexID, FragmentID, ShaderProgram;
     private float[] VertexArray = {
             // Position                 // Color
             0.5f, -0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f, //Bottom right
@@ -62,7 +40,7 @@ public class LevelEditor extends Scene {
     @Override
     public void OnFrameUpdate() {
         //Bind shader Program
-        glUseProgram(ShaderProgram);
+        DefaultShader.Use();
 
         //Bind VAO
         glBindVertexArray(VaoID);
@@ -77,18 +55,14 @@ public class LevelEditor extends Scene {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
-        glUseProgram(0);
+
+        DefaultShader.Detach();
     }
 
-    // TODO :: Move to shader manager + read shader code from glsl
     @Override
     public void Init() {
-        /// ===
-        /// Compile & Link Shaders
-        /// ===
-        LoadVertexShader();
-        LoadFragmentShader();
-        LinkShaderProgram();
+        DefaultShader = new ShaderBuilder("Assets/Shaders/DefaultShaderDefinition.glsl");
+        DefaultShader.Compile();
 
         //Generate VAO, VBO, EBO -> Send to GPU
         VaoID = glGenVertexArrays();
@@ -121,52 +95,7 @@ public class LevelEditor extends Scene {
         glEnableVertexAttribArray(1);
     }
 
-    private void LinkShaderProgram() {
-        ShaderProgram = glCreateProgram();
-        glAttachShader(ShaderProgram, VertexID);
-        glAttachShader(ShaderProgram, FragmentID);
-        glLinkProgram(ShaderProgram);
 
-        int Success = glGetProgrami(ShaderProgram, GL_LINK_STATUS);
-        if(Success == GL_FALSE){
-            int Length = glGetProgrami(ShaderProgram, GL_INFO_LOG_LENGTH);
-            System.err.println("ERROR :: defaultshader.glsl.\n\tShader LINK failed.");
-            System.err.println(glGetProgramInfoLog(ShaderProgram, Length));
-            assert false : "";
-        }
-    }
 
-    private void LoadVertexShader(){
-        //Load and compile vertex shader
-        VertexID = glCreateShader(GL_VERTEX_SHADER);
-        // Pass shader source to GPU
-        glShaderSource(VertexID, VertexShaderSrc);
-        glCompileShader(VertexID);
 
-        //Check for errors
-        int Success = glGetShaderi(VertexID, GL_COMPILE_STATUS);
-        if(Success == GL_FALSE){
-            int Length = glGetShaderi(VertexID, GL_INFO_LOG_LENGTH);
-            System.err.println("ERROR :: defaultshader.glsl.\n\tVertex shader compilation failed.");
-            System.err.println(glGetShaderInfoLog(VertexID, Length));
-            assert false : "";
-        }
-    }
-
-    private void LoadFragmentShader(){
-        //Load and compile frag shader
-        FragmentID = glCreateShader(GL_FRAGMENT_SHADER);
-        // Pass shader source to GPU
-        glShaderSource(FragmentID, FragmentShaderSrc);
-        glCompileShader(FragmentID);
-
-        //Check for errors
-        int Success = glGetShaderi(FragmentID, GL_COMPILE_STATUS);
-        if(Success == GL_FALSE){
-            int Length = glGetShaderi(FragmentID, GL_INFO_LOG_LENGTH);
-            System.err.println("ERROR :: defaultshader.glsl.\n\tFragment shader compilation failed.");
-            System.err.println(glGetShaderInfoLog(FragmentID, Length));
-            assert false : "";
-        }
-    }
 }
