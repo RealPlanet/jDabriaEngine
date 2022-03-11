@@ -3,13 +3,16 @@ package JDabria.SceneManager;
 import JDabria.AssetManager.AssetManager;
 import JDabria.Renderer.Camera;
 import JDabria.Window;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 /**
  *  Handles all scene operations such as switching/loading/unloading/get/set.
- *  TODO :: Allows for additive scenes
  */
 public class SceneManager {
-    private Scene LoadedScene = null;
+    private static final ArrayList<Scene> GameScenes = new ArrayList<>();
     private static final String SCENE_PACKAGE_PREFIX = "Scenes.";
     public static boolean ChangingScene = false;
 
@@ -33,12 +36,20 @@ public class SceneManager {
     }
     //</editor-fold>
 
+    //<editor-fold desc="Scene operations">
     /**
      * Changes current Scene to a new one using Java reflection
      * @param SceneName Scene class name to load
      */
-    public static void ChangeScene(String SceneName) {
+    public static void LoadScene(String SceneName, LoadType  Type) {
         SceneManager Manager = Get();
+
+        // Unload all scenes if single load mode
+        if(Type == LoadType.SINGLE){
+            for(int i = Manager.GameScenes.size() - 1; i >= 0; i--){
+                UnloadScene(Manager.GameScenes.get(i));
+            }
+        }
 
         Scene SceneToLoad;
         try {
@@ -50,10 +61,9 @@ public class SceneManager {
 
         //<editor-fold desc="Scene loading">
         ChangingScene = true;
-        SceneToLoad.IsLoaded = false;
 
-        // If present unload current scene
-        UnloadCurrentScene();
+        SceneToLoad.IsLoaded = false;
+        SceneToLoad.SceneActiveIndex = Manager.GameScenes.size();
         SceneToLoad.Init();
 
         /*   TODO :: Handle scene loading   */
@@ -64,31 +74,54 @@ public class SceneManager {
         //</editor-fold>
 
         SceneToLoad.IsLoaded = true;
+        Manager.GameScenes.add(SceneToLoad);
         ChangingScene = false;
-        Manager.LoadedScene = SceneToLoad;
         //</editor-fold>
     }
 
     /**
      * Unloads the currently loaded scenes and removes registered events
      */
-    public static void UnloadCurrentScene(){
+    public static void UnloadScene(Scene SceneToUnload){
         SceneManager Manager = Get();
-
-        if(Manager.LoadedScene == null){
+        if(!Manager.GameScenes.contains(SceneToUnload)){
             return;
         }
+        Window.RemoveUpdateFrameListener(SceneToUnload);
+        Manager.GameScenes.remove(SceneToUnload);
+    }
+    //</editor-fold>
 
-        Window.RemoveUpdateFrameListener(Manager.LoadedScene);
-        Manager.LoadedScene = null;
+    //<editor-fold desc="Getters">
+
+    /**
+     * Returns the player camera, can be null if none is found
+     * @return Camera Object
+     */
+    public static @Nullable Camera GetActiveCamera(){
+        for (Scene ActiveScene: Get().GameScenes ) {
+           if(ActiveScene.Camera != null){
+               return ActiveScene.Camera;
+           }
+        }
+
+        return null;
     }
 
-    public static Camera GetActiveCamera(){
-        return Get().LoadedScene.Camera;
-    }
+    /**
+     * Searches for a specific scene in the loaded scene array by name
+     * @param SceneName Scene class name
+     * @return Scene obejct
+     */
+    public static @Nullable Scene GetActiveScene(@NotNull String SceneName){
+        int NameHash = SceneName.hashCode();
+        for (Scene ActiveScene: Get().GameScenes ) {
+            if(ActiveScene.getClass().getName().hashCode() == NameHash){
+                return ActiveScene;
+            }
+        }
 
-    public static Scene GetCurrentScene(){
-        return Get().LoadedScene;
+        return null;
     }
-
+    //</editor-fold>
 }

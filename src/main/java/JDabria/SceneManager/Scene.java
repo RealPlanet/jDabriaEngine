@@ -2,6 +2,7 @@ package JDabria.SceneManager;
 
 import JDabria.Events.Window.IUpdateFrameListener;
 import JDabria.Renderer.Camera;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Abstract definition of a scene
@@ -9,7 +10,10 @@ import JDabria.Renderer.Camera;
  */
 public abstract class Scene implements IUpdateFrameListener {
     public boolean IsLoaded = false;
-    protected Camera Camera;
+
+    @Nullable
+    protected Camera Camera; // Stores the location of the player camera, can be null if multiple scenes are active
+    protected int SceneActiveIndex = -1; //Store the position in the SceneManager array list of active scenes
 
     public Scene(){
 
