@@ -41,5 +41,5 @@ public class Time{
         return ApplicationStartTime;
     }
     // Returns passed time in seconds since start of application
-    public static float GetTimeSinceStartOfApplication(){ return (float)( (System.nanoTime() - ApplicationStartTime) * 1E-9); }
+    public static float Time(){ return (float)( (System.nanoTime() - ApplicationStartTime) * 1E-9); }
 }

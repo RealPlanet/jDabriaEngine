@@ -19,7 +19,8 @@ public class ShaderBuilder {
     private static final String IDENTICAL_TOKENS_ERROR = "Expected two different shaders (fragment and vertex), received same tokens -> '%s' and '%s'";
 
     private int VertexID, FragmentID, ShaderProgram;
-    private String VertexSource = "", FragmentSource = "", Filepath = "";
+    private String VertexSource = "", FragmentSource = "";
+    private final String Filepath;
     private boolean BeingUsed = false;
 
     /**
@@ -194,7 +195,7 @@ public class ShaderBuilder {
         int Success = glGetShaderi(VertexID, GL_COMPILE_STATUS);
         if(Success == GL_FALSE){
             int Length = glGetShaderi(VertexID, GL_INFO_LOG_LENGTH);
-            System.err.println(String.format("ERROR :: File: %s.\n\tFragment shader compilation failed.", Filepath));
+            System.err.printf("ERROR :: File: %s.\n\tFragment shader compilation failed.%n", Filepath);
             System.err.println(glGetShaderInfoLog(VertexID, Length));
             assert false : "";
         }
@@ -210,7 +211,7 @@ public class ShaderBuilder {
         int Success = glGetShaderi(FragmentID, GL_COMPILE_STATUS);
         if(Success == GL_FALSE){
             int Length = glGetShaderi(FragmentID, GL_INFO_LOG_LENGTH);
-            System.err.println(String.format("ERROR :: File: %s.\n\tFragment shader compilation failed.", Filepath));
+            System.err.printf("ERROR :: File: %s.\n\tFragment shader compilation failed.%n", Filepath);
             System.err.println(glGetShaderInfoLog(FragmentID, Length));
             assert false : "";
         }
@@ -224,7 +225,7 @@ public class ShaderBuilder {
         int Success = glGetProgrami(ShaderProgram, GL_LINK_STATUS);
         if(Success == GL_FALSE){
             int Length = glGetProgrami(ShaderProgram, GL_INFO_LOG_LENGTH);
-            System.err.println(String.format("ERROR :: File: %s.\n\t Shader Link process failed!.", Filepath));
+            System.err.printf("ERROR :: File: %s.\n\t Shader Link process failed!.%n", Filepath);
             System.err.println(glGetProgramInfoLog(ShaderProgram, Length));
             assert false : "";
         }

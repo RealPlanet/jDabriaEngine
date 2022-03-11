@@ -49,6 +49,8 @@ public class LevelEditor extends Scene {
         DefaultShader.Use();
         DefaultShader.UploadMat4f("uProj", Camera.GetProjMatrix());
         DefaultShader.UploadMat4f("uView", Camera.GetViewMatrix());
+        DefaultShader.UploadFloat("uTime", Time.Time());
+
         //Bind VAO
         glBindVertexArray(VaoID);
 
