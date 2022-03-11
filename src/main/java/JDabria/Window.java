@@ -29,7 +29,7 @@ public class Window {
     private Window(){
         _Width = 1920;
         _Height = 1080;
-        _Title = "Mario";
+        _Title = "Dabria v0.0.1";
     }
 
     public static @NotNull Window GetWindow(){

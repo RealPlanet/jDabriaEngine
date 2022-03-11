@@ -14,6 +14,11 @@ public class EmptyScene extends Scene {
     }
 
     @Override
+    protected void Update() {
+
+    }
+
+    @Override
     public void Init() {
 
     }

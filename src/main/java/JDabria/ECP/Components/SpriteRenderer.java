@@ -1,19 +1,26 @@
 package JDabria.ECP.Components;
 
+import Commons.Color;
 import JDabria.ECP.Component;
 
 public class SpriteRenderer extends Component {
-    @Override
-    public void Start(){
-        System.out.println("I'm starting!!!");
+     Color Color;
+
+    public SpriteRenderer(Commons.Color Color){
+        this.Color = Color;
     }
 
-    private boolean HasPrinted = false;
+    public Color GetColor(){
+        return this.Color;
+    }
+
+    @Override
+    public void Start(){
+
+    }
+
     @Override
     public void Update() {
-        if(!HasPrinted){
-            HasPrinted = true;
-            System.out.println("I'm updating!!!");
-        }
+
     }
 }

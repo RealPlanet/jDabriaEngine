@@ -30,7 +30,7 @@ public class DebugScene extends Scene {
     }
 
     @Override
-    public void OnFrameUpdate() {
+    protected void Update() {
         if(!Fading && KeyListener.IsKeyPressed(GLFW_KEY_SPACE)){
             Fading = true;
         }
@@ -44,9 +44,9 @@ public class DebugScene extends Scene {
                 float Delta = Time.DeltaTime();
                 FadeCurrentTime -= Delta;
                 Color CurrentFade = new Color(   FadeStart.GetRed() * (FadeCurrentTime / FadeDurationTime),
-                                                 FadeStart.GetGreen() * (FadeCurrentTime / FadeDurationTime),
-                                                 FadeStart.GetBlue() * (FadeCurrentTime / FadeDurationTime),
-                                                    FadeStart.GetAlpha());
+                        FadeStart.GetGreen() * (FadeCurrentTime / FadeDurationTime),
+                        FadeStart.GetBlue() * (FadeCurrentTime / FadeDurationTime),
+                        FadeStart.GetAlpha());
                 Window.SetWindowClearColor(CurrentFade);
                 return;
             }

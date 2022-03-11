@@ -1,4 +1,4 @@
-package JDabria.Renderer;
+package JDabria.AssetManager.Resources;
 
 import org.lwjgl.BufferUtils;
 

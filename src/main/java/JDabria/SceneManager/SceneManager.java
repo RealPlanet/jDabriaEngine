@@ -66,7 +66,7 @@ public class SceneManager {
         ChangingScene = true;
 
         SceneToLoad.IsLoaded = false;
-        SceneToLoad.SceneActiveIndex = GameScenes.size();
+        SceneToLoad._SceneActiveIndex = GameScenes.size();
         SceneToLoad.Init();
 
         /*   TODO :: Handle scene loading   */
@@ -104,8 +104,8 @@ public class SceneManager {
      */
     public static @Nullable Camera GetActiveCamera(){
         for (Scene ActiveScene: GameScenes ) {
-           if(ActiveScene.Camera != null){
-               return ActiveScene.Camera;
+           if(ActiveScene._Camera != null){
+               return ActiveScene._Camera;
            }
         }
 

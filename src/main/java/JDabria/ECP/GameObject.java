@@ -1,11 +1,19 @@
 package JDabria.ECP;
 
+import JDabria.ECP.Components.Transform;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameObject {
     private String Name;
     private final List<Component> Components = new ArrayList<>();
+    public final Transform Transform = new Transform();
+
     private boolean IsActive = false;
 
     public GameObject(String Name){
@@ -14,13 +22,45 @@ public class GameObject {
         EnableComponents();
     }
 
+    @ConstructorProperties({"Name", "Position"})
+    public GameObject(String Name, @NotNull Vector3f Position){
+        this.Name = Name;
+        Transform.Position = Position;
+
+        EnableComponents();
+    }
+
+    @ConstructorProperties({"Name", "Position"})
+    public GameObject(String Name, @NotNull Vector2f Position){
+        this.Name = Name;
+        Transform.Position.x = Position.x;
+        Transform.Position.y = Position.y;
+        Transform.Position.z = 0f;
+
+        EnableComponents();
+    }
+
+    @ConstructorProperties({"Name", "Position", "Scale"})
+    public GameObject(String Name, @NotNull Vector3f Position, Vector3f Scale){
+        this(Name, Position);
+        Transform.Scale = Scale;
+    }
+
+    @ConstructorProperties({"Name", "Position", "Scale"})
+    public GameObject(String Name, @NotNull Vector2f Position, Vector3f Scale){
+        this(Name, Position);
+        Transform.Scale = Scale;
+    }
+
     private void EnableComponents(){
+        IsActive = true;
         for(Component Comp : Components){
             Comp.Start();
         }
     }
 
     private void DisableComponents(){
+        IsActive = false;
         for(Component Comp : Components){
             Comp.Stop();
         }

@@ -18,6 +18,22 @@ public class Color{
 
     @ConstructorProperties({"red", "green", "blue", "alpha"})
     public Color(float r, float g, float b, float a){
+        if(r > 1.0f){
+            r /= 255f;
+        }
+
+        if(g > 1.0f){
+            g /= 255f;
+        }
+
+        if(b > 1.0f){
+            b /= 255f;
+        }
+
+        if(a > 1.0f){
+            a /= 255f;
+        }
+
         this.Red = GMath.Clamp(0, 1, r);
         this.Green = GMath.Clamp(0, 1, g);
         this.Blue = GMath.Clamp(0, 1, b);
