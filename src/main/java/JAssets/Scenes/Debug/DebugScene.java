@@ -25,6 +25,11 @@ public class DebugScene extends Scene {
     }
 
     @Override
+    public void Init() {
+
+    }
+
+    @Override
     public void OnFrameUpdate() {
         if(!Fading && KeyListener.IsKeyPressed(GLFW_KEY_SPACE)){
             Fading = true;
@@ -38,22 +43,15 @@ public class DebugScene extends Scene {
             if(FadeCurrentTime > 0){
                 float Delta = Time.DeltaTime();
                 FadeCurrentTime -= Delta;
-                Color CurrentFade = new Color(   FadeStart.GetRed() - (1 - FadeCurrentTime / FadeDurationTime),
-                                                 FadeStart.GetGreen() - (1 - FadeCurrentTime / FadeDurationTime),
-                                                 FadeStart.GetBlue() - (1 - FadeCurrentTime / FadeDurationTime),
+                Color CurrentFade = new Color(   FadeStart.GetRed() * (FadeCurrentTime / FadeDurationTime),
+                                                 FadeStart.GetGreen() * (FadeCurrentTime / FadeDurationTime),
+                                                 FadeStart.GetBlue() * (FadeCurrentTime / FadeDurationTime),
                                                     FadeStart.GetAlpha());
                 Window.SetWindowClearColor(CurrentFade);
                 return;
             }
 
-            SceneManager.ChangeScene("LevelEditor");
+            SceneManager.LoadScene("LevelEditor", SceneManager.LoadType.SINGLE);
         }
     }
-
-    @Override
-    public void Init() {
-
-    }
-
-
 }
