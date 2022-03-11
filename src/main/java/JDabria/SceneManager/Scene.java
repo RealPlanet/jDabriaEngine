@@ -1,8 +1,12 @@
 package JDabria.SceneManager;
 
+import JDabria.ECP.GameObject;
 import JDabria.Events.Window.IUpdateFrameListener;
 import JDabria.Renderer.Camera;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract definition of a scene
@@ -10,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class Scene implements IUpdateFrameListener {
     public boolean IsLoaded = false;
+    protected boolean IsStarted = false;
+    protected List<GameObject> GameObjects = new ArrayList<>();
 
     @Nullable
     protected Camera Camera; // Stores the location of the player camera, can be null if multiple scenes are active
@@ -23,4 +29,22 @@ public abstract class Scene implements IUpdateFrameListener {
      * Called once on scene load
      */
     public abstract void Init();
+
+    public void Start(){
+        IsStarted = true;
+
+        for(GameObject go: GameObjects) {
+            go.SetActive(true);
+        }
+    }
+
+    public void AddGameObjectToScene(GameObject go){
+        GameObjects.add(go);
+        if(!IsStarted){
+            go.SetActive(false);
+            return;
+        }
+
+        go.SetActive(true);
+    }
 }

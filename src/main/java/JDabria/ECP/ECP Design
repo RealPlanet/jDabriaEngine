@@ -1,0 +1,10 @@
+This is the current design and implementation of the Entity Component Pattern (for obvious reasons it is not the same as ECS due to not being able to manage the memory on demand)
+
+Window -> SceneManager -> Scene -> GameObjects -> Components
+        --------------->
+
+Currently the Window loads a new scene through the SceneManager. Starting from the frame on which load is completed "Window" signals the Scenes for a new update.
+In return the scene signals all the GameObjects currently in the scene the need to update all their components.
+If a Gameobject is not active the children component will not receive an update call.
+
+Known issues:

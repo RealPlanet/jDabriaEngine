@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private static Window _Window = new Window(); //Singleton
+    private final static Window _Window = new Window(); //Singleton
 
     private final int _Width, _Height;
     private final String _Title;
@@ -105,7 +105,7 @@ public class Window {
 
     private void Loop() {
         SceneManager.LoadScene("LevelEditor", SceneManager.LoadType.SINGLE);
-        SceneManager.LoadScene("Debug.DebugScene", SceneManager.LoadType.ADDITIVE);
+        //SceneManager.LoadScene("Debug.DebugScene", SceneManager.LoadType.ADDITIVE);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.

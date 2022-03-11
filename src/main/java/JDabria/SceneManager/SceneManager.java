@@ -22,6 +22,7 @@ public class SceneManager {
     }
 
     //<editor-fold desc="Singleton">
+    /*
     private static SceneManager _Instance = null;
     private SceneManager(){
 
@@ -34,6 +35,8 @@ public class SceneManager {
 
         return _Instance;
     }
+
+ */
     //</editor-fold>
 
     //<editor-fold desc="Scene operations">
@@ -41,13 +44,13 @@ public class SceneManager {
      * Changes current Scene to a new one using Java reflection
      * @param SceneName Scene class name to load
      */
-    public static void LoadScene(String SceneName, LoadType  Type) {
-        SceneManager Manager = Get();
+    public static void LoadScene(String SceneName, LoadType Type) {
+        //SceneManager Manager = Get();
 
         // Unload all scenes if single load mode
         if(Type == LoadType.SINGLE){
-            for(int i = Manager.GameScenes.size() - 1; i >= 0; i--){
-                UnloadScene(Manager.GameScenes.get(i));
+            for(int i = GameScenes.size() - 1; i >= 0; i--){
+                UnloadScene(GameScenes.get(i));
             }
         }
 
@@ -63,7 +66,7 @@ public class SceneManager {
         ChangingScene = true;
 
         SceneToLoad.IsLoaded = false;
-        SceneToLoad.SceneActiveIndex = Manager.GameScenes.size();
+        SceneToLoad.SceneActiveIndex = GameScenes.size();
         SceneToLoad.Init();
 
         /*   TODO :: Handle scene loading   */
@@ -74,21 +77,22 @@ public class SceneManager {
         //</editor-fold>
 
         SceneToLoad.IsLoaded = true;
-        Manager.GameScenes.add(SceneToLoad);
+        GameScenes.add(SceneToLoad);
         ChangingScene = false;
         //</editor-fold>
+
+        SceneToLoad.Start();
     }
 
     /**
      * Unloads the currently loaded scenes and removes registered events
      */
     public static void UnloadScene(Scene SceneToUnload){
-        SceneManager Manager = Get();
-        if(!Manager.GameScenes.contains(SceneToUnload)){
+        if(!GameScenes.contains(SceneToUnload)){
             return;
         }
         Window.RemoveUpdateFrameListener(SceneToUnload);
-        Manager.GameScenes.remove(SceneToUnload);
+        GameScenes.remove(SceneToUnload);
     }
     //</editor-fold>
 
@@ -99,7 +103,7 @@ public class SceneManager {
      * @return Camera Object
      */
     public static @Nullable Camera GetActiveCamera(){
-        for (Scene ActiveScene: Get().GameScenes ) {
+        for (Scene ActiveScene: GameScenes ) {
            if(ActiveScene.Camera != null){
                return ActiveScene.Camera;
            }
@@ -111,11 +115,11 @@ public class SceneManager {
     /**
      * Searches for a specific scene in the loaded scene array by name
      * @param SceneName Scene class name
-     * @return Scene obejct
+     * @return Scene object
      */
     public static @Nullable Scene GetActiveScene(@NotNull String SceneName){
         int NameHash = SceneName.hashCode();
-        for (Scene ActiveScene: Get().GameScenes ) {
+        for (Scene ActiveScene: GameScenes ) {
             if(ActiveScene.getClass().getName().hashCode() == NameHash){
                 return ActiveScene;
             }

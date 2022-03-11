@@ -1,6 +1,9 @@
 package JAssets.Scenes;
 
 import Commons.Time;
+import JDabria.ECP.Components.FontRenderer;
+import JDabria.ECP.Components.SpriteRenderer;
+import JDabria.ECP.GameObject;
 import JDabria.Renderer.Camera;
 import JDabria.Renderer.ShaderBuilder;
 import JDabria.Renderer.Texture;
@@ -17,9 +20,10 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class LevelEditor extends Scene {
 
+    private Texture DefaultTexture;
+
     //region Shader stuff
     private ShaderBuilder DefaultShader;
-    private Texture DefaultTexture;
 
     private final float[] VertexArray = {
             // Position                 // Color                     //UV
@@ -35,7 +39,7 @@ public class LevelEditor extends Scene {
             0, 1, 3, // Bottom left triangle
     };
 
-    private int VaoID, VboID, EboID;
+    private int VaoID;
     //endregion
 
     public LevelEditor(){
@@ -48,6 +52,12 @@ public class LevelEditor extends Scene {
         DefaultShader = new ShaderBuilder("Assets/Shaders/DefaultShaderDefinition.glsl");
         DefaultTexture = new Texture("Assets/Textures/bepu.png");
 
+        System.out.println("Creating test gameobject");
+        GameObject testObject = new GameObject("TEST");
+        testObject.AddComponent(new SpriteRenderer());
+        testObject.AddComponent(new FontRenderer());
+        AddGameObjectToScene(testObject);
+
         DefaultShader.Compile();
 
         //Generate VAO, VBO, EBO -> Send to GPU
@@ -59,15 +69,15 @@ public class LevelEditor extends Scene {
         VertBuffer.put(VertexArray).flip();
 
         // Create VBO -> upload the vBuffer
-        VboID = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, VboID);
+        int vboID = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
         glBufferData(GL_ARRAY_BUFFER, VertBuffer, GL_STATIC_DRAW);
 
         // Create the indices -> upload
         IntBuffer ElementBuffer = BufferUtils.createIntBuffer(ElementArray.length);
         ElementBuffer.put(ElementArray).flip();
-        EboID = glGenBuffers();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EboID);
+        int eboID = glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, ElementBuffer, GL_STATIC_DRAW);
 
         // Add the vertex attribute pointers
@@ -88,7 +98,9 @@ public class LevelEditor extends Scene {
 
     @Override
     public void OnFrameUpdate() {
+        assert Camera != null;
         Vector3f CamPosition = Camera.GetPosition();
+
         Camera.SetPosition(new Vector3f(CamPosition.x - Time.DeltaTime() * 50f, CamPosition.y, CamPosition.z));
 
         //Bind shader Program
@@ -116,5 +128,9 @@ public class LevelEditor extends Scene {
         glBindVertexArray(0);
 
         DefaultShader.Detach();
+
+        for ( GameObject go : GameObjects ) {
+            go.Update();
+        }
     }
 }
