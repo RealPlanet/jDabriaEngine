@@ -3,6 +3,7 @@ package JAssets.Scenes;
 import Commons.Time;
 import JDabria.Renderer.Camera;
 import JDabria.Renderer.ShaderBuilder;
+import JDabria.Renderer.Texture;
 import JDabria.SceneManager.Scene;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -18,17 +19,18 @@ public class LevelEditor extends Scene {
 
     //region Shader stuff
     private ShaderBuilder DefaultShader;
+    private Texture DefaultTexture;
 
-    private float[] VertexArray = {
-            // Position                 // Color
-            100.5f, 0.5f, 0.0f,      1.0f, 0.0f, 0.0f, 1.0f, //Bottom right
-            0.5f, 100.5f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f, // Top left
-            100.5f, 100.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f, // Top right
-            0.5f, 0.5f, 0.0f,     1.0f, 1.0f, 0.0f, 1.0f, //Bottom left
+    private final float[] VertexArray = {
+            // Position                 // Color                     //UV
+            500.5f, 0.5f, 0.0f,         1.0f, 0.0f, 0.0f, 1.0f,      1, 1, //Bottom right
+            0.5f, 500.5f, 0.0f,         0.0f, 1.0f, 0.0f, 1.0f,      0, 0, // Top left
+            500.5f, 500.5f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f,      1, 0, // Top right
+            0.5f, 0.5f, 0.0f,           1.0f, 1.0f, 0.0f, 1.0f,      0, 1, //Bottom left
     };
 
     //IMPORTANT: Expects counter-clockwise order
-    private int[] ElementArray = {
+    private final int[] ElementArray = {
             2, 1, 0, // Top right triangle
             0, 1, 3, // Bottom left triangle
     };
@@ -41,37 +43,11 @@ public class LevelEditor extends Scene {
     }
 
     @Override
-    public void OnFrameUpdate() {
-        Vector3f CamPosition = Camera.GetPosition();
-        Camera.SetPosition(new Vector3f(CamPosition.x - Time.DeltaTime() * 50f, CamPosition.y, CamPosition.z));
-
-        //Bind shader Program
-        DefaultShader.Use();
-        DefaultShader.UploadMat4f("uProj", Camera.GetProjMatrix());
-        DefaultShader.UploadMat4f("uView", Camera.GetViewMatrix());
-        DefaultShader.UploadFloat("uTime", Time.Time());
-
-        //Bind VAO
-        glBindVertexArray(VaoID);
-
-        //Enable Vert attribute ptrs
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glDrawElements(GL_TRIANGLES, ElementArray.length, GL_UNSIGNED_INT, 0);
-
-        // Unbind everything
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glBindVertexArray(0);
-
-        DefaultShader.Detach();
-    }
-
-    @Override
     public void Init() {
-        this.Camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f));
+        Camera = new Camera(new Vector3f(0.0f, 0.0f, 0.0f));
         DefaultShader = new ShaderBuilder("Assets/Shaders/DefaultShaderDefinition.glsl");
+        DefaultTexture = new Texture("Assets/Textures/bepu.png");
+
         DefaultShader.Compile();
 
         //Generate VAO, VBO, EBO -> Send to GPU
@@ -97,15 +73,48 @@ public class LevelEditor extends Scene {
         // Add the vertex attribute pointers
         int PositionSize = 3; // x, y ,z
         int ColorSize = 4; // RGB-A
-        int FloatBytes = 4;
-        int VertexBytes = (PositionSize + ColorSize) * FloatBytes;
+        int UVSize = 2;
+        int VertexBytes = (PositionSize + ColorSize + UVSize) * Float.BYTES;
+
         glVertexAttribPointer(0, PositionSize, GL_FLOAT, false, VertexBytes, 0);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, ColorSize, GL_FLOAT, false, VertexBytes, PositionSize * FloatBytes);
+
+        glVertexAttribPointer(1, ColorSize, GL_FLOAT, false, VertexBytes, PositionSize * Float.BYTES);
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, UVSize, GL_FLOAT, false, VertexBytes, (PositionSize + ColorSize) * Float.BYTES);
+        glEnableVertexAttribArray(2);
     }
 
+    @Override
+    public void OnFrameUpdate() {
+        Vector3f CamPosition = Camera.GetPosition();
+        Camera.SetPosition(new Vector3f(CamPosition.x - Time.DeltaTime() * 50f, CamPosition.y, CamPosition.z));
 
+        //Bind shader Program
+        DefaultShader.Use();
+        DefaultShader.UploadTexture("TEX_MAIN_SAMPLER", 0);
+        glActiveTexture(GL_TEXTURE0);
+        DefaultTexture.Bind();
 
+        DefaultShader.UploadMat4f("uProj", Camera.GetProjMatrix());
+        DefaultShader.UploadMat4f("uView", Camera.GetViewMatrix());
+        DefaultShader.UploadFloat("uTime", Time.Time());
 
+        //Bind VAO
+        glBindVertexArray(VaoID);
+
+        //Enable Vert attribute ptrs
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glDrawElements(GL_TRIANGLES, ElementArray.length, GL_UNSIGNED_INT, 0);
+
+        // Unbind everything
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindVertexArray(0);
+
+        DefaultShader.Detach();
+    }
 }
