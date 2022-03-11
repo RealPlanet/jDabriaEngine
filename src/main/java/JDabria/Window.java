@@ -104,18 +104,15 @@ public class Window {
     }
 
     private void Loop() {
-        SceneManager.ChangeScene("LevelEditor");
-        SceneManager.ChangeScene("Debug.DebugScene");
+        SceneManager.LoadScene("LevelEditor", SceneManager.LoadType.SINGLE);
+        SceneManager.LoadScene("Debug.DebugScene", SceneManager.LoadType.ADDITIVE);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
-            for (IBeginFrameListener BeginFrameListener : BeginFrameListeners) {
-                if (BeginFrameListener == null) {
-                    throw new RuntimeException("OnNewFrameListener was null");
-                }
-                BeginFrameListener.OnBeginFrame();
-            }
+
+            SignalNewFrame();
+
             //<editor-fold desc="Begin frame operations">
             // Poll events
             glfwPollEvents();
@@ -123,24 +120,14 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT);
             //</editor-fold>
 
-            for (IUpdateFrameListener newFrameListener : NewFrameListeners) {
-                if (newFrameListener == null) {
-                    throw new RuntimeException("OnNewFrameListener was null");
-                }
-                newFrameListener.OnFrameUpdate();
-            }
+            SignalUpdateFrame();
 
             //<editor-fold desc="End frame operations">
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
             //</editor-fold>
 
-            for (IEndFrameListener EndFrameListener : EndFrameListeners) {
-                if (EndFrameListener == null) {
-                    throw new RuntimeException("OnNewFrameListener was null");
-                }
-                EndFrameListener.OnEndFrame();
-            }
+            SignalEndFrame();
         }
     }
     //</editor-fold>
@@ -152,16 +139,16 @@ public class Window {
     //</editor-fold>
 
     //<editor-fold desc="Window Events">
-    private final ArrayList<IUpdateFrameListener> NewFrameListeners = new ArrayList<>();
+    private final ArrayList<IUpdateFrameListener> UpdateFrameListeners = new ArrayList<>();
     private final ArrayList<IBeginFrameListener> BeginFrameListeners = new ArrayList<>();
     private final ArrayList<IEndFrameListener> EndFrameListeners = new ArrayList<>();
 
     public static void AddUpdateFrameListener(IUpdateFrameListener Listener){
-        GetWindow().NewFrameListeners.add(Listener);
+        GetWindow().UpdateFrameListeners.add(Listener);
     }
 
     public static void RemoveUpdateFrameListener(IUpdateFrameListener Listener){
-        GetWindow().NewFrameListeners.remove(Listener);
+        GetWindow().UpdateFrameListeners.remove(Listener);
     }
 
     public static void AddBeginFrameListener(IBeginFrameListener Listener){
@@ -178,6 +165,41 @@ public class Window {
 
     public static void RemoveEndFrameListener(IEndFrameListener Listener){
         GetWindow().EndFrameListeners.remove(Listener);
+    }
+
+    private void SignalNewFrame(){
+        for (int i = BeginFrameListeners.size() - 1; i >= 0; i--) {
+            IBeginFrameListener Listener = BeginFrameListeners.get(i);
+            if (Listener == null) {
+                throw new RuntimeException("OnNewFrameListener was null");
+            }
+
+            Listener.OnBeginFrame();
+        }
+    }
+
+    private void SignalUpdateFrame(){
+        for (int i = UpdateFrameListeners.size() - 1; i >= 0; i--) {
+            IUpdateFrameListener Listener = UpdateFrameListeners.get(i);
+
+            if (Listener == null) {
+                throw new RuntimeException("OnUpdateFrameListener was null");
+            }
+
+            Listener.OnFrameUpdate();
+        }
+    }
+
+    private void SignalEndFrame(){
+        for (int i = EndFrameListeners.size() - 1; i >= 0; i--) {
+            IEndFrameListener Listener = EndFrameListeners.get(i);
+
+            if (Listener == null) {
+                throw new RuntimeException("OnEndFrameListener was null");
+            }
+
+            Listener.OnEndFrame();
+        }
     }
     //</editor-fold>
 }
