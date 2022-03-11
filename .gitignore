@@ -17,3 +17,5 @@
 .gradle/**
 build/**
 
+/Javadoc/**
+*.html
