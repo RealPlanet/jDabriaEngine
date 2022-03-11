@@ -1,24 +1,26 @@
 package JDabria.Renderer;
 
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 
 public class ShaderBuilder {
+    private static final Pattern SHADER_REGEX_PATTERN = Pattern.compile("(#type)( )+([a-zA-Z]+)");
+    private static final String INVALID_TOKEN_ERROR = "Unexpected token '%s' in '%s'";
+    private static final String IDENTICAL_TOKENS_ERROR = "Expected two different shaders (fragment and vertex), received same tokens -> '%s' and '%s'";
+
+    private int VertexID, FragmentID, ShaderProgram;
     private String VertexSource = "", FragmentSource = "", Filepath = "";
-    private final String SHADER_REGEX_PATTERN = "(#type)( )+([a-zA-Z]+)";
-    private final String INVALID_TOKEN_ERROR = "Unexpected token '%s' in '%s'";
-    private final String IDENTICAL_TOKENS_ERROR = "Expected two different shaders (fragment and vertex), received same tokens -> '%s' and '%s'";
-    int VertexID, FragmentID, ShaderProgram;
+    private boolean BeingUsed = false;
 
     /**
      * Init Builder and read shader file
@@ -29,7 +31,7 @@ public class ShaderBuilder {
 
         try{
             String Source = new String(Files.readAllBytes(Paths.get(Filepath)));
-            String[ ] SplitString = Source.split(SHADER_REGEX_PATTERN);
+            String[ ] SplitString = SHADER_REGEX_PATTERN.split(Source);
             String FirstPattern;
             String SecondPattern;
             int Index;
@@ -99,19 +101,86 @@ public class ShaderBuilder {
     }
 
     public void Use(){
+        if(BeingUsed) {
+            return;
+        }
+        BeingUsed = true;
         glUseProgram(ShaderProgram);
     }
 
     public void Detach(){
+        // Not sure if detaching unused shaders has overhead, so im putting a fail early guard here
+        if(!BeingUsed){
+            return;
+        }
+
+        BeingUsed = false;
         glUseProgram(0);
     }
 
-    public void UploadMat4f(String VarName, @NotNull Matrix4f mat4){
+    //region Upload to shader methods
+    public void UploadMat2f(String VarName, @NotNull Matrix2f Matrix){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        FloatBuffer Buffer = BufferUtils.createFloatBuffer(4);
+        Matrix.get(Buffer);
+        glUniformMatrix2fv(VarLocation, false, Buffer);
+    }
+
+    public void UploadVec2f(String VarName, @NotNull Vector2f Vector){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        glUniform2f(VarLocation, Vector.x, Vector.y);
+    }
+
+    public void UploadMat3f(String VarName, @NotNull Matrix3f Matrix){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        FloatBuffer Buffer = BufferUtils.createFloatBuffer(9);
+        Matrix.get(Buffer);
+        glUniformMatrix3fv(VarLocation, false, Buffer);
+    }
+
+    public void UploadVec3f(String VarName, @NotNull Vector3f Vector){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        glUniform3f(VarLocation, Vector.x, Vector.y, Vector.z);
+    }
+
+    public void UploadMat4f(String VarName, @NotNull Matrix4f Matrix){
+        Use();
+
         int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
         FloatBuffer Buffer = BufferUtils.createFloatBuffer(16);
-        mat4.get(Buffer);
+        Matrix.get(Buffer);
         glUniformMatrix4fv(VarLocation, false, Buffer);
     }
+
+    public void UploadVec4f(String VarName, @NotNull Vector4f Vector){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        glUniform4f(VarLocation, Vector.x, Vector.y, Vector.z, Vector.w);
+    }
+
+    public void UploadFloat(String VarName, Float Value){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        glUniform1f(VarLocation, Value);
+    }
+
+    public void UploadInt(String VarName, Integer Value){
+        Use();
+
+        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
+        glUniform1i(VarLocation, Value);
+    }
+    //endregion
 
     //region Compile & Link Shaders
     private void CompileVertexShader(){
