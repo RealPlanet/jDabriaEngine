@@ -1,6 +1,7 @@
 package JDabria.ECP.Components;
 
 import JDabria.ECP.Component;
+import JDabria.ECP.Components.Sprite.SpriteRenderer;
 
 public class FontRenderer extends Component {
 

@@ -3,7 +3,7 @@ package JAssets.Scenes.Debug;
 
 import Commons.Color;
 import Commons.Time;
-import JDabria.ECP.Components.SpriteRenderer;
+import JDabria.ECP.Components.Sprite.SpriteRenderer;
 import JDabria.ECP.GameObject;
 import JDabria.keyListener;
 import JDabria.SceneManager.Scene;
@@ -28,7 +28,7 @@ public class DebugScene extends Scene {
     }
 
     @Override
-    public void init() {
+    public void onInit() {
         Window.setWindowClearColor(new Color(0,0,0,1));
         int xOffset = 10, yOffset = 10;
         float TotalWidth = (float)(1200 - xOffset * 2);

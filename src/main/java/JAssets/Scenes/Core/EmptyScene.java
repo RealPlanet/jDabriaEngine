@@ -24,7 +24,7 @@ public class EmptyScene extends Scene {
     }
 
     @Override
-    public void init() {
+    public void onInit() {
 
     }
 }

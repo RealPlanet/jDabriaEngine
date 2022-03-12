@@ -4,7 +4,7 @@ import Commons.Color;
 import JDabria.AssetManager.AssetPool;
 import JDabria.AssetManager.Resources.ShaderBuilder;
 import JDabria.AssetManager.Resources.Texture;
-import JDabria.ECP.Components.SpriteRenderer;
+import JDabria.ECP.Components.Sprite.SpriteRenderer;
 import JDabria.ECP.Components.Transform;
 import JDabria.SceneManager.SceneManager;
 import org.jetbrains.annotations.NotNull;
@@ -130,17 +130,17 @@ public class RenderBatch {
     }
 
     private void loadVertexProperties(int index){
-        SpriteRenderer sprite = spriteRenderers[index];
+        SpriteRenderer spriteRenderer = spriteRenderers[index];
 
-        // Determine offset --> 4 vert per sprite
+        // Determine offset --> 4 vert per spriteRenderer
         int offset = index * 4 * VERTEX_SIZE;
 
-        Color color = sprite.getColor();
-        Vector2f[] coordinates = sprite.getTexCoords();
+        Color color = spriteRenderer.getColor();
+        Vector2f[] coordinates = spriteRenderer.getTexCoords();
         int texID = 0;
-        if(sprite.getSprite() != null){
+        if(spriteRenderer.getSprite() != null){
             for(int i = 0; i < textures.size(); i++){
-                if(textures.get(i) == sprite.getSprite()){
+                if(textures.get(i) == spriteRenderer.getTexture()){
                     texID = i + 1;
                     break;
                 }
@@ -162,9 +162,9 @@ public class RenderBatch {
             }
 
             // Load position
-            Transform transform = sprite.gameObject.transform;
-            vertices[offset] = transform.position.x + (xAdd * transform.scale.x);
-            vertices[offset + 1] = transform.position.y + (yAdd * transform.scale.y);
+            Transform transform = spriteRenderer.gameObject.transform;
+            vertices[offset] = transform.position.x + (xAdd * spriteRenderer.getSprite().getWidth() * transform.scale.x);
+            vertices[offset + 1] = transform.position.y + (yAdd * spriteRenderer.getSprite().getHeight() * transform.scale.y);
             vertices[offset + 2] = transform.position.z;
 
             // Load color
@@ -187,8 +187,17 @@ public class RenderBatch {
     //</editor-fold>
 
     //<editor-fold desc="Public methods">
-    public boolean addSprite(SpriteRenderer spriteRenderer){
-        if(!hasRoom){
+    public boolean addSprite(@NotNull SpriteRenderer spriteRenderer){
+        // If this texture isn't preset in the batch, and we have no more room
+        if(     spriteRenderer.getSprite() != null &&
+                !this.hasTexture(spriteRenderer.getTexture()) &&
+                !this.hasTextureRoom()){
+
+            return false;
+        }
+
+        // If batch is full
+        if(!hasRoom()){
             return false;
         }
 
@@ -197,15 +206,13 @@ public class RenderBatch {
         numSprites++;
 
         if(spriteRenderer.getSprite() != null && !textures.contains(spriteRenderer.getSprite())){
-            textures.add(spriteRenderer.getSprite());
+            textures.add(spriteRenderer.getTexture());
         }
 
         // add to local array
         loadVertexProperties(Index);
-        if(numSprites >= maxBatchSize || textures.size() >= texSlots.length){
-            hasRoom = false;
-        }
 
+        hasRoom = !(numSprites >= maxBatchSize);
         return true;
     }
 
@@ -243,6 +250,10 @@ public class RenderBatch {
     public boolean hasRoom(){
         return this.hasRoom;
     }
+
+    public boolean hasTextureRoom() {return textures.size() < 8;}
+
+    public boolean hasTexture(Texture tex) { return textures.contains(tex); }
 
     /**
      *

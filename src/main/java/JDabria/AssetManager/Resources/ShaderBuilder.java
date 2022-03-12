@@ -24,7 +24,7 @@ public class ShaderBuilder {
     private boolean beingUsed = false;
 
     /**
-     * init Builder and read shader file
+     * onInit Builder and read shader file
      * @param filepath filepath to *.glsl Shader file containing BOTH fragment and vertex shader
      */
     public ShaderBuilder(String filepath){

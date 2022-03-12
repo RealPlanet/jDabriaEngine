@@ -32,12 +32,20 @@ public class Window {
         title = "Dabria v0.0.1";
     }
 
+    /**
+     * Gets the window instance. If none exist it is created on the spot
+     * @return The window instance
+     */
     public static @NotNull Window getWindow(){
         return WINDOW;
     }
     //</editor-fold>
 
     //<editor-fold desc="Window execution methods">
+
+    /**
+     * Initiates window logic for the window instance. Handles allocating the window and the think loop.
+     */
     public void run(){
         System.out.println("Starting LWJG " + Version.getVersion());
         init();
@@ -55,9 +63,9 @@ public class Window {
         // Error Callback output
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // init our boy
+        // onInit our boy
         if(!glfwInit()){
-            throw  new IllegalStateException("GLFW init failed!!!!");
+            throw  new IllegalStateException("GLFW onInit failed!!!!");
         }
 
         //<editor-fold desc="Window base settings">
@@ -133,6 +141,11 @@ public class Window {
     //</editor-fold>
 
     //<editor-fold desc="Debug methods">
+
+    /**
+     * Sets the clear color this window should use when nothing is being renderer
+     * @param color The color RGBA to use
+     */
     public static void setWindowClearColor(@NotNull Color color){
         glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }

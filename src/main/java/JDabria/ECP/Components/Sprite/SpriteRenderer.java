@@ -1,4 +1,4 @@
-package JDabria.ECP.Components;
+package JDabria.ECP.Components.Sprite;
 
 import Commons.Color;
 import JDabria.AssetManager.Resources.Texture;
@@ -6,16 +6,16 @@ import JDabria.ECP.Component;
 import org.joml.Vector2f;
 
 public class SpriteRenderer extends Component {
+    private Sprite sprite;
     private Color color;
-    private Vector2f[] texCoords;
-    private Texture sprite;
 
     //<editor-fold desc="Constructors">
     public SpriteRenderer(Commons.Color color){
         this.color = color;
+        sprite = new Sprite(null);
     }
 
-    public SpriteRenderer(Texture sprite){
+    public SpriteRenderer(Sprite sprite){
         this.sprite = sprite;
         this.color = Color.WHITE;
     }
@@ -26,18 +26,16 @@ public class SpriteRenderer extends Component {
         return this.color;
     }
 
-    public Texture getSprite(){
-        return this.sprite;
+    public Sprite getSprite(){
+        return sprite;
+    }
+
+    public Texture getTexture(){
+        return sprite.getTexture();
     }
 
     public Vector2f[] getTexCoords(){
-        Vector2f[] texCoords = {
-                new Vector2f(1, 1),
-                new Vector2f(1, 0),
-                new Vector2f(0, 0),
-                new Vector2f(0, 1)
-        };
-        return texCoords;
+        return sprite.getTexCoords();
     }
     //</editor-fold>
 

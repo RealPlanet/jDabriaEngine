@@ -33,7 +33,7 @@ public abstract class Scene implements IUpdateFrameListener {
     /**
      * Called once on scene load
      */
-    public abstract void init();
+    protected abstract void onInit();
 
     protected abstract void update();
 
@@ -41,9 +41,13 @@ public abstract class Scene implements IUpdateFrameListener {
     //</editor-fold>
 
     //<editor-fold desc="Public methods">
+    public void init(){
+        loadResources();
+        onInit();
+    }
+
     public void start(){
         isStarted = true;
-
         for(GameObject go: gameObjects) {
             go.setActive(true);
             sceneRenderer.add(go);

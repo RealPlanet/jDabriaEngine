@@ -3,6 +3,7 @@ package JDabria.AssetManager;
 import JAssets.Scenes.Core.EmptyScene;
 import JDabria.AssetManager.Resources.ShaderBuilder;
 import JDabria.AssetManager.Resources.Texture;
+import JDabria.ECP.Components.Sprite.SpriteSheet;
 import JDabria.SceneManager.Scene;
 
 import java.io.File;
@@ -13,6 +14,7 @@ public class AssetPool {
     private static Map<String, ShaderBuilder> engineShaders = new HashMap<>();
     private static Map<String, Texture> engineTextures = new HashMap<>();
     private static Map<String, Scene> engineScene = new HashMap<>();
+    private static Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
 
     // Prefix for assets which are compiled and included as a package
     private static final String ASSET_PACKAGE_PREFIX = "JAssets.";
@@ -49,6 +51,22 @@ public class AssetPool {
         Texture texture = new Texture(resourceName);
         engineTextures.put(file.getAbsolutePath(), texture);
         return texture;
+    }
+
+    public static void addSpriteSheet(String resourceName, SpriteSheet sheet){
+        File file = new File(resourceName);
+        if(!engineSpriteSheet.containsKey(file.getAbsolutePath())){
+            engineSpriteSheet.put(file.getAbsolutePath(), sheet);
+        }
+    }
+
+    public static SpriteSheet getSpriteSheet(String resourceName){
+        File file = new File(resourceName);
+        if(!engineSpriteSheet.containsKey(file.getAbsolutePath())){
+            assert false : "ERROR (AssetPool) --> Tried to access sprite-sheet '" + resourceName + "' and it has not been added to asset pool";
+        }
+
+        return engineSpriteSheet.getOrDefault(file.getAbsolutePath(), null);
     }
 
     //<editor-fold desc="Scene assets methods">
