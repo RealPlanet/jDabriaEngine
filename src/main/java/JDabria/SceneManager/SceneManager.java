@@ -1,6 +1,6 @@
 package JDabria.SceneManager;
 
-import JDabria.AssetManager.AssetManager;
+import JDabria.AssetManager.AssetPool;
 import JDabria.Renderer.Camera;
 import JDabria.Window;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +56,7 @@ public class SceneManager {
 
         Scene SceneToLoad;
         try {
-            SceneToLoad = AssetManager.getScene(SCENE_PACKAGE_PREFIX, SceneName);
+            SceneToLoad = AssetPool.getScene(SCENE_PACKAGE_PREFIX, SceneName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return;

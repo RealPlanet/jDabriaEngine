@@ -13,6 +13,11 @@ public class Level_1 extends Scene {
     }
 
     @Override
+    protected void loadResources() {
+
+    }
+
+    @Override
     public void init() {
 
     }

@@ -2,6 +2,8 @@ package Commons;
 
 import JDabria.Window;
 
+import static org.lwjgl.glfw.GLFW.glfwGetTime;
+
 public class Time{
 
     //region Singleton
@@ -25,7 +27,6 @@ public class Time{
     //endregion
 
     // Time this application was started
-    private static final float applicationStartTime = System.nanoTime();
     private double frameBeginTime = 0.0f;
     private double frameEndTime = 0.0f;
 
@@ -36,9 +37,6 @@ public class Time{
         return (float) get()._deltaTime;
     }
 
-    public static double getApplicationStartTime(){
-        return applicationStartTime;
-    }
     // Returns passed time in seconds since start of application
-    public static float getTime(){ return (float)( (System.nanoTime() - applicationStartTime) * 1E-9); }
+    public static float getTime(){ return (float)( glfwGetTime() ); }
 }

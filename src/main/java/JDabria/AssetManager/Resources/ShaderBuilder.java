@@ -185,6 +185,14 @@ public class ShaderBuilder {
     public void uploadTexture(String varName, Integer Value){
         uploadInt(varName, Value);
     }
+
+    public void uploadIntArray(String varName, int[] array){
+        use();
+
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        glUniform1iv(varLocation, array);
+    }
+
     //endregion
 
     //region compile & Link Shaders

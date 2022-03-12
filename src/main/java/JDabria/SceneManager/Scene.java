@@ -29,11 +29,18 @@ public abstract class Scene implements IUpdateFrameListener {
 
     }
 
+    //<editor-fold desc="Abstract methods">
     /**
      * Called once on scene load
      */
     public abstract void init();
 
+    protected abstract void update();
+
+    protected abstract void loadResources();
+    //</editor-fold>
+
+    //<editor-fold desc="Public methods">
     public void start(){
         isStarted = true;
 
@@ -63,6 +70,5 @@ public abstract class Scene implements IUpdateFrameListener {
 
         update();
     }
-
-    protected abstract void update();
+    //</editor-fold>
 }

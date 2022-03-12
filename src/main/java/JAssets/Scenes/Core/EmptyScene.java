@@ -19,6 +19,11 @@ public class EmptyScene extends Scene {
     }
 
     @Override
+    protected void loadResources() {
+
+    }
+
+    @Override
     public void init() {
 
     }

@@ -3,9 +3,15 @@ package JDabria.Renderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+// TODO :: Convert to component
 public class Camera {
     private Matrix4f projectionMatrix = new Matrix4f(), viewMatrix = new Matrix4f();
     private Vector3f position;
+
+    public Camera(){
+        this.position = new Vector3f();
+        adjustWindowProjection();
+    }
 
     public Camera(Vector3f startingCoordinates){
         this.position = startingCoordinates;

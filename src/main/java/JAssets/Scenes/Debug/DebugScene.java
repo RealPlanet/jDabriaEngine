@@ -83,5 +83,10 @@ public class DebugScene extends Scene {
         }
     }
 
+    @Override
+    protected void loadResources() {
+
+    }
+
 
 }
