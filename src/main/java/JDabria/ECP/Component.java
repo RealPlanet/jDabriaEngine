@@ -1,15 +1,15 @@
 package JDabria.ECP;
 
 public abstract class Component {
-    public GameObject GameObject = null;
+    public GameObject gameObject = null;
 
-    public void Start(){
-
-    }
-
-    public void Stop(){
+    public void start(){
 
     }
 
-    public abstract void Update();
+    public void stop(){
+
+    }
+
+    public abstract void update();
 }

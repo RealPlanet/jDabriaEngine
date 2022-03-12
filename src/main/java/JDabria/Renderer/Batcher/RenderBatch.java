@@ -27,49 +27,49 @@ public class RenderBatch {
     private static final int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
     private static final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
-    private SpriteRenderer[] Sprites;
-    private int NumSprites = 0, VaoID, VboId, MaxBatchSize;
-    private boolean HasRoom = true;
-    private float[] Vertices;
-    private ShaderBuilder Shader;
+    private SpriteRenderer[] spriteRenderers;
+    private int numSprites = 0, vaoID, vboID, maxBatchSize;
+    private boolean hasRoom = true;
+    private float[] vertices;
+    private ShaderBuilder shader;
 
     //<editor-fold desc="Constructors">
-    private RenderBatch(int MaxBatchSize){
-        if(MaxBatchSize <= 0){
+    private RenderBatch(int maxBatchSize){
+        if(maxBatchSize <= 0){
             throw new IllegalArgumentException("Batch size cannot be negative or zero");
         }
 
 
-        this.MaxBatchSize = MaxBatchSize;
-        this.Shader = new ShaderBuilder("Assets/Shaders/DefaultShaderDefinition.glsl");
-        this.Shader.Compile();
+        this.maxBatchSize = maxBatchSize;
+        this.shader = new ShaderBuilder("Assets/Shaders/DefaultShaderDefinition.glsl");
+        this.shader.compile();
 
-        this.Sprites = new SpriteRenderer[MaxBatchSize];
+        this.spriteRenderers = new SpriteRenderer[maxBatchSize];
 
-        // 4 Vertices quads
-        this.Vertices = new float[MaxBatchSize * 4 * VERTEX_SIZE];
+        // 4 vertices quads
+        this.vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
 
-        Init();
+        init();
     }
     //</editor-fold>
 
     //<editor-fold desc="Private methods">
-    private void Init(){
+    private void init(){
         //Generate and bind a Vertex Array Object - VAO
-        VaoID = glGenVertexArrays();
-        glBindVertexArray(VaoID);
+        vaoID = glGenVertexArrays();
+        glBindVertexArray(vaoID);
 
         // Allocate space for vertices
-        VboId = glGenBuffers();
+        vboID = glGenBuffers();
         // GL_DYNAMIC_DRAW -> We don't have the drawing data yet
-        glBindBuffer(GL_ARRAY_BUFFER, VboId);
-        glBufferData(GL_ARRAY_BUFFER, Vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
         // Create & upload indices buffer
-        int EboID = glGenBuffers();
-        int[] Indices = GenerateIndices();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EboID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, Indices, GL_STATIC_DRAW); // GL_STATIC_DRAW -> Never going to change indicies
+        int eboID = glGenBuffers();
+        int[] indices = generateIndices();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW); // GL_STATIC_DRAW -> Never going to change indicies
 
         // Enable buffer pointers
         glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
@@ -79,39 +79,39 @@ public class RenderBatch {
         glEnableVertexAttribArray(1);
     }
 
-    private int @NotNull [] GenerateIndices(){
+    private int @NotNull [] generateIndices(){
         // 6 Indices -> 3 per triangle (Quad)
-        int[] Elements = new int[6 * MaxBatchSize];
-        for(int i= 0; i < MaxBatchSize; i++){
-            LoadElementIndices(Elements, i);
+        int[] elements = new int[6 * maxBatchSize];
+        for(int i = 0; i < maxBatchSize; i++){
+            loadElementIndices(elements, i);
         }
 
-        return Elements;
+        return elements;
     }
 
-    private void LoadElementIndices(int @NotNull [] Elements, int Index) {
+    private void loadElementIndices(int @NotNull [] elements, int index) {
         // 3, 2, 0, 0, 2, 1     7, 6, 4, 4, 6, 5 <-- Example
-        int OffsetArrayIndex = 6 * Index;
-        int Offset = 4 * Index;
+        int offsetArrayIndex = 6 * index;
+        int offset = 4 * index;
         // Triangle 1
-        Elements[OffsetArrayIndex] = Offset + 3;
-        Elements[OffsetArrayIndex + 1] = Offset + 2;
-        Elements[OffsetArrayIndex + 2] = Offset;
+        elements[offsetArrayIndex] = offset + 3;
+        elements[offsetArrayIndex + 1] = offset + 2;
+        elements[offsetArrayIndex + 2] = offset;
 
         // Triangle 2
-        Elements[OffsetArrayIndex + 3] = Offset;
-        Elements[OffsetArrayIndex + 4] = Offset + 2;
-        Elements[OffsetArrayIndex + 5] = Offset + 1;
+        elements[offsetArrayIndex + 3] = offset;
+        elements[offsetArrayIndex + 4] = offset + 2;
+        elements[offsetArrayIndex + 5] = offset + 1;
     }
 
-    private void LoadVertexProperties(int Index){
-        SpriteRenderer Sprite = Sprites[Index];
+    private void loadVertexProperties(int index){
+        SpriteRenderer sprite = spriteRenderers[index];
 
-        // Determine Offset --> 4 vert per sprite
-        int Offset = Index * 4 * VERTEX_SIZE;
+        // Determine offset --> 4 vert per sprite
+        int offset = index * 4 * VERTEX_SIZE;
 
-        Color Color = Sprite.GetColor();
-        // Add
+        Color color = sprite.getColor();
+        // add
         float xAdd = 1.0f, yAdd = 1.0f;
         for(int i = 0; i < 4; i++){
 
@@ -125,74 +125,74 @@ public class RenderBatch {
                 yAdd = 1.0f;
             }
 
-            // Load Position
-            Transform T = Sprite.GameObject.Transform;
-            Vertices[Offset] = T.Position.x + (xAdd * T.Scale.x);
-            Vertices[Offset + 1] = T.Position.y + (yAdd * T.Scale.y);
-            Vertices[Offset + 2] = T.Position.z;
+            // Load position
+            Transform transform = sprite.gameObject.transform;
+            vertices[offset] = transform.position.x + (xAdd * transform.scale.x);
+            vertices[offset + 1] = transform.position.y + (yAdd * transform.scale.y);
+            vertices[offset + 2] = transform.position.z;
 
-            //Load Color
-            Vertices[Offset + 3] = Color.GetRed();
-            Vertices[Offset + 4] = Color.GetGreen();
-            Vertices[Offset + 5] = Color.GetBlue();
-            Vertices[Offset + 6] = Color.GetAlpha();
+            //Load color
+            vertices[offset + 3] = color.getRed();
+            vertices[offset + 4] = color.getGreen();
+            vertices[offset + 5] = color.getBlue();
+            vertices[offset + 6] = color.getAlpha();
 
-            Offset += VERTEX_SIZE;
+            offset += VERTEX_SIZE;
         }
     }
     //</editor-fold>
 
     //<editor-fold desc="Public methods">
-    public void AddSprite(SpriteRenderer Spr){
-        if(!HasRoom){
+    public void addSprite(SpriteRenderer spriteRenderer){
+        if(!hasRoom){
             return;
         }
 
-        int Index = NumSprites;
-        Sprites[Index] = Spr;
-        NumSprites++;
+        int Index = numSprites;
+        spriteRenderers[Index] = spriteRenderer;
+        numSprites++;
 
-        // Add to local array
-        LoadVertexProperties(Index);
-        if(NumSprites >= MaxBatchSize){
-            HasRoom = false;
+        // add to local array
+        loadVertexProperties(Index);
+        if(numSprites >= maxBatchSize){
+            hasRoom = false;
         }
     }
 
-    public void Render(){
+    public void render(){
         // Re-buffer data
-        glBindBuffer(GL_ARRAY_BUFFER, VboId);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, Vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 
-        Shader.Use();
-        Shader.UploadMat4f("uProj", SceneManager.GetActiveCamera().GetProjMatrix());
-        Shader.UploadMat4f("uView", SceneManager.GetActiveCamera().GetViewMatrix());
+        shader.use();
+        shader.uploadMat4F("uProj", SceneManager.getActiveCamera().getProjMatrix());
+        shader.uploadMat4F("uView", SceneManager.getActiveCamera().getViewMatrix());
 
-        glBindVertexArray(VaoID);
+        glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
-        glDrawElements(GL_TRIANGLES, NumSprites * 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, numSprites * 6, GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
-        Shader.Detach();
+        shader.detach();
     }
 
-    public boolean HasRoom(){
-        return this.HasRoom;
+    public boolean hasRoom(){
+        return this.hasRoom;
     }
 
     //</editor-fold>
 
     /**
      *
-     * @param MaxBatchSize
+     * @param maxBatchSize
      * @return
      * @throws IllegalArgumentException
      */
-    public static @NotNull RenderBatch CreateBatch(int MaxBatchSize){
-        RenderBatch Batch = new RenderBatch(MaxBatchSize);
-        return Batch;
+    public static @NotNull RenderBatch createBatch(int maxBatchSize){
+        RenderBatch renderBatch = new RenderBatch(maxBatchSize);
+        return renderBatch;
     }
 }

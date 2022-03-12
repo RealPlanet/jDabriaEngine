@@ -18,219 +18,219 @@ public class ShaderBuilder {
     private static final String INVALID_TOKEN_ERROR = "Unexpected token '%s' in '%s'";
     private static final String IDENTICAL_TOKENS_ERROR = "Expected two different shaders (fragment and vertex), received same tokens -> '%s' and '%s'";
 
-    private int VertexID, FragmentID, ShaderProgram;
-    private String VertexSource = "", FragmentSource = "";
-    private final String Filepath;
-    private boolean BeingUsed = false;
+    private int vertexID, fragmentID, shaderProgram;
+    private String vertexSource = "", fragmentSource = "";
+    private final String filepath;
+    private boolean beingUsed = false;
 
     /**
-     * Init Builder and read shader file
-     * @param _Filepath Filepath to *.glsl Shader file containing BOTH fragment and vertex shader
+     * init Builder and read shader file
+     * @param filepath filepath to *.glsl Shader file containing BOTH fragment and vertex shader
      */
-    public ShaderBuilder(String _Filepath){
-        Filepath = _Filepath;
+    public ShaderBuilder(String filepath){
+        this.filepath = filepath;
 
         try{
-            String Source = new String(Files.readAllBytes(Paths.get(Filepath)));
-            String[ ] SplitString = SHADER_REGEX_PATTERN.split(Source);
-            String FirstPattern;
-            String SecondPattern;
-            int Index;
+            String source = new String(Files.readAllBytes(Paths.get(this.filepath)));
+            String[ ] splitString = SHADER_REGEX_PATTERN.split(source);
+            String firstPattern;
+            String secondPattern;
+            int index;
             int EOL;
 
             // TODO :: Save type in the REGEX split to remove the need to search the entire source?
             //Find first shader piece
-            Index = Source.indexOf("#type") + 6; // +6 to skip #type and white space right after
-            EOL = Source.indexOf("\r\n", Index);
+            index = source.indexOf("#type") + 6; // +6 to skip #type and white space right after
+            EOL = source.indexOf("\r\n", index);
 
-            FirstPattern = Source.substring(Index, EOL).trim();
+            firstPattern = source.substring(index, EOL).trim();
 
             // Find second shader piece
-            Index = Source.indexOf("#type", EOL) + 6;
-            EOL = Source.indexOf("\r\n", Index);
+            index = source.indexOf("#type", EOL) + 6;
+            EOL = source.indexOf("\r\n", index);
 
-            SecondPattern = Source.substring(Index, EOL).trim();
+            secondPattern = source.substring(index, EOL).trim();
 
-            if(FirstPattern.equalsIgnoreCase(SecondPattern)){
-                throw new IOException(String.format(IDENTICAL_TOKENS_ERROR, FirstPattern, SecondPattern));
+            if(firstPattern.equalsIgnoreCase(secondPattern)){
+                throw new IOException(String.format(IDENTICAL_TOKENS_ERROR, firstPattern, secondPattern));
             }
 
             // TODO :: Figure out how to tell regex to not create an empty string in the first element of the split string array
             //region Classify shader code based on #type --> fragment or vertex
-            switch(FirstPattern){
+            switch(firstPattern){
                 case "fragment":{
-                    FragmentSource = SplitString[1];
+                    fragmentSource = splitString[1];
                     break;
                 }
                 case "vertex":{
-                    VertexSource = SplitString[1];
+                    vertexSource = splitString[1];
                     break;
                 }
                 default:{
-                    throw new IOException(String.format(INVALID_TOKEN_ERROR, FirstPattern, Filepath));
+                    throw new IOException(String.format(INVALID_TOKEN_ERROR, firstPattern, this.filepath));
                 }
             }
 
-            switch(SecondPattern){
+            switch(secondPattern){
                 case "fragment":{
-                    FragmentSource = SplitString[2];
+                    fragmentSource = splitString[2];
                     break;
                 }
                 case "vertex":{
-                    VertexSource = SplitString[2];
+                    vertexSource = splitString[2];
                     break;
                 }
                 default:{
-                    throw new IOException(String.format(INVALID_TOKEN_ERROR, FirstPattern, Filepath));
+                    throw new IOException(String.format(INVALID_TOKEN_ERROR, firstPattern, this.filepath));
                 }
             }
             //endregion
         }
         catch(IOException ex){
             ex.printStackTrace();
-            assert false : "ERROR :: Could not open shader file: '"+ Filepath + "'";
+            assert false : "ERROR :: Could not open shader file: '"+ this.filepath + "'";
         }
     }
 
-    public void Compile(){
+    public void compile(){
         /// ===
-        /// Compile & Link Shaders
+        /// compile & Link Shaders
         /// ===
-        CompileVertexShader();
-        CompileFragmentShader();
-        LinkShaderProgram();
+        compileVertexShader();
+        compileFragmentShader();
+        linkShaderProgram();
     }
 
-    public void Use(){
-        if(BeingUsed) {
+    public void use(){
+        if(beingUsed) {
             return;
         }
-        BeingUsed = true;
-        glUseProgram(ShaderProgram);
+        beingUsed = true;
+        glUseProgram(shaderProgram);
     }
 
-    public void Detach(){
+    public void detach(){
         // Not sure if detaching unused shaders has overhead, so im putting a fail early guard here
-        if(!BeingUsed){
+        if(!beingUsed){
             return;
         }
 
-        BeingUsed = false;
+        beingUsed = false;
         glUseProgram(0);
     }
 
-    //region Upload to shader methods
-    public void UploadMat2f(String VarName, @NotNull Matrix2f Matrix){
-        Use();
+    //region upload to shader methods
+    public void uploadMat2f(String varName, @NotNull Matrix2f matrix2f){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        FloatBuffer Buffer = BufferUtils.createFloatBuffer(4);
-        Matrix.get(Buffer);
-        glUniformMatrix2fv(VarLocation, false, Buffer);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(4);
+        matrix2f.get(buffer);
+        glUniformMatrix2fv(varLocation, false, buffer);
     }
 
-    public void UploadVec2f(String VarName, @NotNull Vector2f Vector){
-        Use();
+    public void uploadVec2f(String varName, @NotNull Vector2f vector2f){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        glUniform2f(VarLocation, Vector.x, Vector.y);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        glUniform2f(varLocation, vector2f.x, vector2f.y);
     }
 
-    public void UploadMat3f(String VarName, @NotNull Matrix3f Matrix){
-        Use();
+    public void uploadMat3f(String varName, @NotNull Matrix3f matrix){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        FloatBuffer Buffer = BufferUtils.createFloatBuffer(9);
-        Matrix.get(Buffer);
-        glUniformMatrix3fv(VarLocation, false, Buffer);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(9);
+        matrix.get(buffer);
+        glUniformMatrix3fv(varLocation, false, buffer);
     }
 
-    public void UploadVec3f(String VarName, @NotNull Vector3f Vector){
-        Use();
+    public void uploadVec3f(String varName, @NotNull Vector3f Vector){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        glUniform3f(VarLocation, Vector.x, Vector.y, Vector.z);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        glUniform3f(varLocation, Vector.x, Vector.y, Vector.z);
     }
 
-    public void UploadMat4f(String VarName, @NotNull Matrix4f Matrix){
-        Use();
+    public void uploadMat4F(String varName, @NotNull Matrix4f matrix){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        FloatBuffer Buffer = BufferUtils.createFloatBuffer(16);
-        Matrix.get(Buffer);
-        glUniformMatrix4fv(VarLocation, false, Buffer);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+        matrix.get(buffer);
+        glUniformMatrix4fv(varLocation, false, buffer);
     }
 
-    public void UploadVec4f(String VarName, @NotNull Vector4f Vector){
-        Use();
+    public void uploadVec4f(String varName, @NotNull Vector4f Vector){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        glUniform4f(VarLocation, Vector.x, Vector.y, Vector.z, Vector.w);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        glUniform4f(varLocation, Vector.x, Vector.y, Vector.z, Vector.w);
     }
 
-    public void UploadFloat(String VarName, Float Value){
-        Use();
+    public void uploadFloat(String varName, Float Value){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        glUniform1f(VarLocation, Value);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        glUniform1f(varLocation, Value);
     }
 
-    public void UploadInt(String VarName, Integer Value){
-        Use();
+    public void uploadInt(String varName, Integer Value){
+        use();
 
-        int VarLocation = glGetUniformLocation(ShaderProgram, VarName);
-        glUniform1i(VarLocation, Value);
+        int varLocation = glGetUniformLocation(shaderProgram, varName);
+        glUniform1i(varLocation, Value);
     }
 
-    public void UploadTexture(String VarName, Integer Value){
-        UploadInt(VarName, Value);
+    public void uploadTexture(String varName, Integer Value){
+        uploadInt(varName, Value);
     }
     //endregion
 
-    //region Compile & Link Shaders
-    private void CompileVertexShader(){
+    //region compile & Link Shaders
+    private void compileVertexShader(){
         //Load and compile vertex shader
-        VertexID = glCreateShader(GL_VERTEX_SHADER);
+        vertexID = glCreateShader(GL_VERTEX_SHADER);
         // Pass shader source to GPU
-        glShaderSource(VertexID, VertexSource);
-        glCompileShader(VertexID);
+        glShaderSource(vertexID, vertexSource);
+        glCompileShader(vertexID);
 
         //Check for errors
-        int Success = glGetShaderi(VertexID, GL_COMPILE_STATUS);
-        if(Success == GL_FALSE){
-            int Length = glGetShaderi(VertexID, GL_INFO_LOG_LENGTH);
-            System.err.printf("ERROR :: File: %s.\n\tFragment shader compilation failed.%n", Filepath);
-            System.err.println(glGetShaderInfoLog(VertexID, Length));
+        int success = glGetShaderi(vertexID, GL_COMPILE_STATUS);
+        if(success == GL_FALSE){
+            int Length = glGetShaderi(vertexID, GL_INFO_LOG_LENGTH);
+            System.err.printf("ERROR :: File: %s.\n\tFragment shader compilation failed.%n", filepath);
+            System.err.println(glGetShaderInfoLog(vertexID, Length));
             assert false : "";
         }
     }
-    private void CompileFragmentShader(){
+    private void compileFragmentShader(){
         //Load and compile frag shader
-        FragmentID = glCreateShader(GL_FRAGMENT_SHADER);
+        fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
         // Pass shader source to GPU
-        glShaderSource(FragmentID, FragmentSource);
-        glCompileShader(FragmentID);
+        glShaderSource(fragmentID, fragmentSource);
+        glCompileShader(fragmentID);
 
         //Check for errors
-        int Success = glGetShaderi(FragmentID, GL_COMPILE_STATUS);
-        if(Success == GL_FALSE){
-            int Length = glGetShaderi(FragmentID, GL_INFO_LOG_LENGTH);
-            System.err.printf("ERROR :: File: %s.\n\tFragment shader compilation failed.%n", Filepath);
-            System.err.println(glGetShaderInfoLog(FragmentID, Length));
+        int success = glGetShaderi(fragmentID, GL_COMPILE_STATUS);
+        if(success == GL_FALSE){
+            int Length = glGetShaderi(fragmentID, GL_INFO_LOG_LENGTH);
+            System.err.printf("ERROR :: File: %s.\n\tFragment shader compilation failed.%n", filepath);
+            System.err.println(glGetShaderInfoLog(fragmentID, Length));
             assert false : "";
         }
     }
-    private void LinkShaderProgram() {
-        ShaderProgram = glCreateProgram();
-        glAttachShader(ShaderProgram, VertexID);
-        glAttachShader(ShaderProgram, FragmentID);
-        glLinkProgram(ShaderProgram);
+    private void linkShaderProgram() {
+        shaderProgram = glCreateProgram();
+        glAttachShader(shaderProgram, vertexID);
+        glAttachShader(shaderProgram, fragmentID);
+        glLinkProgram(shaderProgram);
 
-        int Success = glGetProgrami(ShaderProgram, GL_LINK_STATUS);
-        if(Success == GL_FALSE){
-            int Length = glGetProgrami(ShaderProgram, GL_INFO_LOG_LENGTH);
-            System.err.printf("ERROR :: File: %s.\n\t Shader Link process failed!.%n", Filepath);
-            System.err.println(glGetProgramInfoLog(ShaderProgram, Length));
+        int success = glGetProgrami(shaderProgram, GL_LINK_STATUS);
+        if(success == GL_FALSE){
+            int Length = glGetProgrami(shaderProgram, GL_INFO_LOG_LENGTH);
+            System.err.printf("ERROR :: File: %s.\n\t Shader Link process failed!.%n", filepath);
+            System.err.println(glGetProgramInfoLog(shaderProgram, Length));
             assert false : "";
         }
     }

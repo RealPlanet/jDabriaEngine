@@ -28,7 +28,7 @@ public class SceneManager {
 
     }
 
-    private static SceneManager Get(){
+    private static SceneManager get(){
         if(_Instance == null){
             _Instance = new SceneManager();
         }
@@ -44,8 +44,8 @@ public class SceneManager {
      * Changes current Scene to a new one using Java reflection
      * @param SceneName Scene class name to load
      */
-    public static void LoadScene(String SceneName, LoadType Type) {
-        //SceneManager Manager = Get();
+    public static void loadScene(String SceneName, LoadType Type) {
+        //SceneManager Manager = get();
 
         // Unload all scenes if single load mode
         if(Type == LoadType.SINGLE){
@@ -56,7 +56,7 @@ public class SceneManager {
 
         Scene SceneToLoad;
         try {
-            SceneToLoad = AssetManager.GetScene(SCENE_PACKAGE_PREFIX, SceneName);
+            SceneToLoad = AssetManager.getScene(SCENE_PACKAGE_PREFIX, SceneName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return;
@@ -65,23 +65,23 @@ public class SceneManager {
         //<editor-fold desc="Scene loading">
         ChangingScene = true;
 
-        SceneToLoad.IsLoaded = false;
-        SceneToLoad._SceneActiveIndex = GameScenes.size();
-        SceneToLoad.Init();
+        SceneToLoad.isLoaded = false;
+        SceneToLoad.sceneIndex = GameScenes.size();
+        SceneToLoad.init();
 
         /*   TODO :: Handle scene loading   */
 
         //<editor-fold desc="Register scene events">
         // Once scene is loaded we assign events
-        Window.AddUpdateFrameListener(SceneToLoad);
+        Window.addUpdateFrameListener(SceneToLoad);
         //</editor-fold>
 
-        SceneToLoad.IsLoaded = true;
+        SceneToLoad.isLoaded = true;
         GameScenes.add(SceneToLoad);
         ChangingScene = false;
         //</editor-fold>
 
-        SceneToLoad.Start();
+        SceneToLoad.start();
     }
 
     /**
@@ -91,7 +91,7 @@ public class SceneManager {
         if(!GameScenes.contains(SceneToUnload)){
             return;
         }
-        Window.RemoveUpdateFrameListener(SceneToUnload);
+        Window.removeUpdateFrameListener(SceneToUnload);
         GameScenes.remove(SceneToUnload);
     }
     //</editor-fold>
@@ -102,10 +102,10 @@ public class SceneManager {
      * Returns the player camera, can be null if none is found
      * @return Camera Object
      */
-    public static @Nullable Camera GetActiveCamera(){
+    public static @Nullable Camera getActiveCamera(){
         for (Scene ActiveScene: GameScenes ) {
-           if(ActiveScene._Camera != null){
-               return ActiveScene._Camera;
+           if(ActiveScene.sceneCamera != null){
+               return ActiveScene.sceneCamera;
            }
         }
 

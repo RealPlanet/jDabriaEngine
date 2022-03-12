@@ -14,15 +14,16 @@ import java.util.List;
  * TODO :: Should implement OnUnload Event to allow for unload functionality extension
  */
 public abstract class Scene implements IUpdateFrameListener {
-    public boolean IsLoaded = false;
+    public boolean isLoaded = false;
+    protected boolean isStarted = false;
 
-    protected boolean IsStarted = false;
-    protected List<GameObject> _GameObjects = new ArrayList<>();
+    // Hidden from scenes
+    private List<GameObject> gameObjects = new ArrayList<>();
 
     @Nullable
-    protected Camera _Camera; // Stores the location of the player camera, can be null if multiple scenes are active
-    protected int _SceneActiveIndex = -1; //Store the position in the SceneManager array list of active scenes
-    protected Renderer _Renderer = new Renderer();
+    protected Camera sceneCamera; // Stores the location of the player camera, can be null if multiple scenes are active
+    protected int sceneIndex = -1; //Store the position in the SceneManager array list of active scenes
+    protected Renderer sceneRenderer = new Renderer();
 
     public Scene(){
 
@@ -31,37 +32,37 @@ public abstract class Scene implements IUpdateFrameListener {
     /**
      * Called once on scene load
      */
-    public abstract void Init();
+    public abstract void init();
 
-    public void Start(){
-        IsStarted = true;
+    public void start(){
+        isStarted = true;
 
-        for(GameObject go: _GameObjects) {
-            go.SetActive(true);
-            _Renderer.Add(go);
+        for(GameObject go: gameObjects) {
+            go.setActive(true);
+            sceneRenderer.add(go);
         }
     }
 
-    public void AddGameObjectToScene(GameObject go){
-        _GameObjects.add(go);
+    public void addGameObjectToScene(GameObject go){
+        gameObjects.add(go);
 
-        if(!IsStarted){
-            go.SetActive(false);
+        if(!isStarted){
+            go.setActive(false);
             return;
         }
 
-        go.SetActive(true);
-        _Renderer.Add(go);
+        go.setActive(true);
+        sceneRenderer.add(go);
     }
 
     @Override
-    public void OnFrameUpdate() {
-        for ( GameObject go : _GameObjects) {
-            go.Update();
+    public void onFrameUpdate() {
+        for ( GameObject go : gameObjects) {
+            go.update();
         }
 
-        Update();
+        update();
     }
 
-    protected abstract void Update();
+    protected abstract void update();
 }

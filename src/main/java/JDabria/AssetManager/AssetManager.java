@@ -9,13 +9,13 @@ public class AssetManager {
     private static final String ASSET_PACKAGE_PREFIX = "JAssets.";
 
     //<editor-fold desc="Singleton">
-    private static AssetManager _Instance;
-    private static AssetManager GetAssetManager(){
-        if(_Instance == null){
-            _Instance = new AssetManager();
+    private static AssetManager instance;
+    private static AssetManager getAssetManager(){
+        if(instance == null){
+            instance = new AssetManager();
         }
 
-        return _Instance;
+        return instance;
     }
     private AssetManager(){
 
@@ -23,20 +23,20 @@ public class AssetManager {
     //</editor-fold>
 
     //<editor-fold desc="Scene assets methods">
-    public static Scene GetScene(String ScenePackagePath, String SceneName) throws ClassNotFoundException{
-        Class<?> SceneClass;
-        Scene Result = new EmptyScene();
+    public static Scene getScene(String scenePackagePath, String sceneName) throws ClassNotFoundException{
+        Class<?> sceneClass;
+        Scene result = new EmptyScene();
 
         try {
-            SceneClass = Class.forName(ASSET_PACKAGE_PREFIX + ScenePackagePath + SceneName);
-            Scene LoadedScene = (Scene)(SceneClass.getDeclaredConstructor().newInstance());
-            Result = LoadedScene;   //Now overwrite the empty scene
+            sceneClass = Class.forName(ASSET_PACKAGE_PREFIX + scenePackagePath + sceneName);
+            Scene scene = (Scene)(sceneClass.getDeclaredConstructor().newInstance());
+            result = scene;   //Now overwrite the empty scene
         }
         catch (Exception ex) {
-            System.err.println("Scene definition requested: " + ASSET_PACKAGE_PREFIX + ScenePackagePath + SceneName);
+            System.err.println("Scene definition requested: " + ASSET_PACKAGE_PREFIX + scenePackagePath + sceneName);
             ex.printStackTrace();
         }
-        return Result;
+        return result;
     }
     //</editor-fold>
 }

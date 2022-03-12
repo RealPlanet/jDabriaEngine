@@ -8,12 +8,12 @@ public class Level_1 extends Scene {
     }
 
     @Override
-    protected void Update() {
+    protected void update() {
 
     }
 
     @Override
-    public void Init() {
+    public void init() {
 
     }
 }

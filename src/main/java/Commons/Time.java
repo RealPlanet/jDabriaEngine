@@ -5,41 +5,40 @@ import JDabria.Window;
 public class Time{
 
     //region Singleton
-    private static final Time _Instance = new Time();
+    private static final Time instance = new Time();
 
-    private static Time Get(){
-        return _Instance;
+    private static Time get(){
+        return instance;
     }
 
     private Time(){
-        Window.AddBeginFrameListener(() -> {
+        Window.addBeginFrameListener(() -> {
             // Delta is calculated at the beginning, this way it properly tracks time between last frame and the new one
-            _deltaTime = (FrameEndTime - FrameBeginTime) * 1E-9;
-            FrameEndTime = FrameBeginTime = System.nanoTime();
+            _deltaTime = (frameEndTime - frameBeginTime) * 1E-9;
+            frameEndTime = frameBeginTime = System.nanoTime();
         });
 
-        Window.AddEndFrameListener(() -> {
-            FrameEndTime = System.nanoTime();
+        Window.addEndFrameListener(() -> {
+            frameEndTime = System.nanoTime();
         });
     }
     //endregion
 
     // Time this application was started
-    private static final float ApplicationStartTime = System.nanoTime();
-    private double FrameBeginTime = 0.0f;
-    private double FrameEndTime = 0.0f;
+    private static final float applicationStartTime = System.nanoTime();
+    private double frameBeginTime = 0.0f;
+    private double frameEndTime = 0.0f;
 
     // The interval in seconds from the last frame to the current one
     private double _deltaTime = Double.MIN_VALUE;
 
-
-    public static float DeltaTime(){
-        return (float)Get()._deltaTime;
+    public static float deltaTime(){
+        return (float) get()._deltaTime;
     }
 
-    public static double GetApplicationStartTime(){
-        return ApplicationStartTime;
+    public static double getApplicationStartTime(){
+        return applicationStartTime;
     }
     // Returns passed time in seconds since start of application
-    public static float Time(){ return (float)( (System.nanoTime() - ApplicationStartTime) * 1E-9); }
+    public static float getTime(){ return (float)( (System.nanoTime() - applicationStartTime) * 1E-9); }
 }

@@ -6,92 +6,92 @@ import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
 public class MouseListener {
-    private static MouseListener _Instance;
-    private double XScroll, YScroll;
-    private double XPos, YPos, lastY, lastX;
+    private static MouseListener instance;
+    private double xScroll, yScroll;
+    private double xPos, yPos, lastY, lastX;
 
-    private final boolean[] MouseButtonPressed = new boolean[3];
-    private boolean IsDragging;
+    private final boolean[] mouseButtonPressed = new boolean[3];
+    private boolean isDragging;
 
     //<editor-fold desc="Singleton">
     private MouseListener(){
-        XScroll = YScroll = 0.0;
-        XPos = YPos = 0.0;
+        xScroll = yScroll = 0.0;
+        xPos = yPos = 0.0;
         lastX = lastY = 0.0;
     }
 
-    public static @NotNull MouseListener Get() {
-        if(_Instance == null){
-            _Instance = new MouseListener();
+    public static @NotNull MouseListener get() {
+        if(instance == null){
+            instance = new MouseListener();
         }
 
-        return _Instance;
+        return instance;
     }
     //</editor-fold>
 
     //<editor-fold desc="Mouse Callbacks">
-    public static void MousePositionCallback(long Window, double XPos, double YPos){
-        MouseListener Listener = Get();
-        Listener.lastX = Listener.XPos;
-        Listener.lastY = Listener.YPos;
-        Listener.XPos = XPos;
-        Listener.YPos = YPos;
+    public static void mousePositionCallback(long window, double xPos, double yPos){
+        MouseListener mouseListener = get();
+        mouseListener.lastX = mouseListener.xPos;
+        mouseListener.lastY = mouseListener.yPos;
+        mouseListener.xPos = xPos;
+        mouseListener.yPos = yPos;
 
         // If mouse moves and any of these buttons are pressed then user must be dragging
-        Listener.IsDragging =   Listener.MouseButtonPressed[0] ||
-                                Listener.MouseButtonPressed[1] ||
-                                Listener.MouseButtonPressed[2];
+        mouseListener.isDragging =  mouseListener.mouseButtonPressed[0] ||
+                                    mouseListener.mouseButtonPressed[1] ||
+                                    mouseListener.mouseButtonPressed[2];
     }
 
-    public static void MouseButtonCallback(long Window, int Button, int Action, int Mods){
-        MouseListener Listener = Get();
-        if(Button > Listener.MouseButtonPressed.length)
+    public static void mouseButtonCallback(long window, int button, int action, int mods){
+        MouseListener mouseListener = get();
+        if(button > mouseListener.mouseButtonPressed.length)
             return;
 
         // Actions can be GLFW_RELEASE or GLFW_PRESS
-        boolean ActionResult = Action == GLFW_PRESS;
-        Listener.MouseButtonPressed[Button] = ActionResult;
-        Listener.IsDragging = ActionResult;
+        boolean actionResult = action == GLFW_PRESS;
+        mouseListener.mouseButtonPressed[button] = actionResult;
+        mouseListener.isDragging = actionResult;
     }
 
-    public static void MouseScrollCallback(long Window, double XOffset, double YOffset){
-        MouseListener Listener = Get();
-        Listener.YScroll = Listener.XScroll = 0;
-        Listener.lastX = Listener.XPos;
-        Listener.lastY = Listener.YPos;
+    public static void mouseScrollCallback(long window, double xOffset, double yOffset){
+        MouseListener mouseListener = get();
+        mouseListener.yScroll = mouseListener.xScroll = 0;
+        mouseListener.lastX = mouseListener.xPos;
+        mouseListener.lastY = mouseListener.yPos;
     }
     //</editor-fold>
 
     //<editor-fold desc="Data access methods">
-    public static @NotNull Vector2f GetDeltaPos(){
-        MouseListener Listener = Get();
-        return new Vector2f((float) (Listener.lastX - Listener.XPos),
-                (float) (Listener.lastY - Listener.YPos));
+    public static @NotNull Vector2f getDeltaPos(){
+        MouseListener mouseListener = get();
+        return new Vector2f((float) (mouseListener.lastX - mouseListener.xPos),
+                (float) (mouseListener.lastY - mouseListener.yPos));
     }
 
-    public static @NotNull Vector2f GetPos(){
-        MouseListener Listener = Get();
-        return new Vector2f((float) (Listener.XPos),
-                (float) (Listener.YPos));
+    public static @NotNull Vector2f getPos(){
+        MouseListener mouseListener = get();
+        return new Vector2f((float) (mouseListener.xPos),
+                (float) (mouseListener.yPos));
     }
 
-    public static @NotNull Vector2f GetScroll(){
-        MouseListener Listener = Get();
-        return new Vector2f((float) (Listener.XScroll),
-                (float) (Listener.YScroll));
+    public static @NotNull Vector2f getScroll(){
+        MouseListener mouseListener = get();
+        return new Vector2f((float) (mouseListener.xScroll),
+                (float) (mouseListener.yScroll));
     }
 
-    public static boolean IsDragging(){
-        return Get().IsDragging;
+    public static boolean isDragging(){
+        return get().isDragging;
     }
 
-    public static boolean IsButtonDown(int Button){
-        MouseListener Listener = Get();
+    public static boolean isButtonDown(int button){
+        MouseListener mouseListener = get();
 
-        if(Button > Listener.MouseButtonPressed.length)
+        if(button > mouseListener.mouseButtonPressed.length)
             return false;
 
-        return Listener.MouseButtonPressed[Button];
+        return mouseListener.mouseButtonPressed[button];
     }
     //</editor-fold>
 }

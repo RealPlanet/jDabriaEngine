@@ -10,90 +10,90 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameObject {
-    private String Name;
-    private final List<Component> Components = new ArrayList<>();
-    public final Transform Transform = new Transform();
+    private String name;
+    private final List<Component> components = new ArrayList<>();
+    public final Transform transform = new Transform();
 
-    private boolean IsActive = false;
+    private boolean isActive = false;
 
-    public GameObject(String Name){
-        this.Name = Name;
+    public GameObject(String name){
+        this.name = name;
 
-        EnableComponents();
+        enableComponents();
     }
 
-    @ConstructorProperties({"Name", "Position"})
-    public GameObject(String Name, @NotNull Vector3f Position){
-        this.Name = Name;
-        Transform.Position = Position;
+    @ConstructorProperties({"name", "position"})
+    public GameObject(String name, @NotNull Vector3f position){
+        this.name = name;
+        transform.position = position;
 
-        EnableComponents();
+        enableComponents();
     }
 
-    @ConstructorProperties({"Name", "Position"})
-    public GameObject(String Name, @NotNull Vector2f Position){
-        this.Name = Name;
-        Transform.Position.x = Position.x;
-        Transform.Position.y = Position.y;
-        Transform.Position.z = 0f;
+    @ConstructorProperties({"name", "position"})
+    public GameObject(String name, @NotNull Vector2f position){
+        this.name = name;
+        transform.position.x = position.x;
+        transform.position.y = position.y;
+        transform.position.z = 0f;
 
-        EnableComponents();
+        enableComponents();
     }
 
-    @ConstructorProperties({"Name", "Position", "Scale"})
-    public GameObject(String Name, @NotNull Vector3f Position, Vector3f Scale){
-        this(Name, Position);
-        Transform.Scale = Scale;
+    @ConstructorProperties({"name", "position", "scale"})
+    public GameObject(String name, @NotNull Vector3f position, Vector3f scale){
+        this(name, position);
+        transform.scale = scale;
     }
 
-    @ConstructorProperties({"Name", "Position", "Scale"})
-    public GameObject(String Name, @NotNull Vector2f Position, Vector3f Scale){
-        this(Name, Position);
-        Transform.Scale = Scale;
+    @ConstructorProperties({"name", "position", "scale"})
+    public GameObject(String name, @NotNull Vector2f position, Vector3f scale){
+        this(name, position);
+        transform.scale = scale;
     }
 
-    private void EnableComponents(){
-        IsActive = true;
-        for(Component Comp : Components){
-            Comp.Start();
+    private void enableComponents(){
+        isActive = true;
+        for(Component component : components){
+            component.start();
         }
     }
 
-    private void DisableComponents(){
-        IsActive = false;
-        for(Component Comp : Components){
-            Comp.Stop();
+    private void disableComponents(){
+        isActive = false;
+        for(Component Comp : components){
+            Comp.stop();
         }
     }
 
-    public void SetActive(boolean Toggle){
-        IsActive = Toggle;
+    public void setActive(boolean active){
+        isActive = active;
 
-        if (IsActive){
-            EnableComponents();
+        if (isActive){
+            enableComponents();
             return;
         }
-        DisableComponents();
+        disableComponents();
     }
 
-    public boolean IsActive(){
-        return IsActive;
+    public boolean isActive(){
+        return isActive;
     }
 
-    public void SetName(String Name){
-        this.Name = Name;
+    public void setName(String name){
+        this.name = name;
     }
 
     public String GetName(){
-        return Name;
+        return name;
     }
 
     //<editor-fold desc="Component operations">
-    public <T extends  Component> T GetComponent(Class<T> ComponentClass){
-        for(Component Comp : Components){
-            if(ComponentClass.isAssignableFrom(Comp.getClass())){
+    public <T extends  Component> T getComponent(Class<T> componentClass){
+        for(Component component : components){
+            if(componentClass.isAssignableFrom(component.getClass())){
                 try{
-                    return ComponentClass.cast(Comp);
+                    return componentClass.cast(component);
                 }
                 catch(ClassCastException e){
                     e.printStackTrace();
@@ -105,30 +105,29 @@ public class GameObject {
         return null;
     }
 
-    public <T extends Component> void RemoveComponent(Class<T> ComponentClass){
-        for(int i = 0; i < Components.size(); i++){
-            Component Comp = Components.get(i);
-            if(ComponentClass.isAssignableFrom(Comp.getClass())){
-                Components.remove(i);
+    public <T extends Component> void removeComponent(Class<T> componentClass){
+        for(int i = 0; i < components.size(); i++){
+            Component component = components.get(i);
+            if(componentClass.isAssignableFrom(component.getClass())){
+                components.remove(i);
                 return;
             }
         }
     }
 
-    public void AddComponent(Component Comp){
-        Components.add(Comp);
-        Comp.GameObject = this;
+    public void addComponent(Component component){
+        components.add(component);
+        component.gameObject = this;
     }
     //</editor-fold>
 
-    public void Update() {
-        if(!IsActive){
+    public void update() {
+        if(!isActive){
             return;
         }
 
-        for(Component Comp : Components){
-            Comp.Update();
+        for(Component component : components){
+            component.update();
         }
     }
-
 }

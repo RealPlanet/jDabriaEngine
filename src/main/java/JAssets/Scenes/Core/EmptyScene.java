@@ -9,17 +9,17 @@ public class EmptyScene extends Scene {
     }
 
     @Override
-    public void OnFrameUpdate() {
+    public void onFrameUpdate() {
 
     }
 
     @Override
-    protected void Update() {
+    protected void update() {
 
     }
 
     @Override
-    public void Init() {
+    public void init() {
 
     }
 }

@@ -6,21 +6,21 @@ import JDabria.ECP.Component;
 public class SpriteRenderer extends Component {
      Color Color;
 
-    public SpriteRenderer(Commons.Color Color){
-        this.Color = Color;
+    public SpriteRenderer(Commons.Color color){
+        this.Color = color;
     }
 
-    public Color GetColor(){
+    public Color getColor(){
         return this.Color;
     }
 
     @Override
-    public void Start(){
+    public void start(){
 
     }
 
     @Override
-    public void Update() {
+    public void update() {
 
     }
 }

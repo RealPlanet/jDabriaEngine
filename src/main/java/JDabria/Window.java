@@ -19,29 +19,29 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private final static Window _Window = new Window(); //Singleton
+    private final static Window WINDOW = new Window(); //Singleton
 
-    private final int _Width, _Height;
-    private final String _Title;
+    private final int width, height;
+    private final String title;
     private long glfwWindow; // Window mem address
 
     //<editor-fold desc="Singleton">
     private Window(){
-        _Width = 1920;
-        _Height = 1080;
-        _Title = "Dabria v0.0.1";
+        width = 1920;
+        height = 1080;
+        title = "Dabria v0.0.1";
     }
 
-    public static @NotNull Window GetWindow(){
-        return _Window;
+    public static @NotNull Window getWindow(){
+        return WINDOW;
     }
     //</editor-fold>
 
     //<editor-fold desc="Window execution methods">
-    public void Run(){
+    public void run(){
         System.out.println("Starting LWJG " + Version.getVersion());
-        Init();
-        Loop();
+        init();
+        loop();
 
         // Free memory taken from window
         glfwFreeCallbacks(glfwWindow);
@@ -51,35 +51,35 @@ public class Window {
         Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
-    private void Init() {
+    private void init() {
         // Error Callback output
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // Init our boy
+        // init our boy
         if(!glfwInit()){
-            throw  new IllegalStateException("GLFW Init failed!!!!");
+            throw  new IllegalStateException("GLFW init failed!!!!");
         }
 
         //<editor-fold desc="Window base settings">
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);   //      Hide window until we are ready
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  //      Allow resize
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);  //      Start maximize
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);  //      start maximize
         //</editor-fold>
 
-        glfwWindow = glfwCreateWindow(this._Width, this._Height, this._Title, NULL, NULL);
+        glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if(glfwWindow == NULL){
             throw new IllegalStateException("Failed to create GLFW Window");
         }
 
         //<editor-fold desc="Window Callbacks">
         // Mouse
-        glfwSetCursorPosCallback(glfwWindow, MouseListener::MousePositionCallback);
-        glfwSetMouseButtonCallback(glfwWindow, MouseListener::MouseButtonCallback);
-        glfwSetScrollCallback(glfwWindow, MouseListener::MouseScrollCallback);
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePositionCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
 
         //Keyboard
-        glfwSetKeyCallback(glfwWindow, KeyListener::KeyCallback);
+        glfwSetKeyCallback(glfwWindow, keyListener::keyCallback);
 
         //</editor-fold>
 
@@ -103,15 +103,15 @@ public class Window {
         //</editor-fold>
     }
 
-    private void Loop() {
-        SceneManager.LoadScene("LevelEditor", SceneManager.LoadType.SINGLE);
-        //SceneManager.LoadScene("Debug.DebugScene", SceneManager.LoadType.ADDITIVE);
+    private void loop() {
+        SceneManager.loadScene("LevelEditor", SceneManager.LoadType.SINGLE);
+        //SceneManager.loadScene("Debug.DebugScene", SceneManager.LoadType.ADDITIVE);
 
-        // Run the rendering loop until the user has attempted to close
+        // run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
 
-            SignalNewFrame();
+            signalNewFrame();
 
             //<editor-fold desc="Begin frame operations">
             // Poll events
@@ -120,85 +120,109 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT);
             //</editor-fold>
 
-            SignalUpdateFrame();
+            signalUpdateFrame();
 
             //<editor-fold desc="End frame operations">
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
             //</editor-fold>
 
-            SignalEndFrame();
+            signalEndFrame();
         }
     }
     //</editor-fold>
 
     //<editor-fold desc="Debug methods">
-    public static void SetWindowClearColor(@NotNull Color ClearColor){
-        glClearColor(ClearColor.GetRed(), ClearColor.GetGreen(), ClearColor.GetBlue(), ClearColor.GetAlpha());
+    public static void setWindowClearColor(@NotNull Color color){
+        glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
     //</editor-fold>
 
     //<editor-fold desc="Window Events">
-    private final ArrayList<IUpdateFrameListener> UpdateFrameListeners = new ArrayList<>();
-    private final ArrayList<IBeginFrameListener> BeginFrameListeners = new ArrayList<>();
-    private final ArrayList<IEndFrameListener> EndFrameListeners = new ArrayList<>();
+    private final ArrayList<IUpdateFrameListener> updateFrameListeners = new ArrayList<>();
+    private final ArrayList<IBeginFrameListener> beginFrameListeners = new ArrayList<>();
+    private final ArrayList<IEndFrameListener> endFrameListeners = new ArrayList<>();
 
-    public static void AddUpdateFrameListener(IUpdateFrameListener Listener){
-        GetWindow().UpdateFrameListeners.add(Listener);
+    /**
+     * Adds an object which implements the IUpdateFrameListener interface to the event list
+     * @param updateFrameListener The object listening for this event
+     */
+    public static void addUpdateFrameListener(IUpdateFrameListener updateFrameListener){
+        getWindow().updateFrameListeners.add(updateFrameListener);
     }
 
-    public static void RemoveUpdateFrameListener(IUpdateFrameListener Listener){
-        GetWindow().UpdateFrameListeners.remove(Listener);
+    /**
+     * Adds an object which implements the IUpdateFrameListener interface to the event list
+     * @param updateFrameListener The object listening for this event
+     */
+    public static void removeUpdateFrameListener(IUpdateFrameListener updateFrameListener){
+        getWindow().updateFrameListeners.remove(updateFrameListener);
     }
 
-    public static void AddBeginFrameListener(IBeginFrameListener Listener){
-        GetWindow().BeginFrameListeners.add(Listener);
+    /**
+     * Adds an object which implements the IUpdateFrameListener interface to the event list
+     * @param beginFrameListener The object listening for this event
+     */
+    public static void addBeginFrameListener(IBeginFrameListener beginFrameListener){
+        getWindow().beginFrameListeners.add(beginFrameListener);
     }
 
-    public static void RemoveBeginFrameListener(IBeginFrameListener Listener){
-        GetWindow().BeginFrameListeners.remove(Listener);
+    /**
+     * Adds an object which implements the IUpdateFrameListener interface to the event list
+     * @param beginFrameListener The object listening for this event
+     */
+    public static void removeBeginFrameListener(IBeginFrameListener beginFrameListener){
+        getWindow().beginFrameListeners.remove(beginFrameListener);
     }
 
-    public static void AddEndFrameListener(IEndFrameListener Listener){
-        GetWindow().EndFrameListeners.add(Listener);
+    /**
+     * Adds an object which implements the IUpdateFrameListener interface to the event list
+     * @param endFrameListener The object listening for this event
+     */
+    public static void addEndFrameListener(IEndFrameListener endFrameListener){
+        getWindow().endFrameListeners.add(endFrameListener);
     }
 
-    public static void RemoveEndFrameListener(IEndFrameListener Listener){
-        GetWindow().EndFrameListeners.remove(Listener);
+    /**
+     * Adds an object which implements the IUpdateFrameListener interface to the event list
+     * @param endFrameListener The object listening for this event
+     */
+    public static void removeEndFrameListener(IEndFrameListener endFrameListener){
+        getWindow().endFrameListeners.remove(endFrameListener);
     }
 
-    private void SignalNewFrame(){
-        for (int i = BeginFrameListeners.size() - 1; i >= 0; i--) {
-            IBeginFrameListener Listener = BeginFrameListeners.get(i);
-            if (Listener == null) {
+    private void signalNewFrame(){
+        for (int i = beginFrameListeners.size() - 1; i >= 0; i--) {
+            IBeginFrameListener beginFrameListener = beginFrameListeners.get(i);
+            if (beginFrameListener == null) {
                 throw new RuntimeException("OnNewFrameListener was null");
             }
 
-            Listener.OnBeginFrame();
+            beginFrameListener.onBeginFrame();
         }
     }
 
-    private void SignalUpdateFrame(){
-        for (int i = UpdateFrameListeners.size() - 1; i >= 0; i--) {
-            IUpdateFrameListener Listener = UpdateFrameListeners.get(i);
+    private void signalUpdateFrame(){
+        for (int i = updateFrameListeners.size() - 1; i >= 0; i--) {
+            IUpdateFrameListener updateFrameListener = updateFrameListeners.get(i);
 
-            if (Listener == null) {
+            if (updateFrameListener == null) {
                 throw new RuntimeException("OnUpdateFrameListener was null");
             }
 
-            Listener.OnFrameUpdate();
+            updateFrameListener.onFrameUpdate();
         }
     }
 
-    private void SignalEndFrame(){
-        for (int i = EndFrameListeners.size() - 1; i >= 0; i--) {
-            IEndFrameListener Listener = EndFrameListeners.get(i);
+    private void signalEndFrame(){
+        for (int i = endFrameListeners.size() - 1; i >= 0; i--) {
+            IEndFrameListener endFrameListener = endFrameListeners.get(i);
 
-            if (Listener == null) {
+            if (endFrameListener == null) {
                 throw new RuntimeException("OnEndFrameListener was null");
             }
 
-            Listener.OnEndFrame();
+            endFrameListener.onEndFrame();
         }
     }
     //</editor-fold>

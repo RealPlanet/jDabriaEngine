@@ -9,42 +9,42 @@ import java.util.List;
 
 public class Renderer {
     private static final int MAX_BATCH_SIZE = 1000;
-    private static final List<RenderBatch> Batches = new ArrayList<>();
+    private static final List<RenderBatch> RENDER_BATCHES = new ArrayList<>();
 
     public Renderer(){
     }
 
-    public void Add(@NotNull GameObject go){
-        SpriteRenderer Spr = go.GetComponent(SpriteRenderer.class);
-        if(Spr == null){
+    public void add(@NotNull GameObject go){
+        SpriteRenderer component = go.getComponent(SpriteRenderer.class);
+        if(component == null){
             return;
         }
 
-        Add(Spr);
+        add(component);
     }
 
-    private void Add(SpriteRenderer Spr){
-        boolean AddedToBatch = false;
-        for(RenderBatch Batch : Batches){
-            if(Batch.HasRoom()){
-                Batch.AddSprite(Spr);
-                AddedToBatch = true;
+    private void add(SpriteRenderer spriteRenderer){
+        boolean addedToBatch = false;
+        for(RenderBatch renderBatch : RENDER_BATCHES){
+            if(renderBatch.hasRoom()){
+                renderBatch.addSprite(spriteRenderer);
+                addedToBatch = true;
                 break;
             }
         }
 
-        if(AddedToBatch){
+        if(addedToBatch){
            return;
         }
 
-        RenderBatch NewBatch = RenderBatch.CreateBatch(MAX_BATCH_SIZE);
-        NewBatch.AddSprite(Spr);
-        Batches.add(NewBatch);
+        RenderBatch newBatch = RenderBatch.createBatch(MAX_BATCH_SIZE);
+        newBatch.addSprite(spriteRenderer);
+        RENDER_BATCHES.add(newBatch);
     }
 
     public void Render(){
-        for(RenderBatch Batch : Batches){
-            Batch.Render();
+        for(RenderBatch renderBatch : RENDER_BATCHES){
+            renderBatch.render();
         }
     }
 }

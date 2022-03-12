@@ -10,15 +10,15 @@ import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 
 public class Texture {
-    private String Filepath;
-    private int TexID;
+    private String filepath;
+    private int texID;
 
-    public Texture(String _Filepath){
-        Filepath = _Filepath;
+    public Texture(String filepath){
+        this.filepath = filepath;
 
         // Generate texture
-        TexID = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, TexID);
+        texID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texID);
 
         // Set params - wrap image to repeat
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -28,40 +28,40 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        IntBuffer Width = BufferUtils.createIntBuffer(1);
-        IntBuffer Height = BufferUtils.createIntBuffer(1);
-        IntBuffer Channels = BufferUtils.createIntBuffer(1);
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer channels = BufferUtils.createIntBuffer(1);
 
-        ByteBuffer Image = stbi_load(Filepath, Width, Height, Channels, 0);
-        if(Image == null){
-            assert false : "ERROR: (Texture) -> Could not load image '" + Filepath + "'";
+        ByteBuffer image = stbi_load(this.filepath, width, height, channels, 0);
+        if(image == null){
+            assert false : "ERROR: (Texture) -> Could not load image '" + this.filepath + "'";
         }
         else{
-            switch (Channels.get(0)){
+            switch (channels.get(0)){
                 case 3:{
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width.get(0), Height.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, Image);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width.get(0), height.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, image);
                     break;
                 }
                 case 4:{
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Width.get(0), Height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, Image);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
                     break;
                 }
                 default:{
-                    assert false : "ERROR: (Texture) -> Unexpected Texture channel count at '" + Filepath + "' with number of channels being: '"+ Channels.get(0) +"'";
+                    assert false : "ERROR: (Texture) -> Unexpected Texture channel count at '" + this.filepath + "' with number of channels being: '"+ channels.get(0) +"'";
                     break;
                 }
 
             }
 
         }
-        stbi_image_free(Image);
+        stbi_image_free(image);
     }
 
-    public void Bind(){
-        glBindTexture(GL_TEXTURE_2D, TexID);
+    public void bind(){
+        glBindTexture(GL_TEXTURE_2D, texID);
     }
 
-    public void Unbind(){
+    public void unbind(){
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

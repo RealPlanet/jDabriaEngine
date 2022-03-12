@@ -10,10 +10,10 @@ public class Color{
     private float Red, Green, Blue;
     private float Alpha = 1f;
 
-    public void SetColor(@NotNull Color NewColor){
-        Red = NewColor.Red;
-        Green = NewColor.Green;
-        Blue = NewColor.Blue;
+    public void setColor(@NotNull Color newColor){
+        Red = newColor.Red;
+        Green = newColor.Green;
+        Blue = newColor.Blue;
     }
 
     @ConstructorProperties({"red", "green", "blue", "alpha"})
@@ -34,17 +34,17 @@ public class Color{
             a /= 255f;
         }
 
-        this.Red = GMath.Clamp(0, 1, r);
-        this.Green = GMath.Clamp(0, 1, g);
-        this.Blue = GMath.Clamp(0, 1, b);
-        this.Alpha = GMath.Clamp(0, 1, a);
+        this.Red = GMath.clamp(0, 1, r);
+        this.Green = GMath.clamp(0, 1, g);
+        this.Blue = GMath.clamp(0, 1, b);
+        this.Alpha = GMath.clamp(0, 1, a);
     }
 
     public Color(){}
 
-    public float GetRed() { return Red; }
-    public float GetGreen() { return Green; }
-    public float GetBlue() { return Blue; }
-    public float GetAlpha() { return Alpha; }
+    public float getRed() { return Red; }
+    public float getGreen() { return Green; }
+    public float getBlue() { return Blue; }
+    public float getAlpha() { return Alpha; }
 
 }
