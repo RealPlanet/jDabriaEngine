@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class RenderBatch {
+public class RenderBatch implements Comparable<RenderBatch>{
 
     //<editor-fold desc="Variables">
     //  Vertex
@@ -47,6 +47,7 @@ public class RenderBatch {
     private float[] vertices;
     private int[] texSlots = {0, 1, 2, 3, 4, 5, 6, 7};
     private ShaderBuilder shader;
+    private int zIndex;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
@@ -55,11 +56,12 @@ public class RenderBatch {
      *
      * @param maxBatchSize
      */
-    private RenderBatch(int maxBatchSize){
+    private RenderBatch(int maxBatchSize, int zIndex){
         if(maxBatchSize <= 0){
             throw new IllegalArgumentException("Batch size cannot be negative or zero");
         }
 
+        this.zIndex = zIndex;
         this.maxBatchSize = maxBatchSize;
         shader = AssetPool.getShader(AssetPool.DEFAULT_FALLBACK_SHADER);
 
@@ -196,7 +198,7 @@ public class RenderBatch {
         }
 
         // If batch is full
-        if(!hasRoom()){
+        if(!hasRoom() || (int)spriteRenderer.gameObject.transform.position.z != zIndex){
             return false;
         }
 
@@ -268,15 +270,24 @@ public class RenderBatch {
 
     public boolean hasTexture(Texture tex) { return textures.contains(tex); }
 
+    public int getzIndex(){
+        return this.zIndex;
+    }
+
     /**
      *
      * @param maxBatchSize
      * @return
      * @throws IllegalArgumentException
      */
-    public static @NotNull RenderBatch createBatch(int maxBatchSize){
-        RenderBatch renderBatch = new RenderBatch(maxBatchSize);
+    public static @NotNull RenderBatch createBatch(int maxBatchSize, int zIndex){
+        RenderBatch renderBatch = new RenderBatch(maxBatchSize, zIndex);
         return renderBatch;
+    }
+
+    @Override
+    public int compareTo(@NotNull RenderBatch o) {
+        return Integer.compare(this.zIndex, o.getzIndex());
     }
     //</editor-fold>
 }

@@ -5,6 +5,7 @@ import JDabria.ECP.GameObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,9 +48,10 @@ public class Renderer {
            return;
         }
 
-        RenderBatch newBatch = RenderBatch.createBatch(MAX_BATCH_SIZE);
+        RenderBatch newBatch = RenderBatch.createBatch(MAX_BATCH_SIZE, (int)spriteRenderer.gameObject.transform.position.z);
         newBatch.addSprite(spriteRenderer);
         RENDER_BATCHES.add(newBatch);
+        Collections.sort(RENDER_BATCHES);
     }
 
     /**

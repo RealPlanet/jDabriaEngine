@@ -10,7 +10,7 @@ public class SpriteRenderer extends Component {
     private Sprite sprite;
     private Color color;
     private Transform parentTransform;
-    private boolean isDirty = false;
+    private boolean isDirty = true;
 
     //<editor-fold desc="Constructors">
     public SpriteRenderer(Commons.Color color){

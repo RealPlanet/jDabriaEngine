@@ -1,8 +1,8 @@
 package JAssets.Scenes;
 
 import Commons.Color;
-import Commons.Time;
 import JDabria.AssetManager.AssetPool;
+import JDabria.ECP.Components.Sprite.Sprite;
 import JDabria.ECP.Components.Sprite.SpriteRenderer;
 import JDabria.ECP.Components.Sprite.SpriteSheet;
 import JDabria.ECP.GameObject;
@@ -18,52 +18,42 @@ public class LevelEditor extends Scene {
     }
 
     private GameObject obj_2;
-    private GameObject obj_3;
+    private GameObject obj_1;
     private  SpriteSheet TestSpriteSheet;
 
     @Override
     public void onInit() {
         sceneCamera = new Camera();
-        Window.setWindowClearColor(new Color(0.9f, 0, 0, 1));
+        Window.setWindowClearColor(new Color(1, 1, 1, 1));
+
         TestSpriteSheet = AssetPool.getSpriteSheet("Assets/Textures/SpriteSheetTest.png");
 
-        obj_2 = new GameObject("mario_0");
-        obj_2.transform.position = new Vector3f(400, 100, 10);
-        obj_2.transform.scale = new Vector3f(10f, 10f, 0);
+        // Green
+        obj_2 = new GameObject("obj_2");
+        obj_2.transform.position = new Vector3f(400, 100, 4);
+        obj_2.transform.scale = new Vector3f(1f, 1f, 0);
         obj_2.addComponent(
                 new SpriteRenderer(
-                        TestSpriteSheet.getSprite(0)));
+                        new Sprite(
+                                AssetPool.getTexture("Assets/Textures/blendImage2.png"))));
 
         addGameObjectToScene(obj_2);
 
-        obj_3 = new GameObject("mario_1");
-        obj_3.transform.position = new Vector3f(600, 100, -10);
-        obj_3.transform.scale = new Vector3f(10f, 10f, 0);
-        obj_3.addComponent(
+        obj_1 = new GameObject("obj_1");
+        obj_1.transform.position = new Vector3f(200, 100, 2);
+        obj_1.transform.scale = new Vector3f(1f, 1f, 0);
+        obj_1.addComponent(
                 new SpriteRenderer(
-                        TestSpriteSheet.getSprite(10)));
+                        new Sprite(
+                                AssetPool.getTexture("Assets/Textures/blendImage1.png"))));
 
-        addGameObjectToScene(obj_3);
+        addGameObjectToScene(obj_1);
+
+
     }
-
-    private int spriteIndex = 0;
-    private float spriteFlipTime = 0.2f;
-    private float spriteFLipTimeLeft = 0.0f;
 
     @Override
     protected void update() {
-
-        spriteFLipTimeLeft -= Time.deltaTime();
-        if(spriteFLipTimeLeft <= 0){
-            spriteFLipTimeLeft = spriteFlipTime;
-            spriteIndex++;
-            if(spriteIndex > 4){
-                spriteIndex = 0;
-            }
-
-            obj_2.getComponent(SpriteRenderer.class).setSprite(TestSpriteSheet.getSprite(spriteIndex));
-        }
-        obj_2.transform.position.x += 10 * Time.deltaTime();
         sceneRenderer.Render();
     }
 
