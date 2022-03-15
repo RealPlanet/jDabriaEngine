@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssetPool {
-    private static Map<String, ShaderBuilder> engineShaders = new HashMap<>();
-    private static Map<String, Texture> engineTextures = new HashMap<>();
-    private static Map<String, Scene> engineScene = new HashMap<>();
-    private static Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
+    private static final Map<String, ShaderBuilder> engineShaders = new HashMap<>();
+    private static final Map<String, Texture> engineTextures = new HashMap<>();
+    private static final Map<String, Scene> engineScenes = new HashMap<>();
+    private static final Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
 
     // Prefix for assets which are compiled and included as a package
     private static final String ASSET_PACKAGE_PREFIX = "JAssets.";
