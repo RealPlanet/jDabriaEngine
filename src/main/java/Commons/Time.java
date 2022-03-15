@@ -16,12 +16,12 @@ public class Time{
     private Time(){
         Window.addBeginFrameListener(() -> {
             // Delta is calculated at the beginning, this way it properly tracks time between last frame and the new one
-            _deltaTime = (frameEndTime - frameBeginTime) * 1E-9;
-            frameEndTime = frameBeginTime = System.nanoTime();
+            _deltaTime = (frameEndTime - frameBeginTime);
+            frameEndTime = frameBeginTime = getTime();
         });
 
         Window.addEndFrameListener(() -> {
-            frameEndTime = System.nanoTime();
+            frameEndTime = getTime();
         });
     }
     //endregion
