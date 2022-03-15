@@ -137,11 +137,12 @@ public class RenderBatch {
 
         Color color = spriteRenderer.getColor();
         Vector2f[] coordinates = spriteRenderer.getTexCoords();
+
         int texID = 0;
         if(spriteRenderer.getSprite() != null){
             for(int i = 0; i < textures.size(); i++){
                 if(textures.get(i) == spriteRenderer.getTexture()){
-                    texID = i + 1;
+                    texID = i;
                     break;
                 }
             }
@@ -174,7 +175,6 @@ public class RenderBatch {
             vertices[offset + 6] = color.getAlpha();
 
             // Load coordinates
-
             vertices[offset + 7] = coordinates[i].x;
             vertices[offset + 8] = coordinates[i].y;
 
@@ -192,7 +192,6 @@ public class RenderBatch {
         if(     spriteRenderer.getSprite() != null &&
                 !this.hasTexture(spriteRenderer.getTexture()) &&
                 !this.hasTextureRoom()){
-
             return false;
         }
 
@@ -217,15 +216,29 @@ public class RenderBatch {
     }
 
     public void render(){
-        // Re-buffer data
-        glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+        boolean rebufferData = false;
+        for (int i = 0; i < spriteRenderers.length; i++) {
+            SpriteRenderer spr = spriteRenderers[i];
+            if(spr == null || !spr.isDirty()){
+                continue;
+            }
+
+            loadVertexProperties(i);
+            spr.setClean();
+            rebufferData = true;
+        }
+
+        if(rebufferData){
+            // Re-buffer data
+            glBindBuffer(GL_ARRAY_BUFFER, vboID);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+        }
 
         shader.use();
         shader.uploadMat4F("uProj", SceneManager.getActiveCamera().getProjMatrix());
         shader.uploadMat4F("uView", SceneManager.getActiveCamera().getViewMatrix());
         for (int i = 0; i < textures.size(); i++) {
-            glActiveTexture(GL_TEXTURE0 + i + 1);
+            glActiveTexture(GL_TEXTURE0 + i);
             textures.get(i).bind();
         }
         shader.uploadIntArray("uTextures", texSlots);

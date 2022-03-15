@@ -1,5 +1,6 @@
 package JDabria.ECP.Components;
 
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 /**
@@ -24,5 +25,25 @@ public class Transform {
 
         position = pos;
         scale = scl;
+    }
+
+    public Transform copy(){
+        return new Transform(new Vector3f(this.position), new Vector3f(this.scale));
+    }
+
+    public void copy(@NotNull Transform to){
+        to.position.set(position);
+        to.scale.set(scale);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == null || !(o instanceof Transform)){
+            return false;
+        }
+
+        Transform t = (Transform)o;
+        return  t.position == position &&
+                t.scale == scale;
     }
 }

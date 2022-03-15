@@ -1,5 +1,6 @@
 package JDabria.ECP.Components.Sprite;
 
+import JDabria.AssetManager.AssetPool;
 import JDabria.AssetManager.Resources.Texture;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
@@ -11,7 +12,7 @@ import org.joml.Vector2f;
 public class Sprite {
     private int height, width;
 
-    private Texture texture;
+    private Texture texture = AssetPool.getTexture("Assets/Textures/Base/i_white_pixel.png");
     private Vector2f[] texCoords = {
             new Vector2f(1, 1),
             new Vector2f(1, 0),
@@ -19,13 +20,17 @@ public class Sprite {
             new Vector2f(0, 1)
     };
 
+    public Sprite(){
+        setSize(texture.getHeight(), texture.getWidth());
+    }
+
     /**
      * Creates a sprite with the given texture, by default it's size will be the same as the texture in pixel
      * @param texture the texture this sprite will use
      */
     public Sprite(@NotNull Texture texture){
-        setSize(texture.getHeight(), texture.getWidth());
         this.texture = texture;
+        setSize(this.texture.getHeight(), this.texture.getWidth());
     }
 
     /**

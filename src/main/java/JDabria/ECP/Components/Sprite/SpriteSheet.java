@@ -1,6 +1,7 @@
 package JDabria.ECP.Components.Sprite;
 
 import JDabria.AssetManager.Resources.Texture;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class SpriteSheet {
     private Texture parentTexture;
     private List<Sprite> sprites = new ArrayList<>();
 
-    public SpriteSheet(Texture parentTexture, int spriteWidth, int spriteHeight, int numSprites, int spacing){
+    public SpriteSheet(@NotNull Texture parentTexture, int spriteWidth, int spriteHeight, int numSprites, int spacing){
         this.parentTexture = parentTexture;
         int currentX = 0;
         int currentY = parentTexture.getHeight() - spriteHeight;
@@ -46,5 +47,4 @@ public class SpriteSheet {
     public Sprite getSprite(int index){
         return sprites.get(index);
     }
-
 }
