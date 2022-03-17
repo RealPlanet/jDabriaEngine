@@ -4,6 +4,7 @@ import Commons.Color;
 import JDabria.AssetManager.Resources.Texture;
 import JDabria.ECP.Component;
 import JDabria.ECP.Components.Transform;
+import JDabria.Renderer.Sprite.Sprite;
 import org.joml.Vector2f;
 
 public class SpriteRenderer extends Component {
@@ -69,11 +70,25 @@ public class SpriteRenderer extends Component {
         }
     }
 
+    /**
+     * Checks if the sprite is dirty
+     * @return true if sprite is dirty
+     */
     public boolean isDirty() {
         return this.isDirty;
     }
 
+    /**
+     * Marks this sprite as "Clean", will not be re-buffered by the renderer
+     */
     public void setClean() {
         this.isDirty = false;
+    }
+
+    /**
+     * Marks this sprite as "Dirty" prompting the renderer to re buffer its data
+     */
+    public void setDirty() {
+        this.isDirty = true;
     }
 }
