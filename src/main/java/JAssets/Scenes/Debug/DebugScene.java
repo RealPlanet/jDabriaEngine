@@ -5,7 +5,7 @@ import Commons.Color;
 import Commons.Time;
 import JDabria.ECP.Components.Sprite.SpriteRenderer;
 import JDabria.ECP.GameObject;
-import JDabria.keyListener;
+import JDabria.KeyListener;
 import JDabria.SceneManager.Scene;
 import JDabria.SceneManager.SceneManager;
 import JDabria.Window;
@@ -57,13 +57,13 @@ public class DebugScene extends Scene {
     }
 
     @Override
-    protected void update() {
+    protected void onUpdate() {
 
-        if(!Fading && keyListener.isKeyPressed(GLFW_KEY_SPACE)){
+        if(!Fading && KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
             Fading = true;
         }
 
-        if(keyListener.isKeyPressed(GLFW_KEY_ESCAPE)){
+        if(KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)){
             System.out.println(String.format("%f FPS", 1.0f / Time.deltaTime()));
         }
 
@@ -72,15 +72,20 @@ public class DebugScene extends Scene {
                 float Delta = Time.deltaTime();
                 FadeCurrentTime -= Delta;
                 Color CurrentFade = new Color(   FadeStart.getRed() * (FadeCurrentTime / FadeDurationTime),
-                        FadeStart.getGreen() * (FadeCurrentTime / FadeDurationTime),
-                        FadeStart.getBlue() * (FadeCurrentTime / FadeDurationTime),
-                        FadeStart.getAlpha());
+                                                 FadeStart.getGreen() * (FadeCurrentTime / FadeDurationTime),
+                                                 FadeStart.getBlue() * (FadeCurrentTime / FadeDurationTime),
+                                                    FadeStart.getAlpha());
                 Window.setWindowClearColor(CurrentFade);
                 return;
             }
 
             SceneManager.loadScene("LevelEditor", SceneManager.LoadType.SINGLE);
         }
+    }
+
+    @Override
+    protected void onUnload() {
+
     }
 
     @Override

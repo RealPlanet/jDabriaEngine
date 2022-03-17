@@ -14,7 +14,12 @@ public class EmptyScene extends Scene {
     }
 
     @Override
-    protected void update() {
+    protected void onUpdate() {
+
+    }
+
+    @Override
+    protected void onUnload() {
 
     }
 
