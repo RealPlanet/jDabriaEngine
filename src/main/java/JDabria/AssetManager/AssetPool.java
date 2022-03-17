@@ -3,7 +3,7 @@ package JDabria.AssetManager;
 import JAssets.Scenes.Core.EmptyScene;
 import JDabria.AssetManager.Resources.ShaderBuilder;
 import JDabria.AssetManager.Resources.Texture;
-import JDabria.ECP.Components.Sprite.SpriteSheet;
+import JDabria.Renderer.Sprite.SpriteSheet;
 import JDabria.SceneManager.Scene;
 
 import java.io.File;
