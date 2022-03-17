@@ -35,7 +35,9 @@ public abstract class Scene implements IUpdateFrameListener {
      */
     protected abstract void onInit();
 
-    protected abstract void update();
+    protected abstract void onUpdate();
+
+    protected abstract void onUnload();
 
     protected abstract void loadResources();
     //</editor-fold>
@@ -52,6 +54,10 @@ public abstract class Scene implements IUpdateFrameListener {
             go.setActive(true);
             sceneRenderer.add(go);
         }
+    }
+
+    public void unload(){
+        onUnload();
     }
 
     public void addGameObjectToScene(GameObject go){
@@ -72,7 +78,7 @@ public abstract class Scene implements IUpdateFrameListener {
             go.update();
         }
 
-        update();
+        onUpdate();
     }
     //</editor-fold>
 }

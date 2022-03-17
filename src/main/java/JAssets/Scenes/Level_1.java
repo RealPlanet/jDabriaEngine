@@ -8,7 +8,12 @@ public class Level_1 extends Scene {
     }
 
     @Override
-    protected void update() {
+    protected void onUpdate() {
+
+    }
+
+    @Override
+    protected void onUnload() {
 
     }
 
