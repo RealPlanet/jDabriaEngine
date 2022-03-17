@@ -1,4 +1,4 @@
-package JDabria.ECP.Components.Sprite;
+package JDabria.Renderer.Sprite;
 
 import JDabria.AssetManager.Resources.Texture;
 import org.jetbrains.annotations.NotNull;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpriteSheet {
-    private Texture parentTexture;
-    private List<Sprite> sprites = new ArrayList<>();
+    private final Texture parentTexture;
+    private final List<Sprite> sprites = new ArrayList<>();
 
     public SpriteSheet(@NotNull Texture parentTexture, int spriteWidth, int spriteHeight, int numSprites, int spacing){
         this.parentTexture = parentTexture;

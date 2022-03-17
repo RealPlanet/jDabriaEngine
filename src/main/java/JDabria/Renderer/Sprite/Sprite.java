@@ -1,4 +1,4 @@
-package JDabria.ECP.Components.Sprite;
+package JDabria.Renderer.Sprite;
 
 import JDabria.AssetManager.AssetPool;
 import JDabria.AssetManager.Resources.Texture;
