@@ -4,6 +4,7 @@ import Commons.Color;
 import JDabria.Events.Window.IBeginFrameListener;
 import JDabria.Events.Window.IEndFrameListener;
 import JDabria.Events.Window.IUpdateFrameListener;
+import JDabria.ImGUI.ImGUILayer;
 import JDabria.SceneManager.SceneManager;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.Version;
@@ -22,7 +23,11 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
     private final static Window WINDOW = new Window(); //Singleton
 
-    private final int width, height;
+    // ImGUI Layer
+    private ImGUILayer imGUILayer;
+
+    private int width;
+    private int height;
     private final String title;
     private long glfwWindow; // Window mem address
 
@@ -42,6 +47,15 @@ public class Window {
     }
     //</editor-fold>
 
+    // region Window getter / setter
+    public static int getWidth() {
+        return getWindow().width;
+    }
+    public static int getHeight() {
+        return getWindow().width;
+    }
+    // endregion
+
     //<editor-fold desc="Window execution methods">
 
     /**
@@ -58,6 +72,10 @@ public class Window {
 
         glfwTerminate();
         Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+    }
+
+    public void stop(){
+        //imGUILayer.
     }
 
     private void init() {
@@ -87,8 +105,13 @@ public class Window {
         glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
         glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
 
+        // Technically this isn't needed, but better safe than sorry!
+        glfwSetWindowSizeCallback(glfwWindow, (w, nWidth, nHeight) ->{
+            Window.setDimension(nWidth, nHeight);
+        });
+
         //Keyboard
-        glfwSetKeyCallback(glfwWindow, keyListener::keyCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
         //</editor-fold>
 
@@ -111,10 +134,18 @@ public class Window {
 
         // Enable alpha
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
-        glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_DST_ALPHA );
+        glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA );
+        //glClearColor(0.0F,0.0F,0.0F,0.0F);
+
+        // Setup GUI
+        imGUILayer = ImGUILayer.getImGUILayer(glfwWindow);
 
         //</editor-fold>
+    }
+
+    private static void setDimension(int nWidth, int nHeight) {
+        WINDOW.width = nWidth;
+        WINDOW.height = nHeight;
     }
 
     private void loop() {
