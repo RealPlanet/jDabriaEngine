@@ -2,14 +2,17 @@ package JAssets.Scenes;
 
 import Commons.Color;
 import JDabria.AssetManager.AssetPool;
-import JDabria.ECP.Components.Sprite.Sprite;
 import JDabria.ECP.Components.Sprite.SpriteRenderer;
-import JDabria.ECP.Components.Sprite.SpriteSheet;
+import JDabria.ECP.Components.UI.Pieces.UIColorPicker;
+import JDabria.ECP.Components.UI.UIToggleDrawable;
 import JDabria.ECP.GameObject;
+import JDabria.Events.ImGUI.IImGUIStartFrame;
+import JDabria.ImGUI.ImGUILayer;
 import JDabria.Renderer.Camera;
+import JDabria.Renderer.Sprite.SpriteSheet;
 import JDabria.SceneManager.Scene;
 import JDabria.Window;
-import org.joml.Vector3f;
+import imgui.ImGui;
 
 public class LevelEditor extends Scene {
 
@@ -17,44 +20,48 @@ public class LevelEditor extends Scene {
         System.out.println("Inside Level editor!");
     }
 
-    private GameObject obj_2;
-    private GameObject obj_1;
-    private  SpriteSheet TestSpriteSheet;
+    private final IImGUIStartFrame LevelEditorWindow = () -> {
+        ImGui.begin("Test window");
+        ImGui.text("Hello world");
+        ImGui.end();
+    };
 
     @Override
     public void onInit() {
         sceneCamera = new Camera();
         Window.setWindowClearColor(new Color(1, 1, 1, 1));
 
-        TestSpriteSheet = AssetPool.getSpriteSheet("Assets/Textures/SpriteSheetTest.png");
+        ImGUILayer.addStartFrameListener(LevelEditorWindow);
 
-        // Green
-        obj_2 = new GameObject("obj_2");
-        obj_2.transform.position = new Vector3f(400, 100, 4);
-        obj_2.transform.scale = new Vector3f(1f, 1f, 0);
-        obj_2.addComponent(
-                new SpriteRenderer(
-                        new Sprite(
-                                AssetPool.getTexture("Assets/Textures/blendImage2.png"))));
+        GameObject testIMGUI = new GameObject("Test");
+        addGameObjectToScene(testIMGUI);
 
-        addGameObjectToScene(obj_2);
+        UIToggleDrawable io = new UIToggleDrawable();
+        UIColorPicker cp = new UIColorPicker();
+        SpriteRenderer spr = new SpriteRenderer(Color.WHITE);
+        spr.getSprite().setSize(100, 100);
 
-        obj_1 = new GameObject("obj_1");
-        obj_1.transform.position = new Vector3f(200, 100, 2);
-        obj_1.transform.scale = new Vector3f(1f, 1f, 0);
-        obj_1.addComponent(
-                new SpriteRenderer(
-                        new Sprite(
-                                AssetPool.getTexture("Assets/Textures/blendImage1.png"))));
-
-        addGameObjectToScene(obj_1);
+        testIMGUI.addComponent(io);
+        testIMGUI.addComponent(cp);
+        testIMGUI.addComponent(spr);
 
 
+        io.setInspect(true);
+        io.setDrawable(() -> {
+            ImGui.begin("Test inspect drawable");
+            ImGui.text("Hello draw");
+            ImGui.end();
+        });
     }
 
     @Override
-    protected void update() {
+    protected void onUpdate() {
         sceneRenderer.Render();
+    }
+
+    @Override
+    protected void onUnload() {
+        ImGUILayer.removeStartFrameListener(LevelEditorWindow);
     }
 
     @Override
