@@ -7,5 +7,5 @@ public abstract class Component {
 
     public void stop(){}
 
-    public abstract void update();
+    public void update(){}
 }
