@@ -3,6 +3,7 @@ package JDabria.SceneManager;
 import JDabria.AssetManager.AssetPool;
 import JDabria.Renderer.Camera;
 import JDabria.Window;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,32 +13,17 @@ import java.util.ArrayList;
  *  Handles all scene operations such as switching/loading/unloading/get/set.
  */
 public class SceneManager {
-    private static final ArrayList<Scene> GameScenes = new ArrayList<>();
+    private static final ArrayList<Scene> gameScenes = new ArrayList<>();
     private static final String SCENE_PACKAGE_PREFIX = "Scenes.";
-    public static boolean ChangingScene = false;
+    public static boolean changingScene = false;
 
+    /**
+     * Specifies the loading operation type for a specific scene
+     */
     public enum LoadType{
         ADDITIVE,   // Load scene on top of already loaded scenes
         SINGLE      // Dump ALL loaded scenes and after load this scene
     }
-
-    //<editor-fold desc="Singleton">
-    /*
-    private static SceneManager _Instance = null;
-    private SceneManager(){
-
-    }
-
-    private static SceneManager get(){
-        if(_Instance == null){
-            _Instance = new SceneManager();
-        }
-
-        return _Instance;
-    }
-
- */
-    //</editor-fold>
 
     //<editor-fold desc="Scene operations">
     /**
@@ -49,8 +35,8 @@ public class SceneManager {
 
         // Unload all scenes if single load mode
         if(Type == LoadType.SINGLE){
-            for(int i = GameScenes.size() - 1; i >= 0; i--){
-                UnloadScene(GameScenes.get(i));
+            for(int i = gameScenes.size() - 1; i >= 0; i--){
+                UnloadScene(gameScenes.get(i));
             }
         }
 
@@ -63,10 +49,10 @@ public class SceneManager {
         }
 
         //<editor-fold desc="Scene loading">
-        ChangingScene = true;
+        changingScene = true;
 
         SceneToLoad.isLoaded = false;
-        SceneToLoad.sceneIndex = GameScenes.size();
+        SceneToLoad.sceneIndex = gameScenes.size();
         SceneToLoad.init();
 
         /*   TODO :: Handle scene loading   */
@@ -77,8 +63,8 @@ public class SceneManager {
         //</editor-fold>
 
         SceneToLoad.isLoaded = true;
-        GameScenes.add(SceneToLoad);
-        ChangingScene = false;
+        gameScenes.add(SceneToLoad);
+        changingScene = false;
         //</editor-fold>
 
         SceneToLoad.start();
@@ -88,11 +74,13 @@ public class SceneManager {
      * Unloads the currently loaded scenes and removes registered events
      */
     public static void UnloadScene(Scene SceneToUnload){
-        if(!GameScenes.contains(SceneToUnload)){
+        if(!gameScenes.contains(SceneToUnload)){
             return;
         }
+
         Window.removeUpdateFrameListener(SceneToUnload);
-        GameScenes.remove(SceneToUnload);
+        SceneToUnload.unload();
+        gameScenes.remove(SceneToUnload);
     }
     //</editor-fold>
 
@@ -103,7 +91,7 @@ public class SceneManager {
      * @return Camera Object
      */
     public static @Nullable Camera getActiveCamera(){
-        for (Scene ActiveScene: GameScenes ) {
+        for (Scene ActiveScene: gameScenes) {
            if(ActiveScene.sceneCamera != null){
                return ActiveScene.sceneCamera;
            }
@@ -119,13 +107,18 @@ public class SceneManager {
      */
     public static @Nullable Scene GetActiveScene(@NotNull String SceneName){
         int NameHash = SceneName.hashCode();
-        for (Scene ActiveScene: GameScenes ) {
+        for (Scene ActiveScene: gameScenes) {
             if(ActiveScene.getClass().getName().hashCode() == NameHash){
                 return ActiveScene;
             }
         }
 
         return null;
+    }
+
+    @Contract(" -> new")
+    public static @NotNull ArrayList<Scene> getActiveScenes(){
+        return new ArrayList<>(gameScenes);
     }
     //</editor-fold>
 }
