@@ -20,9 +20,7 @@ public class Time{
             frameEndTime = frameBeginTime = getTime();
         });
 
-        Window.addEndFrameListener(() -> {
-            frameEndTime = getTime();
-        });
+        Window.addEndFrameListener(() -> frameEndTime = getTime());
     }
     //endregion
 
