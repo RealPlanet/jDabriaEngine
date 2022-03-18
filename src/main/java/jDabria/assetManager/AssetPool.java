@@ -11,14 +11,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AssetPool {
-    private static final Map<String, ShaderBuilder> engineShaders = new HashMap<>();
-    private static final Map<String, Texture> engineTextures = new HashMap<>();
-    private static final Map<String, Scene> engineScenes = new HashMap<>();
-    private static final Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
+    //region Engine asset pools
+    private transient static final Map<String, ShaderBuilder> engineShaders = new HashMap<>();
+    private transient static final Map<String, Texture> engineTextures = new HashMap<>();
+    private transient static final Map<String, Scene> engineScenes = new HashMap<>();
+    private transient static final Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
+    //endregion
 
     // Prefix for assets which are compiled and included as a package
-    private static final String ASSET_PACKAGE_PREFIX = "JAssets.";
-    public static final String DEFAULT_FALLBACK_SHADER = "Assets/Shaders/DefaultShaderDefinition.glsl";
+    private static final String ASSET_PACKAGE_PREFIX = "jAssets.";
+    public static final String DEFAULT_FALLBACK_SHADER = "assets/shaders/defShader.glsl";
 
     /**
      *
@@ -48,7 +50,7 @@ public class AssetPool {
             return engineTextures.get(file.getAbsolutePath());
         }
 
-        Texture texture = new Texture(resourceName);
+        Texture texture = new Texture().Load(resourceName);
         engineTextures.put(file.getAbsolutePath(), texture);
         return texture;
     }
@@ -70,17 +72,17 @@ public class AssetPool {
     }
 
     //<editor-fold desc="Scene assets methods">
-    public static Scene getScene(String scenePackagePath, String sceneName) throws ClassNotFoundException{
+    public static Scene getScene(String sceneName) throws ClassNotFoundException{
         Class<?> sceneClass;
         Scene result = new EmptyScene();
 
         try {
-            sceneClass = Class.forName(ASSET_PACKAGE_PREFIX + scenePackagePath + sceneName);
+            sceneClass = Class.forName(sceneName);
             Scene scene = (Scene)(sceneClass.getDeclaredConstructor().newInstance());
             result = scene;   //Now overwrite the empty scene
         }
         catch (Exception ex) {
-            System.err.println("Scene definition requested: " + ASSET_PACKAGE_PREFIX + scenePackagePath + sceneName);
+            System.err.println("Scene definition requested: " + sceneName);
             ex.printStackTrace();
         }
         return result;
