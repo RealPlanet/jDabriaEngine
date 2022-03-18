@@ -149,8 +149,8 @@ public class Window {
     }
 
     private void loop() {
+        Window.setWindowClearColor(new Color(1, 1, 1, 1));
         SceneManager.loadScene("LevelEditor", SceneManager.LoadType.SINGLE);
-        //SceneManager.loadScene("Debug.DebugScene", SceneManager.LoadType.ADDITIVE);
 
         // run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -165,7 +165,6 @@ public class Window {
             //</editor-fold>
 
             signalUpdateFrame();
-
             //<editor-fold desc="End frame operations">
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
