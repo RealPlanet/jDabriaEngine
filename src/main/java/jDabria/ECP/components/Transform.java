@@ -1,12 +1,15 @@
 package jDabria.ECP.components;
 
+import jDabria.ECP.base.Component;
+import jDabria.ECP.base.RequiredComponent;
+import jDabria.ECP.base.SingleComponent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 /**
  * The only component ALWAYS preset on a gameobject
  */
-public class Transform{
+public class Transform extends Component implements SingleComponent, RequiredComponent {
     public Vector3f position= new Vector3f();
     public Vector3f scale = new Vector3f(1,1,1);
 
@@ -19,6 +22,11 @@ public class Transform{
     public Transform(Vector3f pos, Vector3f scl){
         position = pos;
         scale = scl;
+    }
+
+    public Transform(@NotNull Transform transform) {
+        position = new Vector3f(transform.position);
+        scale = new Vector3f(transform.scale);
     }
 
     public Transform copy(){

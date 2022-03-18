@@ -165,7 +165,7 @@ public class RenderBatch implements Comparable<RenderBatch>{
             }
 
             // Load position
-            Transform transform = spriteRenderer.gameObject.transform;
+            Transform transform = spriteRenderer.gameObject.getTransform();
             vertices[offset] = transform.position.x + (xAdd * spriteRenderer.getSprite().getWidth() * transform.scale.x);
             vertices[offset + 1] = transform.position.y + (yAdd * spriteRenderer.getSprite().getHeight() * transform.scale.y);
             vertices[offset + 2] = transform.position.z;
@@ -198,7 +198,7 @@ public class RenderBatch implements Comparable<RenderBatch>{
         }
 
         // If batch is full
-        if(!hasRoom() || (int)spriteRenderer.gameObject.transform.position.z != zIndex){
+        if(!hasRoom() || (int)spriteRenderer.gameObject.getPosition().z != zIndex){
             return false;
         }
 

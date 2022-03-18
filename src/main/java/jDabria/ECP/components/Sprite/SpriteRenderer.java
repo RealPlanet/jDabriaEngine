@@ -2,7 +2,7 @@ package jDabria.ECP.components.Sprite;
 
 import commons.Color;
 import jDabria.assetManager.resources.Texture;
-import jDabria.ECP.Component;
+import jDabria.ECP.base.Component;
 import jDabria.ECP.components.Transform;
 import jDabria.renderer.sprite.Sprite;
 import org.joml.Vector2f;
@@ -88,13 +88,14 @@ public class SpriteRenderer extends Component {
     // region Component overrides
     @Override
     public void start(){
-        parentTransform = gameObject.transform.copy();
+        parentTransform = gameObject.getTransform();
     }
 
     @Override
     public void update() {
-        if(parentTransform != gameObject.transform){
-            parentTransform = gameObject.transform.copy();
+        Transform latestTransform = gameObject.getTransform();
+        if(parentTransform != latestTransform){
+            parentTransform = latestTransform;
             isDirty = true;
         }
     }

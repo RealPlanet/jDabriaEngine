@@ -48,7 +48,7 @@ public class Renderer {
            return;
         }
 
-        RenderBatch newBatch = RenderBatch.createBatch(MAX_BATCH_SIZE, (int)spriteRenderer.gameObject.transform.position.z);
+        RenderBatch newBatch = RenderBatch.createBatch(MAX_BATCH_SIZE, (int)spriteRenderer.gameObject.getPosition().z);
         newBatch.addSprite(spriteRenderer);
         RENDER_BATCHES.add(newBatch);
         Collections.sort(RENDER_BATCHES);

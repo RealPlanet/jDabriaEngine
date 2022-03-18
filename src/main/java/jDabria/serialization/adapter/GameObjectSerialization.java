@@ -1,8 +1,8 @@
 package jDabria.serialization.adapter;
 
 import com.google.gson.*;
-import jDabria.ECP.Component;
 import jDabria.ECP.GameObject;
+import jDabria.ECP.base.Component;
 
 import java.lang.reflect.Type;
 
@@ -18,6 +18,8 @@ public class GameObjectSerialization implements JsonDeserializer<GameObject>{
             Component c = context.deserialize(e, Component.class);
             go.addComponent(c);
         }
+
+        //go.setTransform(go.getComponent(Transform.class));
         return go;
     }
 }

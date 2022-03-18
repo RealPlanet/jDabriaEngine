@@ -20,12 +20,13 @@ public class LevelEditor extends Scene {
     @Override
     public void onInit() {
         sceneCamera = new Camera();
+
         if(isLoaded){
             return;
         }
 
         GameObject testIMGUI = new GameObject("Test");
-        testIMGUI.transform.position = new Vector3f(100, 100, 1);
+        testIMGUI.setPosition( new Vector3f(100, 100, 1) );
         addGameObjectToScene(testIMGUI);
 
         UITextBox io = new UITextBox().setContent("Test").setTitle("Hi");
@@ -43,7 +44,7 @@ public class LevelEditor extends Scene {
         testIMGUI.addComponent(spr);
 
         GameObject deez = new GameObject("Deez");
-        deez.transform.position = new Vector3f(200, 200, 1);
+        deez.setPosition(new Vector3f(200, 200, 1));
         addGameObjectToScene(deez);
 
         deez.addComponent(cp1);

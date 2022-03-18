@@ -1,7 +1,7 @@
 package jDabria.serialization.adapter;
 
 import com.google.gson.*;
-import jDabria.ECP.Component;
+import jDabria.ECP.base.Component;
 
 import java.lang.reflect.Type;
 

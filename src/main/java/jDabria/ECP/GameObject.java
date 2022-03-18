@@ -1,65 +1,58 @@
 package jDabria.ECP;
 
+import commons.StringUtils;
+import jDabria.ECP.base.Component;
+import jDabria.ECP.base.RequiredComponent;
+import jDabria.ECP.base.SingleComponent;
 import jDabria.ECP.components.Transform;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import java.beans.ConstructorProperties;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GameObject{
     private String name;
-    private final List<Component> components = new ArrayList<>();
-    public final Transform transform = new Transform();
-
+    private final ArrayList<Component> components = new ArrayList<>(2);
+    private transient Transform transform;
     private boolean isActive = false;
 
+    //region Constructors
     public GameObject(){
         this(String.valueOf(Math.random()));
     }
 
     public GameObject(String name){
-        this.name = name;
-
-        enableComponents();
+        this(name, new Vector3f(0,0,0), new Vector3f(1,1,1));
     }
 
-    @ConstructorProperties({"name", "position"})
     public GameObject(String name, @NotNull Vector3f position){
-        this.name = name;
-        transform.position = position;
-
-        enableComponents();
+        this(name, position, new Vector3f(1,1,1));
     }
 
-    @ConstructorProperties({"name", "position"})
     public GameObject(String name, @NotNull Vector2f position){
+        this(name, position, new Vector3f(1,1,1));
+    }
+
+    public GameObject(String name, @NotNull Vector3f position, Vector3f scale){
         this.name = name;
-        transform.position.x = position.x;
-        transform.position.y = position.y;
-        transform.position.z = 0f;
+        Transform tmp = new Transform(new Vector3f(position), new Vector3f(scale));
+        this.addComponent(tmp);
+        this.transform = tmp;
 
         enableComponents();
     }
 
-    @ConstructorProperties({"name", "position", "scale"})
-    public GameObject(String name, @NotNull Vector3f position, Vector3f scale){
-        this(name, position);
-        transform.scale = scale;
-    }
-
-    @ConstructorProperties({"name", "position", "scale"})
     public GameObject(String name, @NotNull Vector2f position, Vector3f scale){
-        this(name, position);
-        transform.scale = scale;
+        this(name, new Vector3f(position.x, position.y, 0), scale);
     }
 
     public GameObject(String name, @NotNull Transform transform) {
         this(name, transform.position, transform.scale);
     }
+    //endregion
 
+    //region Private methods
     private void enableComponents(){
         isActive = true;
         for(Component component : components){
@@ -73,7 +66,27 @@ public class GameObject{
             Comp.stop();
         }
     }
+    //endregion
 
+    //region Public methods
+    public void update() {
+        if(!isActive){
+            return;
+        }
+
+        for(Component component : components){
+            component.update();
+        }
+    }
+
+    public void delete() {
+        for (Component c: components ) {
+            c.delete();
+        }
+    }
+    //endregion
+
+    //region Setters
     public void setActive(boolean active){
         isActive = active;
 
@@ -84,19 +97,57 @@ public class GameObject{
         disableComponents();
     }
 
-    public boolean isActive(){
-        return isActive;
-    }
-
     public void setName(String name){
         this.name = name;
+    }
+
+    public void setTransform(@NotNull Transform transform){
+        if(transform.gameObject != null){
+            throw new MultipleOwnerException("Cannot assign transform already owned by another game object");
+        }
+
+        this.transform = transform;
+        transform.gameObject = this;
+        removeComponent(Transform.class);
+        if(components.size() > 0){
+            components.set(0, transform);
+        }
+
+        components.add(0, transform);
+    }
+
+    public void setPosition(Vector3f position){
+        transform.position = position;
+    }
+
+    public void setScale(Vector3f scale){
+        transform.scale = scale;
+    }
+    //endregion
+
+    //region Getters
+    public boolean isActive(){
+        return isActive;
     }
 
     public String getName(){
         return name;
     }
 
-    //<editor-fold desc="Component operations">
+    public Transform getTransform(){
+        return transform.copy();
+    }
+
+    public Vector3f getPosition(){
+        return transform.position;
+    }
+
+    public Vector3f getScale(){
+        return transform.scale;
+    }
+    //endregion
+
+    // region Component operations
     public <T extends  Component> T getComponent(Class<T> componentClass){
         for(Component component : components){
             if(componentClass.isAssignableFrom(component.getClass())){
@@ -114,6 +165,10 @@ public class GameObject{
     }
 
     public <T extends Component> void removeComponent(Class<T> componentClass){
+        if(componentClass.isAssignableFrom(RequiredComponent.class)){
+            throw new RequiredComponentException(StringUtils.format("Cannot remove this component from game-object --> {0}", componentClass));
+        }
+
         for(int i = 0; i < components.size(); i++){
             Component component = components.get(i);
             if(componentClass.isAssignableFrom(component.getClass())){
@@ -124,24 +179,43 @@ public class GameObject{
     }
 
     public void addComponent(Component component){
+        if(component instanceof SingleComponent){
+            if(component instanceof Transform){
+                setTransform((Transform) component);
+                return;
+            }
+
+            if(components.contains(component)){
+                throw new SingleComponentException("Multiple components are not allowed");
+            }
+        }
+
         components.add(component);
         component.gameObject = this;
-    }
-    //</editor-fold>
 
-    public void update() {
-        if(!isActive){
-            return;
-        }
-
-        for(Component component : components){
-            component.update();
+        if(isActive()){
+            component.start();
         }
     }
+    // endregion
 
-    public void delete() {
-        for (Component c: components ) {
-            c.delete();
+    //region Exceptions
+    public class SingleComponentException extends RuntimeException{
+        public SingleComponentException(String message) {
+            super(message);
         }
     }
+
+    public class RequiredComponentException extends RuntimeException{
+        public RequiredComponentException(String message) {
+            super(message);
+        }
+    }
+
+    public class MultipleOwnerException extends RuntimeException{
+        public MultipleOwnerException(String message) {
+            super(message);
+        }
+    }
+    //endregion
 }

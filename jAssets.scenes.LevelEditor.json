@@ -1,0 +1,163 @@
+[
+  {
+    "name": "Test",
+    "components": [
+      {
+        "type": "jDabria.ECP.components.Transform",
+        "properties": {
+          "position": {
+            "x": 100.0,
+            "y": 100.0,
+            "z": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        }
+      },
+      {
+        "type": "jDabria.ECP.components.UI.Pieces.UITextBox",
+        "properties": {
+          "title": "Hi",
+          "contents": "Test"
+        }
+      },
+      {
+        "type": "jDabria.ECP.components.UI.Pieces.UIColorPicker",
+        "properties": {}
+      },
+      {
+        "type": "jDabria.ECP.components.Sprite.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "height": 100,
+            "width": 100,
+            "texture": {
+              "filepath": "Assets/Textures/Base/i_white_pixel.png",
+              "texID": 3,
+              "width": 1,
+              "height": 1
+            },
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 1.0
+              },
+              {
+                "x": 1.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "color": {
+            "Red": 1.0,
+            "Green": 0.0,
+            "Blue": 0.0,
+            "Alpha": 1.0
+          },
+          "parentTransform": {
+            "position": {
+              "x": 100.0,
+              "y": 100.0,
+              "z": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "isDirty": false
+        }
+      }
+    ],
+    "isActive": true
+  },
+  {
+    "name": "Deez",
+    "components": [
+      {
+        "type": "jDabria.ECP.components.Transform",
+        "properties": {
+          "position": {
+            "x": 200.0,
+            "y": 200.0,
+            "z": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        }
+      },
+      {
+        "type": "jDabria.ECP.components.UI.Pieces.UIColorPicker",
+        "properties": {}
+      },
+      {
+        "type": "jDabria.ECP.components.Sprite.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "height": 100,
+            "width": 100,
+            "texture": {
+              "filepath": "Assets/Textures/Base/i_white_pixel.png",
+              "texID": 3,
+              "width": 1,
+              "height": 1
+            },
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 1.0
+              },
+              {
+                "x": 1.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "color": {
+            "Red": 0.0,
+            "Green": 0.14583778,
+            "Blue": 1.0,
+            "Alpha": 1.0
+          },
+          "parentTransform": {
+            "position": {
+              "x": 200.0,
+              "y": 200.0,
+              "z": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "isDirty": false
+        }
+      }
+    ],
+    "isActive": true
+  }
+]

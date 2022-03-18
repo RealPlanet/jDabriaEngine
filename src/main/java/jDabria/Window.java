@@ -157,6 +157,7 @@ public class Window {
         Scene level = SceneManager.GetActiveScene(LevelEditor.class.getCanonicalName());
         level.clearScene();
         GameObjectWR.Read(level, LevelEditor.class.getCanonicalName());
+
         // run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {

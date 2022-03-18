@@ -1,6 +1,6 @@
 package jDabria.ECP.components.UI;
 
-import jDabria.ECP.Component;
+import jDabria.ECP.base.Component;
 import jDabria.events.imGUI.IImGUIStartFrame;
 import jDabria.imGUI.ImGUILayer;
 

@@ -2,7 +2,7 @@ package jDabria.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jDabria.ECP.Component;
+import jDabria.ECP.base.Component;
 import jDabria.ECP.GameObject;
 import jDabria.sceneManager.Scene;
 import jDabria.serialization.adapter.ComponentSerialization;
@@ -25,7 +25,7 @@ public class GameObjectWR {
 
     public static void Write(@NotNull List<GameObject> objects, String fileName){
         try {
-            FileWriter writer = new FileWriter(fileName + ".txt");
+            FileWriter writer = new FileWriter(fileName + ".json");
             writer.write(gson.toJson(objects));
             writer.close();
         } catch(IOException e) {
@@ -36,7 +36,7 @@ public class GameObjectWR {
     public static void Read(Scene scene, String filename){
         String serializedContents = "";
         try {
-            serializedContents = new String(Files.readAllBytes(Paths.get(filename+ ".txt")));
+            serializedContents = new String(Files.readAllBytes(Paths.get(filename+ ".json")));
         } catch (IOException e) {
             e.printStackTrace();
         }
