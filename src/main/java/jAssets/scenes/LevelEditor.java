@@ -1,18 +1,14 @@
 package jAssets.scenes;
 
 import commons.Color;
-import jDabria.assetManager.AssetPool;
+import jDabria.ECP.GameObject;
 import jDabria.ECP.components.Sprite.SpriteRenderer;
 import jDabria.ECP.components.UI.Pieces.UIColorPicker;
-import jDabria.ECP.components.UI.UIDrawable;
-import jDabria.ECP.GameObject;
-import jDabria.events.imGUI.IImGUIStartFrame;
-import jDabria.imGUI.ImGUILayer;
+import jDabria.ECP.components.UI.Pieces.UITextBox;
+import jDabria.assetManager.AssetPool;
 import jDabria.renderer.Camera;
 import jDabria.renderer.sprite.SpriteSheet;
 import jDabria.sceneManager.Scene;
-import jDabria.Window;
-import imgui.ImGui;
 import org.joml.Vector3f;
 
 public class LevelEditor extends Scene {
@@ -21,38 +17,34 @@ public class LevelEditor extends Scene {
         System.out.println("Inside Level editor!");
     }
 
-    private final IImGUIStartFrame LevelEditorWindow = () -> {
-        ImGui.begin("Test window");
-        ImGui.text("Hello world");
-        ImGui.end();
-    };
-
     @Override
     public void onInit() {
         sceneCamera = new Camera();
-        Window.setWindowClearColor(new Color(1, 1, 1, 1));
-
-        ImGUILayer.addStartFrameListener(LevelEditorWindow);
-
 
         GameObject testIMGUI = new GameObject("Test");
         testIMGUI.transform.position = new Vector3f(100, 100, 1);
         addGameObjectToScene(testIMGUI);
-        UIDrawable io = new UIDrawable();
+
+        UITextBox io = new UITextBox().setContent("Test").setTitle("Hi");
         UIColorPicker cp = new UIColorPicker();
         SpriteRenderer spr = new SpriteRenderer(Color.BLACK);
 
+        UIColorPicker cp1 = new UIColorPicker();
+        SpriteRenderer spr1 = new SpriteRenderer(Color.BLACK);
+
         spr.getSprite().setSize(100, 100);
+        spr1.getSprite().setSize(100, 100);
 
         testIMGUI.addComponent(io);
         testIMGUI.addComponent(cp);
         testIMGUI.addComponent(spr);
 
-        io.setDrawable(() -> {
-            ImGui.begin("Test inspect drawable");
-            ImGui.text("Hello draw");
-            ImGui.end();
-        });
+        GameObject deez = new GameObject("Deez");
+        deez.transform.position = new Vector3f(200, 200, 1);
+        addGameObjectToScene(deez);
+
+        deez.addComponent(cp1);
+        deez.addComponent(spr1);
     }
 
     @Override
@@ -62,7 +54,7 @@ public class LevelEditor extends Scene {
 
     @Override
     protected void onUnload() {
-        ImGUILayer.removeStartFrameListener(LevelEditorWindow);
+
     }
 
     @Override

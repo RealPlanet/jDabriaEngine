@@ -8,24 +8,30 @@ import jDabria.renderer.sprite.Sprite;
 import org.joml.Vector2f;
 
 public class SpriteRenderer extends Component {
-    private Sprite sprite;
+
+    //region Member variables
+    private Sprite sprite = new Sprite();
     private Color color;
     private Transform parentTransform;
     private boolean isDirty = true;
+    //endregion
 
     //<editor-fold desc="Constructors">
     public SpriteRenderer(commons.Color color){
         this.color = color;
         sprite = new Sprite();
     }
+    //endregion
 
     public SpriteRenderer(Sprite sprite){
         this.sprite = sprite;
         this.color = Color.WHITE;
     }
-    //</editor-fold>
 
-    //<editor-fold desc="Public methods">
+    public boolean isDirty(){
+        return this.isDirty;
+    }
+
     public Color getColor(){
         return this.color;
     }
@@ -41,22 +47,45 @@ public class SpriteRenderer extends Component {
     public Vector2f[] getTexCoords(){
         return sprite.getTexCoords();
     }
+    //endregion
 
-    public void setSprite(Sprite sprite){
-        this.sprite = sprite;
-        this.isDirty = true;
+    //region Setters
+    /**
+     * Marks this sprite as "Clean", will not be re-buffered by the renderer
+     */
+    public SpriteRenderer setClean() {
+        this.isDirty = false;
+        return this;
     }
 
-    public void setColor(Color color){
+    /**
+     * Marks this sprite as "Dirty" prompting the renderer to re buffer its data
+     */
+    public SpriteRenderer setDirty() {
+        this.isDirty = true;
+        return this;
+    }
+
+    public SpriteRenderer setSprite(Sprite sprite){
+        this.sprite = sprite;
+        this.isDirty = true;
+        return this;
+    }
+
+    public SpriteRenderer setColor(Color color){
         if(this.color == color){
-            return;
+            return this;
         }
 
         this.color = color;
         this.isDirty = true;
+        return this;
     }
-    //</editor-fold>
+    //endregion
 
+    //endregion
+
+    // region Component overrides
     @Override
     public void start(){
         parentTransform = gameObject.transform.copy();
@@ -69,26 +98,7 @@ public class SpriteRenderer extends Component {
             isDirty = true;
         }
     }
+    // endregion
 
-    /**
-     * Checks if the sprite is dirty
-     * @return true if sprite is dirty
-     */
-    public boolean isDirty() {
-        return this.isDirty;
-    }
 
-    /**
-     * Marks this sprite as "Clean", will not be re-buffered by the renderer
-     */
-    public void setClean() {
-        this.isDirty = false;
-    }
-
-    /**
-     * Marks this sprite as "Dirty" prompting the renderer to re buffer its data
-     */
-    public void setDirty() {
-        this.isDirty = true;
-    }
 }

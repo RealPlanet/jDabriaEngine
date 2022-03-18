@@ -9,10 +9,9 @@ import org.joml.Vector2f;
  * Holds all the information required to render an image
  * It stores a texture and allows dynamic resizing of it's size without touching other objects that share the texture
  */
-public class Sprite {
+public class Sprite{
     private int height, width;
-
-    private Texture texture = AssetPool.getTexture("Assets/Textures/Base/i_white_pixel.png");
+    private Texture texture = AssetPool.getTexture("Assets/Textures/Base/i_white_pixel.png");;
     private Vector2f[] texCoords = {
             new Vector2f(1, 1),
             new Vector2f(1, 0),
@@ -35,7 +34,7 @@ public class Sprite {
 
     /**
      * Creates a sprite with the given texture, by default it's size will be the same as the texture in pixel.
-     * In addition it allows to specify custom texture coordinates.
+     * In addition, it allows to specify custom texture coordinates.
      * @param texture the texture this sprite will use
      * @param texCoords the coordinates this sprite will use on the texture
      */
@@ -79,9 +78,10 @@ public class Sprite {
     /**
      * Reset the sprite size to match the texture
      */
-    public void resetSize(){
+    public Sprite resetSize(){
         height = getTexture().getHeight();
         width = getTexture().getWidth();
+        return this;
     }
 
     /**
@@ -89,8 +89,9 @@ public class Sprite {
      * @param h Height dimension in pixels
      * @param w Width dimension in pixels
      */
-    public void setSize(int h, int w){
+    public Sprite setSize(int h, int w){
         height = h;
         width = w;
+        return this;
     }
 }

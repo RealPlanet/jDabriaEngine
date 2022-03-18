@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class SceneManager {
     private static final ArrayList<Scene> gameScenes = new ArrayList<>();
-    private static final String SCENE_PACKAGE_PREFIX = "Scenes.";
+    private static final String SCENE_PACKAGE_PREFIX = "scenes.";
     public static boolean changingScene = false;
 
     /**
@@ -28,13 +28,15 @@ public class SceneManager {
     //<editor-fold desc="Scene operations">
     /**
      * Changes current Scene to a new one using Java reflection
-     * @param SceneName Scene class name to load
+     * @param sceneName Scene class name to load
      */
-    public static void loadScene(String SceneName, LoadType Type) {
-        //SceneManager Manager = get();
+    public static void loadScene(String sceneName, LoadType type) {
+        loadScene(sceneName, type, false);
+    }
 
+    public static void loadScene(String sceneName, LoadType loadType, boolean checkFile){
         // Unload all scenes if single load mode
-        if(Type == LoadType.SINGLE){
+        if(loadType == LoadType.SINGLE){
             for(int i = gameScenes.size() - 1; i >= 0; i--){
                 UnloadScene(gameScenes.get(i));
             }
@@ -42,7 +44,7 @@ public class SceneManager {
 
         Scene SceneToLoad;
         try {
-            SceneToLoad = AssetPool.getScene(SCENE_PACKAGE_PREFIX, SceneName);
+            SceneToLoad = AssetPool.getScene(sceneName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return;
@@ -51,19 +53,21 @@ public class SceneManager {
         //<editor-fold desc="Scene loading">
         changingScene = true;
 
-        SceneToLoad.isLoaded = false;
         SceneToLoad.sceneIndex = gameScenes.size();
-        SceneToLoad.init();
 
-        /*   TODO :: Handle scene loading   */
+        // On scene load, if requested, check if we can deserialize save data for this scene.
+        if(checkFile){
+        }
+
+        SceneToLoad.init();
 
         //<editor-fold desc="Register scene events">
         // Once scene is loaded we assign events
         Window.addUpdateFrameListener(SceneToLoad);
         //</editor-fold>
 
-        SceneToLoad.isLoaded = true;
         gameScenes.add(SceneToLoad);
+
         changingScene = false;
         //</editor-fold>
 

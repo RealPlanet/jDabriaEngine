@@ -219,7 +219,7 @@ public class RenderBatch implements Comparable<RenderBatch>{
 
     public void render(){
         boolean rebufferData = false;
-        for (int i = 0; i < spriteRenderers.length; i++) {
+        for (int i = 0; i < numSprites; i++) {
             SpriteRenderer spr = spriteRenderers[i];
             if(spr == null || !spr.isDirty()){
                 continue;

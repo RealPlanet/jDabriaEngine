@@ -1,6 +1,7 @@
 package jDabria;
 
 import commons.Color;
+import jAssets.scenes.LevelEditor;
 import jDabria.events.window.IBeginFrameListener;
 import jDabria.events.window.IEndFrameListener;
 import jDabria.events.window.IUpdateFrameListener;
@@ -150,7 +151,7 @@ public class Window {
 
     private void loop() {
         Window.setWindowClearColor(new Color(1, 1, 1, 1));
-        SceneManager.loadScene("LevelEditor", SceneManager.LoadType.SINGLE);
+        SceneManager.loadScene(LevelEditor.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
 
         // run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.

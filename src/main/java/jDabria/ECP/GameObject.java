@@ -9,12 +9,16 @@ import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameObject {
+public class GameObject{
     private String name;
     private final List<Component> components = new ArrayList<>();
     public final Transform transform = new Transform();
 
     private boolean isActive = false;
+
+    public GameObject(){
+        this(String.valueOf(Math.random()));
+    }
 
     public GameObject(String name){
         this.name = name;
@@ -52,6 +56,10 @@ public class GameObject {
         transform.scale = scale;
     }
 
+    public GameObject(String name, @NotNull Transform transform) {
+        this(name, transform.position, transform.scale);
+    }
+
     private void enableComponents(){
         isActive = true;
         for(Component component : components){
@@ -84,7 +92,7 @@ public class GameObject {
         this.name = name;
     }
 
-    public String GetName(){
+    public String getName(){
         return name;
     }
 
@@ -131,4 +139,9 @@ public class GameObject {
         }
     }
 
+    public void delete() {
+        for (Component c: components ) {
+            c.delete();
+        }
+    }
 }

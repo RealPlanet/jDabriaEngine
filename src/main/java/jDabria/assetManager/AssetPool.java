@@ -50,7 +50,7 @@ public class AssetPool {
             return engineTextures.get(file.getAbsolutePath());
         }
 
-        Texture texture = new Texture().Load(resourceName);
+        Texture texture = new Texture(resourceName);
         engineTextures.put(file.getAbsolutePath(), texture);
         return texture;
     }

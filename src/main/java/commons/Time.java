@@ -7,7 +7,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 public class Time{
 
     //region Singleton
-    private static final Time instance = new Time();
+    private transient static final Time instance = new Time();
 
     private static Time get(){
         return instance;
@@ -25,8 +25,8 @@ public class Time{
     //endregion
 
     // Time this application was started
-    private double frameBeginTime = 0.0f;
-    private double frameEndTime = 0.0f;
+    private transient double frameBeginTime = 0.0f;
+    private transient double frameEndTime = 0.0f;
 
     // The interval in seconds from the last frame to the current one
     private double _deltaTime = Double.MIN_VALUE;

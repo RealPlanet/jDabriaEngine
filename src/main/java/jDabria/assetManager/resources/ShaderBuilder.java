@@ -14,15 +14,20 @@ import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderBuilder {
-    private static final Pattern SHADER_REGEX_PATTERN = Pattern.compile("(#type)( )+([a-zA-Z]+)");
-    private static final String INVALID_TOKEN_ERROR = "Unexpected token '%s' in '%s'";
-    private static final String IDENTICAL_TOKENS_ERROR = "Expected two different shaders (fragment and vertex), received same tokens -> '%s' and '%s'";
+    //region Static properties
+    private transient static final Pattern SHADER_REGEX_PATTERN = Pattern.compile("(#type)( )+([a-zA-Z]+)");
+    private transient static final String INVALID_TOKEN_ERROR = "Unexpected token '%s' in '%s'";
+    private transient static final String IDENTICAL_TOKENS_ERROR = "Expected two different shaders (fragment and vertex), received same tokens -> '%s' and '%s'";
+    //endregion
 
-    private int vertexID, fragmentID, shaderProgram;
+    //region Member variables
+    private transient int vertexID, fragmentID, shaderProgram;
     private String vertexSource = "", fragmentSource = "";
     private final String filepath;
     private boolean beingUsed = false;
+    //endregion
 
+    //region Constructors
     /**
      * onInit Builder and read shader file
      * @param filepath filepath to *.glsl Shader file containing BOTH fragment and vertex shader
@@ -91,7 +96,9 @@ public class ShaderBuilder {
             assert false : "ERROR :: Could not open shader file: '"+ this.filepath + "'";
         }
     }
+    //endregion
 
+    //region Public usage methods
     public void compile(){
         /// ===
         /// compile & Link Shaders
@@ -118,8 +125,9 @@ public class ShaderBuilder {
         beingUsed = false;
         glUseProgram(0);
     }
+    //endregion
 
-    //region upload to shader methods
+    //region Upload to shader methods
     public void uploadMat2f(String varName, @NotNull Matrix2f matrix2f){
         use();
 
@@ -195,7 +203,7 @@ public class ShaderBuilder {
 
     //endregion
 
-    //region compile & Link Shaders
+    //region Compile & Link Shaders methods
     private void compileVertexShader(){
         //Load and compile vertex shader
         vertexID = glCreateShader(GL_VERTEX_SHADER);

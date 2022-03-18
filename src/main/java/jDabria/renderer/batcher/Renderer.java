@@ -62,4 +62,8 @@ public class Renderer {
             renderBatch.render();
         }
     }
+
+    public void clear() {
+        RENDER_BATCHES.clear();
+    }
 }
