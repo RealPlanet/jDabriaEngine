@@ -20,6 +20,9 @@ public class LevelEditor extends Scene {
     @Override
     public void onInit() {
         sceneCamera = new Camera();
+        if(isLoaded){
+            return;
+        }
 
         GameObject testIMGUI = new GameObject("Test");
         testIMGUI.transform.position = new Vector3f(100, 100, 1);
@@ -54,6 +57,11 @@ public class LevelEditor extends Scene {
 
     @Override
     protected void onUnload() {
+
+    }
+
+    @Override
+    protected void onClear() {
 
     }
 

@@ -1,6 +1,8 @@
 package jDabria.events.imGUI;
 
+import java.io.Serializable;
+
 @FunctionalInterface
-public interface IImGUIDrawInspectable {
+public interface IImGUIDrawInspectable extends Serializable {
     void draw();
 }

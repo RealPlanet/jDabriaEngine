@@ -4,6 +4,7 @@ import jDabria.ECP.GameObject;
 import jDabria.events.window.IUpdateFrameListener;
 import jDabria.renderer.Camera;
 import jDabria.renderer.batcher.Renderer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -34,11 +35,14 @@ public abstract class Scene implements IUpdateFrameListener {
     /**
      * Called once on scene load
      */
+
     protected abstract void onInit();
 
     protected abstract void onUpdate();
 
     protected abstract void onUnload();
+
+    protected abstract void onClear();
 
     protected abstract void loadResources();
     //</editor-fold>
@@ -83,6 +87,8 @@ public abstract class Scene implements IUpdateFrameListener {
     }
 
     public void clearScene(){
+        onClear();
+
         for (GameObject go: gameObjects) {
             go.setActive(false);
             go.delete();
@@ -93,7 +99,8 @@ public abstract class Scene implements IUpdateFrameListener {
         sceneRenderer = new Renderer();
     }
 
-    public List<GameObject> getGameObjects(){
+    @Contract(" -> new")
+    public ArrayList<GameObject> getGameObjects(){
         return new ArrayList<>(gameObjects);
     }
 

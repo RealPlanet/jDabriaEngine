@@ -6,7 +6,9 @@ import jDabria.events.window.IBeginFrameListener;
 import jDabria.events.window.IEndFrameListener;
 import jDabria.events.window.IUpdateFrameListener;
 import jDabria.imGUI.ImGUILayer;
+import jDabria.sceneManager.Scene;
 import jDabria.sceneManager.SceneManager;
+import jDabria.serialization.GameObjectWR;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -76,7 +78,7 @@ public class Window {
     }
 
     public void stop(){
-        //imGUILayer.
+        imGUILayer.destroyImGui();
     }
 
     private void init() {
@@ -152,7 +154,9 @@ public class Window {
     private void loop() {
         Window.setWindowClearColor(new Color(1, 1, 1, 1));
         SceneManager.loadScene(LevelEditor.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
-
+        Scene level = SceneManager.GetActiveScene(LevelEditor.class.getCanonicalName());
+        level.clearScene();
+        GameObjectWR.Read(level, LevelEditor.class.getCanonicalName());
         // run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(glfwWindow) ) {
@@ -173,6 +177,8 @@ public class Window {
 
             signalEndFrame();
         }
+
+        GameObjectWR.Write(SceneManager.GetActiveScene(LevelEditor.class.getCanonicalName()).getGameObjects(), LevelEditor.class.getCanonicalName());
     }
     //</editor-fold>
 

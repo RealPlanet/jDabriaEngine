@@ -24,6 +24,11 @@ public class EmptyScene extends Scene {
     }
 
     @Override
+    protected void onClear() {
+        
+    }
+
+    @Override
     protected void loadResources() {
 
     }

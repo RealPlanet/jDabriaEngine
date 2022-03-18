@@ -18,6 +18,11 @@ public class Level_1 extends Scene {
     }
 
     @Override
+    protected void onClear() {
+
+    }
+
+    @Override
     protected void loadResources() {
 
     }
