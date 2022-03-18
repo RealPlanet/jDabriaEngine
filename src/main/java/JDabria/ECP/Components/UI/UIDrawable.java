@@ -10,13 +10,8 @@ import JDabria.ImGUI.ImGUILayer;
  */
 public class UIDrawable extends Component {
 
-    protected IImGUIStartFrame renderEvent = new IImGUIStartFrame(){
-            @Override
-            public void render(){
-                renderUI();
-            }
-    };
     protected IImGUIDrawInspectable drawable = null;
+    protected IImGUIStartFrame renderEvent = () -> renderUI();
 
     @Override
     public void start(){

@@ -3,6 +3,7 @@ package JDabria.ECP.Components.UI.Pieces;
 import Commons.Color;
 import JDabria.ECP.Components.Sprite.SpriteRenderer;
 import JDabria.ECP.Components.UI.UIDrawable;
+import JDabria.Events.ImGUI.IImGUIDrawInspectable;
 import imgui.ImGui;
 
 /**
@@ -10,6 +11,7 @@ import imgui.ImGui;
  */
 public class UIColorPicker extends UIDrawable {
     private SpriteRenderer OwnerSpriteRenderer = null;
+
     public UIColorPicker(){
         this.drawable = () -> {
             if(OwnerSpriteRenderer == null){
@@ -27,7 +29,11 @@ public class UIColorPicker extends UIDrawable {
                 OwnerSpriteRenderer.setColor(new Color(imColor[0], imColor[1], imColor[2], imColor[3]));
                 OwnerSpriteRenderer.setDirty();
             }
-
         };
+    }
+
+    @Override
+    public void setDrawable(IImGUIDrawInspectable drawable){
+
     }
 }

@@ -130,4 +130,5 @@ public class GameObject {
             component.update();
         }
     }
+
 }

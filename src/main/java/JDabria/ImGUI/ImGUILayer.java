@@ -3,8 +3,6 @@ package JDabria.ImGUI;
 import Commons.Time;
 import JDabria.Events.ImGUI.IImGUIStartFrame;
 import JDabria.Events.Window.IUpdateFrameListener;
-import JDabria.SceneManager.Scene;
-import JDabria.SceneManager.SceneManager;
 import JDabria.Window;
 import imgui.*;
 import imgui.callbacks.ImStrConsumer;
@@ -34,6 +32,14 @@ public class ImGUILayer implements IUpdateFrameListener {
     private static ImGUILayer _instance = null;
 
     //region Singleton
+    public static void destroyImGUILayer(){
+        if(_instance == null){
+            return;
+        }
+
+        _instance.destroyImGui();
+        _instance = null;
+    }
 
     public static ImGUILayer getImGUILayer(long glfwWindow){
         if(_instance == null){
@@ -78,12 +84,11 @@ public class ImGUILayer implements IUpdateFrameListener {
     @Override
     public void onFrameUpdate() {
         startFrame();
-        ArrayList<Scene> activeScenes = SceneManager.getActiveScenes();
         // Any IMGUI code should go between newFrame and render methods
         ImGui.newFrame();
         signalStartFrameListeners();
 
-        ImGui.showDemoWindow();
+        //ImGui.showDemoWindow();
         ImGui.render();
 
         endFrame();

@@ -4,7 +4,7 @@ import Commons.Color;
 import JDabria.AssetManager.AssetPool;
 import JDabria.ECP.Components.Sprite.SpriteRenderer;
 import JDabria.ECP.Components.UI.Pieces.UIColorPicker;
-import JDabria.ECP.Components.UI.UIToggleDrawable;
+import JDabria.ECP.Components.UI.UIDrawable;
 import JDabria.ECP.GameObject;
 import JDabria.Events.ImGUI.IImGUIStartFrame;
 import JDabria.ImGUI.ImGUILayer;
@@ -13,6 +13,7 @@ import JDabria.Renderer.Sprite.SpriteSheet;
 import JDabria.SceneManager.Scene;
 import JDabria.Window;
 import imgui.ImGui;
+import org.joml.Vector3f;
 
 public class LevelEditor extends Scene {
 
@@ -33,20 +34,20 @@ public class LevelEditor extends Scene {
 
         ImGUILayer.addStartFrameListener(LevelEditorWindow);
 
-        GameObject testIMGUI = new GameObject("Test");
-        addGameObjectToScene(testIMGUI);
 
-        UIToggleDrawable io = new UIToggleDrawable();
+        GameObject testIMGUI = new GameObject("Test");
+        testIMGUI.transform.position = new Vector3f(100, 100, 1);
+        addGameObjectToScene(testIMGUI);
+        UIDrawable io = new UIDrawable();
         UIColorPicker cp = new UIColorPicker();
-        SpriteRenderer spr = new SpriteRenderer(Color.WHITE);
+        SpriteRenderer spr = new SpriteRenderer(Color.BLACK);
+
         spr.getSprite().setSize(100, 100);
 
         testIMGUI.addComponent(io);
         testIMGUI.addComponent(cp);
         testIMGUI.addComponent(spr);
 
-
-        io.setInspect(true);
         io.setDrawable(() -> {
             ImGui.begin("Test inspect drawable");
             ImGui.text("Hello draw");
