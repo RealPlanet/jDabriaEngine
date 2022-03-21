@@ -228,7 +228,7 @@ public class ImGUILayer implements IUpdateFrameListener {
         // region Fonts
         // ------------------------------------------------------------
         // Fonts configuration
-        // Read: https://raw.githubusercontent.com/ocornut/imgui/master/docs/FONTS.txt
+        // read: https://raw.githubusercontent.com/ocornut/imgui/master/docs/FONTS.txt
 
         final ImFontAtlas fontAtlas = io.getFonts();
         final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed

@@ -1,7 +1,18 @@
 package commons;
 
+import commons.logging.EngineLogger;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterOutputStream;
 
 public class StringUtils {
     public static @NotNull String format(@Nullable String str, @Nullable Object... formats) {
@@ -59,5 +70,56 @@ public class StringUtils {
         }
 
         return result.toString();
+    }
+
+    public static @Nullable String encode64(String str){
+        try {
+            return Base64.getEncoder()
+                    .encodeToString(str.getBytes(StandardCharsets.UTF_8.toString()));
+        } catch(UnsupportedEncodingException ex) {
+            EngineLogger.logError("Could not encode64 this string: \n" + str);
+            return null;
+        }
+    }
+
+    public static @Nullable String decode64(String str){
+        try {
+            return new String(Base64.getDecoder()
+                    .decode(str));
+        } catch(IllegalArgumentException ex) {
+            EngineLogger.logError("Could not decode64 this string: \n" + str);
+            return null;
+        }
+    }
+
+    @Contract(value = "_ -> new", pure = true)
+    public static @NotNull String bytesToString(byte[] bytes){
+        return new String(bytes);
+    }
+
+    public static byte @NotNull [] compressString(@NotNull String str){
+        return compressBytes(str.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static byte @NotNull [] compressBytes(byte[] data){
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try (DeflaterOutputStream dos = new DeflaterOutputStream(os)) {
+            dos.write(data);
+        }
+        catch (IOException e){
+            EngineLogger.logError("Could not compress byte array: \n" + e);
+        }
+        return os.toByteArray();
+    }
+
+    public static byte @NotNull [] decompressBytes(byte[] data){
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try (OutputStream ios = new InflaterOutputStream(os)) {
+            ios.write(data);
+        }catch (IOException e){
+            EngineLogger.logError("Could not decompress byte array: \n" + e);
+        }
+
+        return os.toByteArray();
     }
 }

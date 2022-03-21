@@ -40,12 +40,12 @@ public class Transform extends Component implements SingleComponent, RequiredCom
 
     @Override
     public boolean equals(Object o){
-        if(o == null || !(o instanceof Transform)){
+        if(!(o instanceof Transform)){
             return false;
         }
 
         Transform t = (Transform)o;
-        return  t.position == position &&
-                t.scale == scale;
+        return  t.position.equals(position) &&
+                t.scale.equals(scale);
     }
 }

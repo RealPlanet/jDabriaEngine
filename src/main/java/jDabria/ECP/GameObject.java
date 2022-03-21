@@ -109,6 +109,7 @@ public class GameObject{
         this.transform = transform;
         transform.gameObject = this;
         removeComponent(Transform.class);
+
         if(components.size() > 0){
             components.set(0, transform);
         }
@@ -135,7 +136,7 @@ public class GameObject{
     }
 
     public Transform getTransform(){
-        return transform.copy();
+        return transform;
     }
 
     public Vector3f getPosition(){
@@ -180,6 +181,7 @@ public class GameObject{
 
     public void addComponent(Component component){
         if(component instanceof SingleComponent){
+
             if(component instanceof Transform){
                 setTransform((Transform) component);
                 return;

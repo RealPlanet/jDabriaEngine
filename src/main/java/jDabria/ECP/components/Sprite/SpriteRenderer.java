@@ -10,22 +10,31 @@ import org.joml.Vector2f;
 public class SpriteRenderer extends Component {
 
     //region Member variables
-    private Sprite sprite = new Sprite();
+    private Sprite sprite;
     private Color color;
     private Transform parentTransform;
-    private boolean isDirty = true;
+    private transient boolean isDirty;
     //endregion
+
+    private SpriteRenderer(){
+        this(null, null);
+    }
 
     //<editor-fold desc="Constructors">
     public SpriteRenderer(commons.Color color){
-        this.color = color;
-        sprite = new Sprite();
+        this(new Sprite(), color);
     }
     //endregion
 
     public SpriteRenderer(Sprite sprite){
+        this(sprite, Color.WHITE);
+    }
+
+    public SpriteRenderer(Sprite sprite, Color color){
         this.sprite = sprite;
-        this.color = Color.WHITE;
+        this.color = color;
+        isDirty = true;
+        parentTransform = null;
     }
 
     public boolean isDirty(){
@@ -55,6 +64,12 @@ public class SpriteRenderer extends Component {
      */
     public SpriteRenderer setClean() {
         this.isDirty = false;
+        return this;
+    }
+
+    public SpriteRenderer setSpriteSize(int h, int w){
+        sprite.setSize(h, w);
+        setDirty();
         return this;
     }
 
@@ -94,7 +109,7 @@ public class SpriteRenderer extends Component {
     @Override
     public void update() {
         Transform latestTransform = gameObject.getTransform();
-        if(parentTransform != latestTransform){
+        if(!parentTransform .equals(latestTransform)){
             parentTransform = latestTransform;
             isDirty = true;
         }
