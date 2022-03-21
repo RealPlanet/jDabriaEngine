@@ -5,7 +5,8 @@ import org.joml.Vector3f;
 
 // TODO :: Convert to component
 public class Camera {
-    private Matrix4f projectionMatrix = new Matrix4f(), viewMatrix = new Matrix4f();
+    private final Matrix4f projectionMatrix = new Matrix4f();
+    private final Matrix4f viewMatrix = new Matrix4f();
     private Vector3f position;
 
     public Camera(){
@@ -19,7 +20,7 @@ public class Camera {
     }
 
     /**
-     * Fixup Matrix projection when the window size is changed
+     * Fix Matrix projection when the window size is changed
      */
     public void adjustWindowProjection(){
         projectionMatrix.identity();

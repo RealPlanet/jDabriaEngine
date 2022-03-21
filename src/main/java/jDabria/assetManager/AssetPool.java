@@ -64,22 +64,20 @@ public class AssetPool {
 
     public static SpriteSheet getSpriteSheet(String resourceName){
         File file = new File(resourceName);
-        if(!engineSpriteSheet.containsKey(file.getAbsolutePath())){
-            assert false : "ERROR (AssetPool) --> Tried to access sprite-sheet '" + resourceName + "' and it has not been added to asset pool";
-        }
+
+        assert engineSpriteSheet.containsKey(file.getAbsolutePath()) : "ERROR (AssetPool) --> Tried to access sprite-sheet '" + resourceName + "' and it has not been added to asset pool";
 
         return engineSpriteSheet.getOrDefault(file.getAbsolutePath(), null);
     }
 
     //<editor-fold desc="Scene assets methods">
-    public static Scene getScene(String sceneName) throws ClassNotFoundException{
+    public static Scene getScene(String sceneName){
         Class<?> sceneClass;
         Scene result = new EmptyScene();
 
         try {
             sceneClass = Class.forName(sceneName);
-            Scene scene = (Scene)(sceneClass.getDeclaredConstructor().newInstance());
-            result = scene;   //Now overwrite the empty scene
+            result = (Scene)(sceneClass.getDeclaredConstructor().newInstance());   //Now overwrite the empty scene
         }
         catch (Exception ex) {
             System.err.println("Scene definition requested: " + sceneName);

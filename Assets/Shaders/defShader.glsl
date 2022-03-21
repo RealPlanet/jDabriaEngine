@@ -41,5 +41,5 @@ void main(){
     int id = int(fTexID);
     vec4 texColor = texture(uTextures[id], fTexCoords);
     color = texColor * fColor;
-    //color = vec4(fTexCoords, 0, 0); //UV DEBUG COLORS
+    //color = vec4(fTexCoords.x, fTexCoords.y, 0, 0); //UV DEBUG COLORS
 }

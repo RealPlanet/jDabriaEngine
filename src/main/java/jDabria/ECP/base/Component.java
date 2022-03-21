@@ -2,6 +2,7 @@ package jDabria.ECP.base;
 
 import jDabria.ECP.GameObject;
 
+@SuppressWarnings("EmptyMethod")
 public abstract class Component{
     // This field is marked as transient to avoid a circular reference when serializing the component.
     // This means that serializing a component will lose the game object reference!

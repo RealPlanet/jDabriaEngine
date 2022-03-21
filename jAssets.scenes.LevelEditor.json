@@ -1,5 +1,78 @@
 [
   {
+    "name": "bepu",
+    "components": [
+      {
+        "type": "jDabria.ECP.components.Transform",
+        "properties": {
+          "position": {
+            "x": 150.0,
+            "y": 300.0,
+            "z": 1.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+          }
+        }
+      },
+      {
+        "type": "jDabria.ECP.components.Sprite.SpriteRenderer",
+        "properties": {
+          "sprite": {
+            "height": 128,
+            "width": 128,
+            "texture": {
+              "filepath": "Assets/Textures/bepu.png"
+            },
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 1.0
+              },
+              {
+                "x": 1.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "color": {
+            "Red": 1.0,
+            "Green": 0.0,
+            "Blue": 0.0,
+            "Alpha": 1.0
+          },
+          "parentTransform": {
+            "position": {
+              "x": 150.0,
+              "y": 300.0,
+              "z": 1.0
+            },
+            "scale": {
+              "x": 1.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          }
+        }
+      },
+      {
+        "type": "jDabria.ECP.components.UI.Pieces.UIColorPicker",
+        "properties": {}
+      }
+    ],
+    "isActive": true
+  },
+  {
     "name": "Test",
     "components": [
       {
@@ -35,10 +108,7 @@
             "height": 100,
             "width": 100,
             "texture": {
-              "filepath": "Assets/Textures/Base/i_white_pixel.png",
-              "texID": 3,
-              "width": 1,
-              "height": 1
+              "filepath": "Assets/Textures/Base/i_white_pixel.png"
             },
             "texCoords": [
               {
@@ -60,9 +130,9 @@
             ]
           },
           "color": {
-            "Red": 1.0,
-            "Green": 0.0,
-            "Blue": 0.0,
+            "Red": 0.0,
+            "Green": 0.19643354,
+            "Blue": 1.0,
             "Alpha": 1.0
           },
           "parentTransform": {
@@ -76,8 +146,7 @@
               "y": 1.0,
               "z": 1.0
             }
-          },
-          "isDirty": false
+          }
         }
       }
     ],
@@ -112,10 +181,7 @@
             "height": 100,
             "width": 100,
             "texture": {
-              "filepath": "Assets/Textures/Base/i_white_pixel.png",
-              "texID": 3,
-              "width": 1,
-              "height": 1
+              "filepath": "Assets/Textures/Base/i_white_pixel.png"
             },
             "texCoords": [
               {
@@ -137,9 +203,9 @@
             ]
           },
           "color": {
-            "Red": 0.0,
-            "Green": 0.14583778,
-            "Blue": 1.0,
+            "Red": 0.1894133,
+            "Green": 0.96428573,
+            "Blue": 0.3831314,
             "Alpha": 1.0
           },
           "parentTransform": {
@@ -153,8 +219,7 @@
               "y": 1.0,
               "z": 1.0
             }
-          },
-          "isDirty": false
+          }
         }
       }
     ],

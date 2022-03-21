@@ -13,8 +13,6 @@ import org.joml.Vector2f;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
@@ -40,14 +38,17 @@ public class RenderBatch implements Comparable<RenderBatch>{
     private static final int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
     private static final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
-    private List<Texture> textures = new ArrayList<>();
-    private SpriteRenderer[] spriteRenderers;
-    private int numSprites = 0, vaoID, vboID, maxBatchSize;
+    private final List<Texture> textures = new ArrayList<>();
+    private final SpriteRenderer[] spriteRenderers;
+    private int numSprites = 0;
+    private int vaoID;
+    private int vboID;
+    private final int maxBatchSize;
     private boolean hasRoom = true;
-    private float[] vertices;
-    private int[] texSlots = {0, 1, 2, 3, 4, 5, 6, 7};
-    private ShaderBuilder shader;
-    private int zIndex;
+    private final float[] vertices;
+    private final int[] texSlots = {0, 1, 2, 3, 4, 5, 6, 7};
+    private final ShaderBuilder shader;
+    private final int zIndex;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
@@ -84,7 +85,7 @@ public class RenderBatch implements Comparable<RenderBatch>{
         vboID = glGenBuffers();
         // GL_DYNAMIC_DRAW -> We don't have the drawing data yet
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
         // Create & upload indices buffer
         int eboID = glGenBuffers();
@@ -206,7 +207,7 @@ public class RenderBatch implements Comparable<RenderBatch>{
         spriteRenderers[Index] = spriteRenderer;
         numSprites++;
 
-        if(spriteRenderer.getSprite() != null && !textures.contains(spriteRenderer.getSprite())){
+        if(spriteRenderer.getSprite() != null && !textures.contains(spriteRenderer.getSprite().getTexture())){
             textures.add(spriteRenderer.getTexture());
         }
 
@@ -237,6 +238,8 @@ public class RenderBatch implements Comparable<RenderBatch>{
         }
 
         shader.use();
+
+        assert SceneManager.getActiveCamera() != null;
         shader.uploadMat4F("uProj", SceneManager.getActiveCamera().getProjMatrix());
         shader.uploadMat4F("uView", SceneManager.getActiveCamera().getViewMatrix());
         for (int i = 0; i < textures.size(); i++) {
@@ -255,8 +258,8 @@ public class RenderBatch implements Comparable<RenderBatch>{
         glDisableVertexAttribArray(1);
         glBindVertexArray(0);
 
-        for (int i = 0; i < textures.size(); i++) {
-            textures.get(i).unbind();
+        for (Texture texture : textures) {
+            texture.unbind();
         }
 
         shader.detach();
@@ -281,8 +284,7 @@ public class RenderBatch implements Comparable<RenderBatch>{
      * @throws IllegalArgumentException
      */
     public static @NotNull RenderBatch createBatch(int maxBatchSize, int zIndex){
-        RenderBatch renderBatch = new RenderBatch(maxBatchSize, zIndex);
-        return renderBatch;
+        return new RenderBatch(maxBatchSize, zIndex);
     }
 
     @Override

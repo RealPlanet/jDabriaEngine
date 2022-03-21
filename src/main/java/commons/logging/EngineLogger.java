@@ -13,7 +13,10 @@ public class EngineLogger {
 
     static {
         try {
-            new File(LOG_DIR).mkdir();
+            boolean result = new File(LOG_DIR).mkdir();
+            if(!result){
+                EngineLogger.logWarning("Could not create file for logs");
+            }
 
             LogManager.getLogManager().readConfiguration(EngineLogger.class.getClassLoader().getResourceAsStream("Logging.prop"));
             FileHandler handler = new FileHandler(LOG_DIR + "LatestEngineLog.txt");

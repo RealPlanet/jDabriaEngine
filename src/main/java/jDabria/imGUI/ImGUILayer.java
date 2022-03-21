@@ -265,7 +265,7 @@ public class ImGUILayer implements IUpdateFrameListener {
     //endregion
 
     //region Static Events
-    private static ArrayList<IImGUIStartFrame> imGUIStartFrameListeners = new ArrayList<>();
+    private static final ArrayList<IImGUIStartFrame> imGUIStartFrameListeners = new ArrayList<>();
     private void signalStartFrameListeners(){
         for (int i = imGUIStartFrameListeners.size() - 1; i >= 0; i--)
         {
@@ -275,15 +275,15 @@ public class ImGUILayer implements IUpdateFrameListener {
     }
 
     public static void addStartFrameListener(IImGUIStartFrame listener){
-        if(_instance.imGUIStartFrameListeners.contains(listener)){
+        if(imGUIStartFrameListeners.contains(listener)){
             return;
         }
 
-        _instance.imGUIStartFrameListeners.add(listener);
+        imGUIStartFrameListeners.add(listener);
     }
 
     public static void removeStartFrameListener(IImGUIStartFrame listener){
-        _instance.imGUIStartFrameListeners.remove(listener);
+        imGUIStartFrameListeners.remove(listener);
     }
     //endregion
 }

@@ -11,7 +11,7 @@ import org.joml.Vector2f;
  */
 public class Sprite{
     private int height, width;
-    private Texture texture = AssetPool.getTexture("Assets/Textures/Base/i_white_pixel.png");;
+    private Texture texture = AssetPool.getTexture("Assets/Textures/Base/i_white_pixel.png");
     private Vector2f[] texCoords = {
             new Vector2f(1, 1),
             new Vector2f(1, 0),
@@ -89,6 +89,7 @@ public class Sprite{
      * @param h Height dimension in pixels
      * @param w Width dimension in pixels
      */
+    @SuppressWarnings("UnusedReturnValue")
     public Sprite setSize(int h, int w){
         height = h;
         width = w;

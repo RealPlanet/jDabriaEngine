@@ -202,19 +202,19 @@ public class GameObject{
     // endregion
 
     //region Exceptions
-    public class SingleComponentException extends RuntimeException{
+    public static class SingleComponentException extends RuntimeException{
         public SingleComponentException(String message) {
             super(message);
         }
     }
 
-    public class RequiredComponentException extends RuntimeException{
+    public static class RequiredComponentException extends RuntimeException{
         public RequiredComponentException(String message) {
             super(message);
         }
     }
 
-    public class MultipleOwnerException extends RuntimeException{
+    public static class MultipleOwnerException extends RuntimeException{
         public MultipleOwnerException(String message) {
             super(message);
         }

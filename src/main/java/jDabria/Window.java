@@ -56,7 +56,7 @@ public class Window {
         return getWindow().width;
     }
     public static int getHeight() {
-        return getWindow().width;
+        return getWindow().height;
     }
     // endregion
 
@@ -110,9 +110,7 @@ public class Window {
         glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
 
         // Technically this isn't needed, but better safe than sorry!
-        glfwSetWindowSizeCallback(glfwWindow, (w, nWidth, nHeight) ->{
-            Window.setDimension(nWidth, nHeight);
-        });
+        glfwSetWindowSizeCallback(glfwWindow, (w, nWidth, nHeight) -> Window.setDimension(nWidth, nHeight));
 
         //Keyboard
         glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);

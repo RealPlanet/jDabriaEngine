@@ -5,7 +5,7 @@ import jDabria.events.imGUI.IImGUIStartFrame;
 import jDabria.imGUI.ImGUILayer;
 
 public class ImGUIComponent extends Component {
-    private transient final IImGUIStartFrame renderEvent = () -> render();
+    private transient final IImGUIStartFrame renderEvent = this::render;
 
     //region Base class overrides
     @Override

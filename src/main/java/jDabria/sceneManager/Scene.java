@@ -15,6 +15,7 @@ import java.util.List;
  * Abstract definition of a scene
  * TODO :: Should implement OnUnload Event to allow for unload functionality extension
  */
+@SuppressWarnings("EmptyMethod")
 public abstract class Scene implements IUpdateFrameListener {
     public boolean isLoaded = false;
     protected boolean isStarted = false;

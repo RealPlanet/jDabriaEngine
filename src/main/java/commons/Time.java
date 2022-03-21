@@ -9,6 +9,7 @@ public class Time{
     //region Singleton
     private transient static final Time instance = new Time();
 
+    @SuppressWarnings("SameReturnValue")
     private static Time get(){
         return instance;
     }

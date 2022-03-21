@@ -43,21 +43,12 @@ public class SceneManager {
         }
 
         Scene SceneToLoad;
-        try {
-            SceneToLoad = AssetPool.getScene(sceneName);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
+        SceneToLoad = AssetPool.getScene(sceneName);
 
         //<editor-fold desc="Scene loading">
         changingScene = true;
 
         SceneToLoad.sceneIndex = gameScenes.size();
-
-        // On scene load, if requested, check if we can deserialize save data for this scene.
-        if(checkFile){
-        }
 
         SceneToLoad.init();
 

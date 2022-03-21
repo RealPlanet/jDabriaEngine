@@ -62,6 +62,7 @@ public class SpriteRenderer extends Component {
     /**
      * Marks this sprite as "Clean", will not be re-buffered by the renderer
      */
+    @SuppressWarnings("UnusedReturnValue")
     public SpriteRenderer setClean() {
         this.isDirty = false;
         return this;
@@ -76,6 +77,7 @@ public class SpriteRenderer extends Component {
     /**
      * Marks this sprite as "Dirty" prompting the renderer to re buffer its data
      */
+    @SuppressWarnings("UnusedReturnValue")
     public SpriteRenderer setDirty() {
         this.isDirty = true;
         return this;
@@ -87,6 +89,7 @@ public class SpriteRenderer extends Component {
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public SpriteRenderer setColor(Color color){
         if(this.color == color){
             return this;

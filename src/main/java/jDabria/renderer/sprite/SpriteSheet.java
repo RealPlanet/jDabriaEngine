@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SpriteSheet {
+    @SuppressWarnings("FieldCanBeLocal")
     private final Texture parentTexture;
     private final List<Sprite> sprites = new ArrayList<>();
 
