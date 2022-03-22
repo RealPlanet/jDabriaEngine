@@ -1,5 +1,6 @@
 package jDabria.renderer.sprite;
 
+import jDabria.assetManager.AssetPool;
 import jDabria.assetManager.resources.Texture;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
@@ -43,9 +44,15 @@ public class SpriteSheet {
                 currentY -= spriteHeight + spacing;
             }
         }
+
+        AssetPool.addSpriteSheet(parentTexture.getFilepath(), this);
     }
 
+    @SuppressWarnings("unused")
     public Sprite getSprite(int index){
         return sprites.get(index);
     }
+
+    @SuppressWarnings("unused")
+    public String getFilepath() {return parentTexture.getFilepath();}
 }
