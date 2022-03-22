@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterOutputStream;
 
+@SuppressWarnings("unused")
 public class StringUtils {
     public static @NotNull String format(@Nullable String str, @Nullable Object... formats) {
         if (str == null) return "";
