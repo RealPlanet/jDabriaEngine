@@ -1,12 +1,14 @@
 package jDabria.assetManager;
 
-import jAssets.scenes.core.EmptyScene;
+import commons.StringUtils;
+import commons.logging.EngineLogger;
 import jDabria.assetManager.resources.ShaderBuilder;
 import jDabria.assetManager.resources.Texture;
 import jDabria.renderer.sprite.SpriteSheet;
 import jDabria.sceneManager.Scene;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,18 +16,23 @@ public class AssetPool {
     //region Engine asset pools
     private transient static final Map<String, ShaderBuilder> engineShaders = new HashMap<>();
     private transient static final Map<String, Texture> engineTextures = new HashMap<>();
-    private transient static final Map<String, Scene> engineScenes = new HashMap<>();
+    private transient static final Map<String, Constructor<?>> engineScenes = new HashMap<>();
     private transient static final Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
     //endregion
+
+    static{
+        AssetPool.getShader(AssetPool.DEFAULT_FALLBACK_SHADER);
+    }
 
     // Prefix for assets which are compiled and included as a package
     private static final String ASSET_PACKAGE_PREFIX = "jAssets.";
     public static final String DEFAULT_FALLBACK_SHADER = "assets/shaders/defShader.glsl";
 
     /**
-     *
-     * @param resourceName
-     * @return
+     * Looks up a shader in the engine asset pools, if not found a new one is created, added and returned.
+     * Shaders are compiled at runtime with this!
+     * @param resourceName the shader full path from the current working directory
+     * @return The compiled shader
      */
     public static ShaderBuilder getShader(String resourceName){
         File file = new File(resourceName);
@@ -40,9 +47,10 @@ public class AssetPool {
     }
 
     /**
-     *
-     * @param resourceName
-     * @return
+     * Looks up a texture in the engine asset pools, if not found a new one is created, added and returned.
+     * Textures are streamed in if not found!
+     * @param resourceName the texture full path from the current working directory, including the file extension.
+     * @return The loaded texture
      */
     public static Texture getTexture(String resourceName){
         File file = new File(resourceName);
@@ -55,6 +63,11 @@ public class AssetPool {
         return texture;
     }
 
+    /**
+     * Sprite sheets need to created manually, the constructor takes care of registering one to the asset pool.
+     * @param resourceName Spritesheet's parent texture full path from the current working directory, including the file extension.
+     * @param sheet The sprite sheet to add
+     */
     public static void addSpriteSheet(String resourceName, SpriteSheet sheet){
         File file = new File(resourceName);
         if(!engineSpriteSheet.containsKey(file.getAbsolutePath())){
@@ -62,28 +75,48 @@ public class AssetPool {
         }
     }
 
+    /**
+     * Looks up a sprite sheet in the engine asset pools, if not found an exception is thrown
+     * @param resourceName Spritesheet's parent texture full path from the current working directory, including the file extension.
+     * @return The loaded sprite sheet
+     */
     public static SpriteSheet getSpriteSheet(String resourceName){
         File file = new File(resourceName);
 
-        assert engineSpriteSheet.containsKey(file.getAbsolutePath()) : "ERROR (AssetPool) --> Tried to access sprite-sheet '" + resourceName + "' and it has not been added to asset pool";
+        if (!engineSpriteSheet.containsKey(file.getAbsolutePath())){
+            String ErrorMessage = StringUtils.format("Tried to access sprite-sheet '{0}' but it has not been added to asset pool", resourceName);
+            EngineLogger.logError(ErrorMessage);
+            throw new AssertionError(ErrorMessage);
+        }
 
         return engineSpriteSheet.getOrDefault(file.getAbsolutePath(), null);
     }
 
     //<editor-fold desc="Scene assets methods">
-    public static Scene getScene(String sceneName){
-        Class<?> sceneClass;
-        Scene result = new EmptyScene();
 
+    /**
+     * Gets a new instance of a scene
+     * @param sceneName The scene full canonical name.
+     * @return A new instance of the scene, created using reflection.
+     */
+    public static Scene getScene(String sceneName){
         try {
-            sceneClass = Class.forName(sceneName);
-            result = (Scene)(sceneClass.getDeclaredConstructor().newInstance());   //Now overwrite the empty scene
+
+            // Avoid reflection if possible
+            if(engineScenes.containsKey(sceneName)){
+                return (Scene)engineScenes.get(sceneName).newInstance();
+            }
+
+            Class<?> sceneClass = Class.forName(sceneName);
+            Constructor<?> sceneConstructor = sceneClass.getDeclaredConstructor();
+            engineScenes.put(sceneName, sceneConstructor);
+            return (Scene)(sceneConstructor.newInstance());   //Now overwrite the empty scene
         }
         catch (Exception ex) {
-            System.err.println("Scene definition requested: " + sceneName);
-            ex.printStackTrace();
+            EngineLogger.logError(StringUtils.format("Could not find Scene class for '{0}' with exception {1}", sceneName, ex));
         }
-        return result;
+
+        return null;
     }
     //</editor-fold>
 }
