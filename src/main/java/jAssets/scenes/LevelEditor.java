@@ -4,7 +4,7 @@ import commons.Color;
 import jDabria.ECP.GameObject;
 import jDabria.ECP.components.Sprite.SpriteRenderer;
 import jDabria.ECP.components.UI.Pieces.UIColorPicker;
-import jDabria.ECP.components.UI.Pieces.UITextBox;
+import jDabria.ECP.components.physics.RigidBody2D;
 import jDabria.assetManager.AssetPool;
 import jDabria.renderer.Camera;
 import jDabria.renderer.sprite.Sprite;
@@ -26,39 +26,37 @@ public class LevelEditor extends Scene {
             return;
         }
 
-        UIColorPicker cp = new UIColorPicker();
-
-        GameObject bepu_love = new GameObject("bepu", new Vector3f(150, 300, 1), new Vector3f(1,1,1));
-        SpriteRenderer bepu_spr = new SpriteRenderer(new Sprite(AssetPool.getTexture("Assets/Textures/bepu.png")));
-        bepu_spr.getSprite().setSize(128, 128);
-        bepu_love.addComponent(bepu_spr);
-        bepu_love.addComponent(cp);
-        addGameObjectToScene(bepu_love);
-
-        GameObject testIMGUI = new GameObject("Test");
-        testIMGUI.setPosition( new Vector3f(100, 100, 1) );
-        addGameObjectToScene(testIMGUI);
-
-        UITextBox io = new UITextBox().setContent("Test").setTitle("Hi");
-
+        UIColorPicker cp1 = new UIColorPicker();
+        UIColorPicker cp2 = new UIColorPicker();
+        UIColorPicker cp3 = new UIColorPicker();
         SpriteRenderer spr = new SpriteRenderer(Color.BLACK);
-
-        cp = new UIColorPicker();
+        SpriteRenderer bepu_spr = new SpriteRenderer(new Sprite(AssetPool.getTexture("Assets/Textures/bepu.png")));
         SpriteRenderer spr1 = new SpriteRenderer(Color.BLACK);
 
         spr.getSprite().setSize(100, 100);
         spr1.getSprite().setSize(100, 100);
+        bepu_spr.getSprite().setSize(128, 128);
 
-        testIMGUI.addComponent(io);
-        testIMGUI.addComponent(cp);
-        testIMGUI.addComponent(spr);
-
+        GameObject bepu_love = new GameObject("bepu", new Vector3f(150, 300, 1), new Vector3f(1,1,1));
         GameObject deez = new GameObject("Deez");
+        GameObject testIMGUI = new GameObject("Test");
+
+
+        bepu_love.addComponent(bepu_spr);
+        bepu_love.addComponent(cp1);
+        bepu_love.addComponent(new RigidBody2D());
+
+        testIMGUI.setPosition( new Vector3f(100, 100, 1) );
+        testIMGUI.addComponent(cp2);
+        testIMGUI.addComponent(spr);
         deez.setPosition(new Vector3f(200, 200, 1));
-        addGameObjectToScene(deez);
-        cp = new UIColorPicker();
-        deez.addComponent(cp);
+        deez.addComponent(cp3);
         deez.addComponent(spr1);
+
+
+        addGameObjectToScene(bepu_love);
+        addGameObjectToScene(testIMGUI);
+        addGameObjectToScene(deez);
     }
 
     @Override
