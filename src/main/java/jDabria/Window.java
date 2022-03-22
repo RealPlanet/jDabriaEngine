@@ -68,18 +68,20 @@ public class Window {
     public void run(){
         System.out.println("Starting LWJG " + Version.getVersion());
         init();
+
         loop();
 
+        stop();
+    }
+
+    public void stop(){
+        imGUILayer.destroyImGui();
         // Free memory taken from window
         glfwFreeCallbacks(glfwWindow);
         glfwDestroyWindow(glfwWindow);
 
         glfwTerminate();
         Objects.requireNonNull(glfwSetErrorCallback(null)).free();
-    }
-
-    public void stop(){
-        imGUILayer.destroyImGui();
     }
 
     private void init() {

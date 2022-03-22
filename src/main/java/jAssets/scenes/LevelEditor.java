@@ -78,10 +78,7 @@ public class LevelEditor extends Scene {
 
     @Override
     protected void loadResources() {
-        AssetPool.getShader(AssetPool.DEFAULT_FALLBACK_SHADER);
-
         String SpriteSheetTestPath = "Assets/Textures/SpriteSheetTest.png";
-        AssetPool.addSpriteSheet(SpriteSheetTestPath,
-                new SpriteSheet(AssetPool.getTexture(SpriteSheetTestPath), 16, 16, 26, 0));
+        new SpriteSheet(AssetPool.getTexture(SpriteSheetTestPath), 16, 16, 26, 0);
     }
 }
