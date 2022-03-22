@@ -8,12 +8,12 @@ import java.beans.ConstructorProperties;
 
 public class Color{
     //region Pre-made colors
-    public transient static final Color WHITE         = new Color(1,1,1,1);
-    public transient static final Color BLACK         = new Color(0,0,0,1);
-    public transient static final Color RED           = new Color(1,0,0,1);
-    public transient static final Color GREEN         = new Color(0,1,0,1);
-    public transient static final Color BLUE          = new Color(0,0,1,1);
-    public transient static final Color PURPLE        = new Color(0.75f, 0, 1, 1);
+    @SuppressWarnings("unused") public transient static final Color WHITE         = new Color(1,1,1,1);
+    @SuppressWarnings("unused") public transient static final Color BLACK         = new Color(0,0,0,1);
+    @SuppressWarnings("unused") public transient static final Color RED           = new Color(1,0,0,1);
+    @SuppressWarnings("unused") public transient static final Color GREEN         = new Color(0,1,0,1);
+    @SuppressWarnings("unused") public transient static final Color BLUE          = new Color(0,0,1,1);
+    @SuppressWarnings("unused") public transient static final Color PURPLE        = new Color(0.75f, 0, 1, 1);
     //endregion
 
     //region Member variables
@@ -46,7 +46,7 @@ public class Color{
         this.Alpha = GMath.clamp(0, 1, a);
     }
 
-    public Color(){}
+    @SuppressWarnings("unused") private Color(){}
     //endregion
 
     //region Getters
@@ -57,6 +57,7 @@ public class Color{
     //endregion
 
     //region Setters
+    @SuppressWarnings("unused")
     public void setColor(@NotNull Color newColor){
         Red = newColor.Red;
         Green = newColor.Green;
