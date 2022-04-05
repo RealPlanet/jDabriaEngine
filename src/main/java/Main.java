@@ -1,5 +1,5 @@
 import commons.logging.EngineLogger;
-import jDabria.engine.Engine;
+import engine.Engine;
 
 public class Main {
     public static void main(String[] args){
@@ -7,6 +7,7 @@ public class Main {
 
         Engine engine = Engine.getEngine();
         engine.run();
+
         EngineLogger.close();
     }
 }

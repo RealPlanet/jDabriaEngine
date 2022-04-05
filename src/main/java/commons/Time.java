@@ -1,6 +1,6 @@
 package commons;
 
-import jDabria.Window;
+import engine.Window;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 

@@ -2,7 +2,7 @@ package commons.imgui;
 
 import commons.Utils;
 import imgui.ImGui;
-import jDabria.imGUI.UIHelper;
+import engine.renderer.imgui.UIHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
