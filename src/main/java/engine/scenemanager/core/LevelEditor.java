@@ -1,15 +1,14 @@
 package engine.scenemanager.core;
 
-import engine.scenemanager.Scene;
+import engine.assetmanager.AssetPool;
 import engine.ecp.GameObject;
 import engine.ecp.components.ui.leveleditor.UISpritePickerWindow;
-import engine.assetmanager.AssetPool;
-import engine.renderer.Camera;
 import engine.renderer.sprite.SpriteSheet;
+import engine.scenemanager.Scene;
 
 public class LevelEditor extends Scene {
 
-    private SpriteSheet gameSprites;
+    private transient SpriteSheet gameSprites;
 
     public LevelEditor(){
         System.out.println("Inside Level editor!");
@@ -17,11 +16,8 @@ public class LevelEditor extends Scene {
 
     @Override
     public void onInit() {
-        sceneCamera = new Camera();
-
         GameObject LevelEditor = new GameObject("LVL_EDITOR");
         LevelEditor.addComponent(new UISpritePickerWindow(gameSprites));
-
 
         addGameObjectToScene(LevelEditor);
     }

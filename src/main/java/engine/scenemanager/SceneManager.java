@@ -1,8 +1,8 @@
 package engine.scenemanager;
 
-import engine.assetmanager.AssetPool;
-import engine.renderer.Camera;
 import engine.Window;
+import engine.assetmanager.AssetPool;
+import engine.ecp.components.Camera;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,7 +88,7 @@ public class SceneManager {
     public static @Nullable Camera getActiveCamera(){
         for (Scene ActiveScene: gameScenes) {
            if(ActiveScene.sceneCamera != null){
-               return ActiveScene.sceneCamera;
+               return ActiveScene.sceneCamera.getComponent(Camera.class);
            }
         }
 

@@ -1,12 +1,11 @@
 package engine.scenemanager;
 
 import engine.ecp.GameObject;
+import engine.ecp.components.Camera;
 import engine.events.window.IUpdateFrameListener;
-import engine.renderer.Camera;
 import engine.renderer.batcher.Renderer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public abstract class Scene implements IUpdateFrameListener {
     private final List<GameObject> gameObjects = new ArrayList<>();
 
     @Nullable
-    protected Camera sceneCamera = new Camera(new Vector3f(0,0,0)); // Stores the location of the player camera, can be null if multiple scenes are active
+    protected GameObject sceneCamera = null;// Stores the location of the player camera, can be null if multiple scenes are active
     protected int sceneIndex = -1; //Store the position in the SceneManager array list of active scenes
     protected Renderer sceneRenderer = new Renderer();
 
@@ -50,6 +49,7 @@ public abstract class Scene implements IUpdateFrameListener {
 
     //<editor-fold desc="Public methods">
     public void init(){
+        sceneCamera = Camera.createDefaultCamera(this);
         loadResources();
 
         if(isLoaded){
