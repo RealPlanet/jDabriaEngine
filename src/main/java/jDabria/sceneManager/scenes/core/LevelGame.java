@@ -1,16 +1,12 @@
-package jAssets.scenes.core;
+package jDabria.sceneManager.scenes.core;
 
+import commons.logging.EngineLogger;
+import jDabria.engine.Engine;
 import jDabria.sceneManager.Scene;
 
-public class EmptyScene extends Scene {
-
-    public EmptyScene(){
-
-    }
-
-    @Override
-    public void onFrameUpdate() {
-
+public class LevelGame extends Scene {
+    public LevelGame(){
+        EngineLogger.log("Entering GAME");
     }
 
     @Override
@@ -25,7 +21,7 @@ public class EmptyScene extends Scene {
 
     @Override
     protected void onClear() {
-        
+
     }
 
     @Override
@@ -35,6 +31,6 @@ public class EmptyScene extends Scene {
 
     @Override
     public void onInit() {
-
+        Engine.getEngine().setState(Engine.State.PLAY_MODE);
     }
 }

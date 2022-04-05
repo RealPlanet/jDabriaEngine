@@ -1,4 +1,4 @@
-package jDabria.ECP.components.Sprite;
+package jDabria.ECP.components.sprite;
 
 import commons.Color;
 import jDabria.assetManager.resources.Texture;

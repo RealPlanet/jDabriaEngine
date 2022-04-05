@@ -275,11 +275,9 @@ public class ImGUILayer implements IUpdateFrameListener {
     }
 
     public static void addStartFrameListener(IImGUIStartFrame listener){
-        if(imGUIStartFrameListeners.contains(listener)){
-            return;
+        if(!imGUIStartFrameListeners.contains(listener)){
+            imGUIStartFrameListeners.add(listener);
         }
-
-        imGUIStartFrameListeners.add(listener);
     }
 
     public static void removeStartFrameListener(IImGUIStartFrame listener){

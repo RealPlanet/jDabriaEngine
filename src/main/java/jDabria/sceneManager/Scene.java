@@ -63,6 +63,7 @@ public abstract class Scene implements IUpdateFrameListener {
     public void start(){
         isStarted = true;
         for(GameObject go: gameObjects) {
+            go.setActive(false);
             go.setActive(true);
             sceneRenderer.add(go);
         }

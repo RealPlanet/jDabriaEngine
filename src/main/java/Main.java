@@ -1,13 +1,12 @@
 import commons.logging.EngineLogger;
-import jDabria.Window;
+import jDabria.engine.Engine;
 
 public class Main {
     public static void main(String[] args){
         EngineLogger.open();
 
-        Window window = Window.getWindow();
-        window.run();
-
+        Engine engine = Engine.getEngine();
+        engine.run();
         EngineLogger.close();
     }
 }

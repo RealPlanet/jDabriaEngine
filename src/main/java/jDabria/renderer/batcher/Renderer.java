@@ -1,6 +1,6 @@
 package jDabria.renderer.batcher;
 
-import jDabria.ECP.components.Sprite.SpriteRenderer;
+import jDabria.ECP.components.sprite.SpriteRenderer;
 import jDabria.ECP.GameObject;
 import org.jetbrains.annotations.NotNull;
 

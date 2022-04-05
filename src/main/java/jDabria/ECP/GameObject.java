@@ -39,8 +39,8 @@ public class GameObject{
         Transform tmp = new Transform(new Vector3f(position), new Vector3f(scale));
         this.addComponent(tmp);
         this.transform = tmp;
-
-        enableComponents();
+        tmp.start();
+        //enableComponents();
     }
 
     public GameObject(String name, @NotNull Vector2f position, Vector3f scale){
@@ -62,8 +62,8 @@ public class GameObject{
 
     private void disableComponents(){
         isActive = false;
-        for(Component Comp : components){
-            Comp.stop();
+        for(Component component : components){
+            component.stop();
         }
     }
     //endregion
@@ -88,9 +88,13 @@ public class GameObject{
 
     //region Setters
     public void setActive(boolean active){
+        if(isActive() == active){
+            return;
+        }
+
         isActive = active;
 
-        if (isActive){
+        if (isActive()){
             enableComponents();
             return;
         }

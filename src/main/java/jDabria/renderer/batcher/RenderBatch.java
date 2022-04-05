@@ -4,7 +4,7 @@ import commons.Color;
 import jDabria.assetManager.AssetPool;
 import jDabria.assetManager.resources.ShaderBuilder;
 import jDabria.assetManager.resources.Texture;
-import jDabria.ECP.components.Sprite.SpriteRenderer;
+import jDabria.ECP.components.sprite.SpriteRenderer;
 import jDabria.ECP.components.Transform;
 import jDabria.sceneManager.SceneManager;
 import org.jetbrains.annotations.NotNull;

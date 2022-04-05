@@ -1,14 +1,15 @@
-package jDabria.ECP.components.UI.Pieces;
+package jDabria.ECP.components.ui.pieces;
 
 import commons.Color;
 import imgui.ImGui;
-import jDabria.ECP.components.Sprite.SpriteRenderer;
-import jDabria.ECP.components.UI.ImGUIComponent;
+import jDabria.ECP.base.Component;
+import jDabria.ECP.base.EditorComponent;
+import jDabria.ECP.components.sprite.SpriteRenderer;
 
 /**
  * If a sprite renderer is present on the game-object a color wheel is created to edit it's color
  */
-public class UIColorPicker extends ImGUIComponent {
+public class UIColorPicker extends EditorComponent<Component> {
 
     private transient SpriteRenderer OwnerSpriteRenderer = null;
 

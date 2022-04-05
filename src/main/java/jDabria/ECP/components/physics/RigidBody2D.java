@@ -1,9 +1,11 @@
 package jDabria.ECP.components.physics;
 
-import jDabria.ECP.components.UI.ImGUIComponent;
+import jDabria.ECP.base.Component;
 import org.joml.Vector3f;
 
-public class RigidBody2D extends ImGUIComponent {
+public class RigidBody2D extends Component {
+
+    private transient RigidBody2DEditor rbEditor;
 
     private int colliderType = 0;
     private float friction = 0.8f;
@@ -12,21 +14,24 @@ public class RigidBody2D extends ImGUIComponent {
     private Vector3f velocity = new Vector3f(0,0,0);
 
     public RigidBody2D(){
-        useDefaultDrawer = true;
+        rbEditor = new RigidBody2DEditor();
     }
 
     @Override
-    public void start() {
+    public void start(){
         super.start();
+        if(rbEditor.attach(this)){
+            rbEditor.setWindowName("RigidBody2D");
+            rbEditor.start();
+        }
+        else{
+            rbEditor = null;
+        }
     }
 
     @Override
     public void stop() {
         super.stop();
-    }
-
-    @Override
-    protected void render() {
-
+        rbEditor.stop();
     }
 }

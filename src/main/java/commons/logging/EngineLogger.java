@@ -36,6 +36,7 @@ public class EngineLogger {
         final int STACK_INDEX = 3;
 
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+
         int lineNumber = trace[STACK_INDEX].getLineNumber();
         String className = trace[STACK_INDEX].getClassName();
         String methodName = trace[STACK_INDEX].getMethodName();

@@ -1,10 +1,16 @@
-package jAssets.scenes;
+package jDabria.sceneManager.scenes.core;
 
 import jDabria.sceneManager.Scene;
 
-public class Level_1 extends Scene {
-    public Level_1(){
-        System.out.println("Inside Level 1!");
+public class EmptyScene extends Scene {
+
+    public EmptyScene(){
+
+    }
+
+    @Override
+    public void onFrameUpdate() {
+
     }
 
     @Override
@@ -19,7 +25,7 @@ public class Level_1 extends Scene {
 
     @Override
     protected void onClear() {
-
+        
     }
 
     @Override
