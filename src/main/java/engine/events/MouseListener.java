@@ -1,7 +1,10 @@
 package engine.events;
 
+import engine.Window;
+import engine.scenemanager.SceneManager;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
@@ -62,7 +65,7 @@ public class MouseListener {
     }
     //</editor-fold>
 
-    //<editor-fold desc="Data access methods">
+    // region Get methods
     public static @NotNull Vector2f getDeltaPos(){
         MouseListener mouseListener = get();
         return new Vector2f((float) (mouseListener.lastX - mouseListener.xPos),
@@ -81,6 +84,20 @@ public class MouseListener {
                 (float) (mouseListener.yScroll));
     }
 
+    public static @NotNull Vector2f getOrthoPos(){
+        Vector2f currentPosition = getPos();
+        currentPosition.x = (currentPosition.x / (float)Window.getWidth()) * 2.0f - 1.0f; // Convert range from 0 to 1 to -1 to 1
+        currentPosition.y = (currentPosition.y / (float)Window.getHeight()) * 2.0f - 1.0f; // Convert range from 0 to 1 to -1 to 1
+        Vector4f temp = new Vector4f(currentPosition.x, currentPosition.y, 0, 1);
+
+        temp.mul(SceneManager.getActiveCamera().getInverseProjMatrix()).mul(SceneManager.getActiveCamera().getInverseViewMatrix());
+
+        currentPosition.x = temp.x;
+        currentPosition.y = temp.y;
+
+        return currentPosition;
+    }
+
     public static boolean isDragging(){
         return get().isDragging;
     }
@@ -93,5 +110,5 @@ public class MouseListener {
 
         return mouseListener.mouseButtonPressed[button];
     }
-    //</editor-fold>
+    // endregion
 }
