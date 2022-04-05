@@ -11,6 +11,10 @@ import org.joml.Vector3f;
 public class Camera extends Component implements UniqueComponent {
     private final Matrix4f projectionMatrix = new Matrix4f();
     private final Matrix4f viewMatrix = new Matrix4f();
+
+    private final Matrix4f inverseProjMatrix = new Matrix4f();
+    private final Matrix4f inverseViewMatrix = new Matrix4f();
+
     private transient Transform parentTransform = null;
     private transient Vector3f lastPosition = new Vector3f();
 
@@ -25,8 +29,7 @@ public class Camera extends Component implements UniqueComponent {
         return holder;
     }
 
-    public Camera(){
-    }
+    public Camera(){}
 
     @Override
     public void start() {
@@ -59,6 +62,7 @@ public class Camera extends Component implements UniqueComponent {
     public void adjustWindowProjection(){
         projectionMatrix.identity();
         projectionMatrix.ortho(0.0f, 32.0f * 40.f, 0.0f, 32.0f * 21.0f, 0, 100.0f);
+        projectionMatrix.invert(inverseProjMatrix);
     }
 
     /**
@@ -72,6 +76,8 @@ public class Camera extends Component implements UniqueComponent {
         viewMatrix.lookAt(  new Vector3f(parentTransform.position.x, parentTransform.position.y, 20f),
                 cameraFront.add(parentTransform.position.x, parentTransform.position.y, 0.0f),
                 cameraUp);
+
+        viewMatrix.invert(inverseViewMatrix);
         return viewMatrix;
     }
 
@@ -82,6 +88,10 @@ public class Camera extends Component implements UniqueComponent {
     public Matrix4f getProjMatrix(){
         return projectionMatrix;
     }
+
+    public Matrix4f getInverseProjMatrix() {return inverseProjMatrix;}
+
+    public Matrix4f getInverseViewMatrix() {return inverseViewMatrix;}
 
     public Vector3f getPosition(){
         return parentTransform.position;

@@ -3,8 +3,10 @@ package engine.scenemanager.core;
 import engine.assetmanager.AssetPool;
 import engine.ecp.GameObject;
 import engine.ecp.components.ui.leveleditor.UISpritePickerWindow;
+import engine.events.MouseListener;
 import engine.renderer.sprite.SpriteSheet;
 import engine.scenemanager.Scene;
+import org.joml.Vector3f;
 
 public class LevelEditor extends Scene {
 
@@ -16,6 +18,7 @@ public class LevelEditor extends Scene {
 
     @Override
     public void onInit() {
+        sceneCamera.setPosition(new Vector3f(-250, 0, 0));
         GameObject LevelEditor = new GameObject("LVL_EDITOR");
         LevelEditor.addComponent(new UISpritePickerWindow(gameSprites));
 
@@ -24,6 +27,7 @@ public class LevelEditor extends Scene {
 
     @Override
     protected void onUpdate() {
+        MouseListener.getOrthoPos();
         sceneRenderer.Render();
     }
 
