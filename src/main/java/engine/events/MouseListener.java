@@ -13,14 +13,20 @@ public class MouseListener {
     private double xScroll, yScroll;
     private double xPos, yPos, lastY, lastX;
 
-    private final boolean[] mouseButtonPressed = new boolean[3];
+    private final boolean[] mouseButtonPressed = new boolean[9];
     private boolean isDragging;
 
-    //<editor-fold desc="Singleton">
+    //region Singleton
     private MouseListener(){
         xScroll = yScroll = 0.0;
         xPos = yPos = 0.0;
         lastX = lastY = 0.0;
+
+        Window.addEndFrameListener(() -> {
+            instance.yScroll = instance.xScroll = 0;
+            instance.lastX = instance.xPos;
+            instance.lastY = instance.yPos;
+        });
     }
 
     public static @NotNull MouseListener get() {
@@ -30,9 +36,9 @@ public class MouseListener {
 
         return instance;
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Mouse Callbacks">
+    //region Mouse Callbacks
     public static void mousePositionCallback(long window, double xPos, double yPos){
         MouseListener mouseListener = get();
         mouseListener.lastX = mouseListener.xPos;
@@ -47,23 +53,21 @@ public class MouseListener {
     }
 
     public static void mouseButtonCallback(long window, int button, int action, int mods){
-        MouseListener mouseListener = get();
-        if(button > mouseListener.mouseButtonPressed.length)
+        if(button > instance.mouseButtonPressed.length)
             return;
 
         // Actions can be GLFW_RELEASE or GLFW_PRESS
-        boolean actionResult = action == GLFW_PRESS;
-        mouseListener.mouseButtonPressed[button] = actionResult;
-        mouseListener.isDragging = actionResult;
+        instance.mouseButtonPressed[button] = action == GLFW_PRESS;
+        if(!instance.mouseButtonPressed[button]){
+            instance.isDragging = false;
+        }
     }
 
     public static void mouseScrollCallback(long window, double xOffset, double yOffset){
-        MouseListener mouseListener = get();
-        mouseListener.yScroll = mouseListener.xScroll = 0;
-        mouseListener.lastX = mouseListener.xPos;
-        mouseListener.lastY = mouseListener.yPos;
+        instance.xScroll = xOffset;
+        instance.yScroll = yOffset;
     }
-    //</editor-fold>
+    //endregion
 
     // region Get methods
     public static @NotNull Vector2f getDeltaPos(){
@@ -87,7 +91,7 @@ public class MouseListener {
     public static @NotNull Vector2f getOrthoPos(){
         Vector2f currentPosition = getPos();
         currentPosition.x = (currentPosition.x / (float)Window.getWidth()) * 2.0f - 1.0f; // Convert range from 0 to 1 to -1 to 1
-        currentPosition.y = (currentPosition.y / (float)Window.getHeight()) * 2.0f - 1.0f; // Convert range from 0 to 1 to -1 to 1
+        currentPosition.y = ( ((float)Window.getHeight() - currentPosition.y) / (float)Window.getHeight()) * 2.0f - 1.0f; // Convert range from 0 to 1 to -1 to 1
         Vector4f temp = new Vector4f(currentPosition.x, currentPosition.y, 0, 1);
 
         temp.mul(SceneManager.getActiveCamera().getInverseProjMatrix()).mul(SceneManager.getActiveCamera().getInverseViewMatrix());
@@ -103,12 +107,10 @@ public class MouseListener {
     }
 
     public static boolean isButtonDown(int button){
-        MouseListener mouseListener = get();
-
-        if(button > mouseListener.mouseButtonPressed.length)
+        if(button > instance.mouseButtonPressed.length)
             return false;
 
-        return mouseListener.mouseButtonPressed[button];
+        return instance.mouseButtonPressed[button];
     }
     // endregion
 }

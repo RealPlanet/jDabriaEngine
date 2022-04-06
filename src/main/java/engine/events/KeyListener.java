@@ -10,7 +10,7 @@ public class KeyListener {
     //Amount of keybindings that GLFW utilizes, possibly wrong!
     private final boolean[] keyPressed = new boolean[350];
 
-    //<editor-fold desc="Singleton">
+    //region Singleton
     private KeyListener(){
 
     }
@@ -21,21 +21,21 @@ public class KeyListener {
         }
         return instance;
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Callbacks">
+    //region Callbacks
     public static void keyCallback(long window, int key, int scanCode, int action, int mods){
         KeyListener listener = Get();
 
         // Possible actions are GLFW_RELEASE and GLFW_PRESS
         listener.keyPressed[key] = action == GLFW_PRESS;
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Data access methods">
+    //region Data access methods
     public static boolean isKeyPressed(int keyCode){
         KeyListener listener = Get();
         return listener.keyPressed[keyCode];
     }
-    //</editor-fold>
+    //endregion
 }

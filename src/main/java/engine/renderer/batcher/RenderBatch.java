@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class RenderBatch implements Comparable<RenderBatch>{
 
-    //<editor-fold desc="Variables">
+    //region Variables
     //  Vertex
     //  ======
     //  Pos                             Color                       Tex coordinates     Tex Id
@@ -49,9 +49,9 @@ public class RenderBatch implements Comparable<RenderBatch>{
     private final int[] texSlots = {0, 1, 2, 3, 4, 5, 6, 7};
     private final ShaderBuilder shader;
     private final int zIndex;
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Constructors">
+    //region Constructors
 
     /**
      *
@@ -73,9 +73,9 @@ public class RenderBatch implements Comparable<RenderBatch>{
 
         init();
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Private methods">
+    //region Private methods
     private void init(){
         //Generate and bind a Vertex Array Object - VAO
         vaoID = glGenVertexArrays();
@@ -187,9 +187,9 @@ public class RenderBatch implements Comparable<RenderBatch>{
             offset += VERTEX_SIZE;
         }
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Public methods">
+    //region Public methods
     public boolean addSprite(@NotNull SpriteRenderer spriteRenderer){
         // If this texture isn't preset in the batch, and we have no more room
         if(     spriteRenderer.getSprite() != null &&
@@ -291,5 +291,5 @@ public class RenderBatch implements Comparable<RenderBatch>{
     public int compareTo(@NotNull RenderBatch o) {
         return Integer.compare(this.zIndex, o.getzIndex());
     }
-    //</editor-fold>
+    //endregion
 }

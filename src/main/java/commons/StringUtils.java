@@ -5,10 +5,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.zip.DeflaterOutputStream;
@@ -122,5 +119,19 @@ public class StringUtils {
         }
 
         return os.toByteArray();
+    }
+
+    public static @NotNull String getFileExtension(@NotNull File file) {
+        String fileName = file.getName();
+        int extIndex = fileName.lastIndexOf('.');
+        if (extIndex <= 0) return "";
+        return fileName.substring(extIndex + 1);
+    }
+
+    public static @NotNull String getFileName(@NotNull File file) {
+        String fileName = file.getName();
+        int extIndex = fileName.lastIndexOf('.');
+        if (extIndex <= 0) return "";
+        return fileName.substring(0, extIndex);
     }
 }

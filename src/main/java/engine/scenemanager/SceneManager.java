@@ -25,7 +25,7 @@ public class SceneManager {
         SINGLE      // Dump ALL loaded scenes and after load this scene
     }
 
-    //<editor-fold desc="Scene operations">
+    //region Scene operations
     /**
      * Changes current Scene to a new one using Java reflection
      * @param sceneName Scene class name to load
@@ -45,22 +45,22 @@ public class SceneManager {
         Scene SceneToLoad;
         SceneToLoad = AssetPool.getScene(sceneName);
 
-        //<editor-fold desc="Scene loading">
+        //region Scene loading
         changingScene = true;
 
         SceneToLoad.sceneIndex = gameScenes.size();
 
         SceneToLoad.init();
 
-        //<editor-fold desc="Register scene events">
+        //region Register scene events
         // Once scene is loaded we assign events
         Window.addUpdateFrameListener(SceneToLoad);
-        //</editor-fold>
+        //endregion
 
         gameScenes.add(SceneToLoad);
 
         changingScene = false;
-        //</editor-fold>
+        //endregion
 
         SceneToLoad.start();
     }
@@ -77,9 +77,9 @@ public class SceneManager {
         SceneToUnload.unload();
         gameScenes.remove(SceneToUnload);
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Getters">
+    //region Getters
 
     /**
      * Returns the player camera, can be null if none is found
@@ -115,5 +115,5 @@ public class SceneManager {
     public static @NotNull ArrayList<Scene> getActiveScenes(){
         return new ArrayList<>(gameScenes);
     }
-    //</editor-fold>
+    //endregion
 }

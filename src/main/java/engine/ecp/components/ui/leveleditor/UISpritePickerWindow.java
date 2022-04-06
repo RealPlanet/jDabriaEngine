@@ -1,15 +1,22 @@
 package engine.ecp.components.ui.leveleditor;
 
-import imgui.ImGui;
-import imgui.ImVec2;
+import engine.ecp.GameObject;
+import engine.ecp.Prefabs;
 import engine.ecp.base.ImGUIComponent;
+import engine.ecp.components.internal.MouseControls;
 import engine.renderer.sprite.Sprite;
 import engine.renderer.sprite.SpriteSheet;
+import engine.scenemanager.SceneManager;
+import engine.scenemanager.core.LevelEditor;
+import imgui.ImGui;
+import imgui.ImVec2;
+import imgui.enums.ImGuiCond;
 import org.joml.Vector2f;
 
 public class UISpritePickerWindow extends ImGUIComponent {
 
     private transient SpriteSheet sprites = null;
+    private transient MouseControls parentControls = null;
 
     public UISpritePickerWindow(SpriteSheet sprites){
         this.sprites = sprites;
@@ -17,11 +24,14 @@ public class UISpritePickerWindow extends ImGUIComponent {
 
     @Override
     protected void render() {
-        ImGui.begin("Test");
+        String windowName = "Sprite Palette :: " + sprites.getParentTextureName();
+
+        ImGui.begin(windowName);
+        ImGui.setWindowSize(1024, 128, ImGuiCond.FirstUseEver);
+
         ImVec2 windowPosition = new ImVec2();
         ImVec2 windowSize = new ImVec2();
         ImVec2 itemSpacing = new ImVec2();
-
 
         ImGui.getWindowPos(windowPosition);
         ImGui.getWindowSize(windowSize);
@@ -38,7 +48,14 @@ public class UISpritePickerWindow extends ImGUIComponent {
 
             ImGui.pushID(i);
             if(ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y) ){
-                System.out.println("Button " + i + "clicked");
+                if(parentControls == null){
+                    parentControls =  ((LevelEditor)SceneManager.GetActiveScene(LevelEditor.class.getCanonicalName())).getDDControls();
+                }
+
+                // copy is needed, otherwise generateSpriteObject will change the sprite pallet sprite size once it calls setSprite
+                Sprite copySprite = new Sprite(sprite.getTexture(), sprite.getTexCoords());
+                GameObject obj = Prefabs.generateSpriteObject(copySprite, spriteWidth, spriteHeight);
+                parentControls.pickupObject(obj);
             }
             ImGui.popID();
 

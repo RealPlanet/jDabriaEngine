@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class GameObject{
     private String name;
+
     private final ArrayList<Component> components = new ArrayList<>(2);
     private transient Transform transform;
     private boolean isActive = false;
@@ -40,7 +41,6 @@ public class GameObject{
         this.addComponent(tmp);
         this.transform = tmp;
         tmp.start();
-        //enableComponents();
     }
 
     public GameObject(String name, @NotNull Vector2f position, Vector3f scale){
@@ -169,7 +169,7 @@ public class GameObject{
         return null;
     }
 
-    public <T extends Component> void removeComponent(Class<T> componentClass){
+    public <T extends Component> void removeComponent(@NotNull Class<T> componentClass){
         if(componentClass.isAssignableFrom(RequiredComponent.class)){
             throw new RequiredComponentException(StringUtils.format("Cannot remove this component from game-object --> {0}", componentClass));
         }
@@ -183,6 +183,7 @@ public class GameObject{
         }
     }
 
+    // IDEA :: Use class type and instanciate within this method to be more in line with get and remove component methods
     public void addComponent(Component component){
         if(component instanceof SingleComponent){
 
