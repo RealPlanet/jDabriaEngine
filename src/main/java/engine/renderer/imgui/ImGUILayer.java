@@ -1,6 +1,9 @@
 package engine.renderer.imgui;
 
 import commons.Time;
+import engine.Window;
+import engine.events.imGUI.IImGUIStartFrame;
+import engine.events.window.IUpdateFrameListener;
 import imgui.*;
 import imgui.callbacks.ImStrConsumer;
 import imgui.callbacks.ImStrSupplier;
@@ -9,9 +12,6 @@ import imgui.enums.ImGuiConfigFlags;
 import imgui.enums.ImGuiKey;
 import imgui.enums.ImGuiMouseCursor;
 import imgui.gl3.ImGuiImplGl3;
-import engine.Window;
-import engine.events.imGUI.IImGUIStartFrame;
-import engine.events.window.IUpdateFrameListener;
 
 import java.util.ArrayList;
 
@@ -165,7 +165,7 @@ public class ImGUILayer implements IUpdateFrameListener {
         // ------------------------------------------------------------
         // GLFW callbacks to handle user input
 
-        glfwSetKeyCallback(glfwWindow, (w, key, scancode, action, mods) -> {
+        Window.getGLFWEventHandler().glfwSetKeyCallback((w, key, scancode, action, mods) -> {
             if (action == GLFW_PRESS) {
                 io.setKeysDown(key, true);
             } else if (action == GLFW_RELEASE) {
@@ -177,14 +177,12 @@ public class ImGUILayer implements IUpdateFrameListener {
             io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
             io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
         });
-
-        glfwSetCharCallback(glfwWindow, (w, c) -> {
+        Window.getGLFWEventHandler().glfwSetCharCallback((w, c) -> {
             if (c != GLFW_KEY_DELETE) {
                 io.addInputCharacter(c);
             }
         });
-
-        glfwSetMouseButtonCallback(glfwWindow, (w, button, action, mods) -> {
+        Window.getGLFWEventHandler().glfwSetMouseButtonCallback((w, button, action, mods) -> {
             final boolean[] mouseDown = new boolean[5];
 
             mouseDown[0] = button == GLFW_MOUSE_BUTTON_1 && action != GLFW_RELEASE;
@@ -199,8 +197,7 @@ public class ImGUILayer implements IUpdateFrameListener {
                 ImGui.setWindowFocus(null);
             }
         });
-
-        glfwSetScrollCallback(glfwWindow, (w, xOffset, yOffset) -> {
+        Window.getGLFWEventHandler().glfwSetScrollCallback((w, xOffset, yOffset) -> {
             io.setMouseWheelH(io.getMouseWheelH() + (float) xOffset);
             io.setMouseWheel(io.getMouseWheel() + (float) yOffset);
         });

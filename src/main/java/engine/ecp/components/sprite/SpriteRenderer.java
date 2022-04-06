@@ -12,7 +12,7 @@ public class SpriteRenderer extends Component {
     //region Member variables
     private Sprite sprite;
     private Color color;
-    private Transform parentTransform;
+    private Transform lastTransform;
     private transient boolean isDirty;
     //endregion
 
@@ -20,7 +20,7 @@ public class SpriteRenderer extends Component {
         this(null, null);
     }
 
-    //<editor-fold desc="Constructors">
+    //region Constructors
     public SpriteRenderer(commons.Color color){
         this(new Sprite(), color);
     }
@@ -34,7 +34,7 @@ public class SpriteRenderer extends Component {
         this.sprite = sprite;
         this.color = color;
         isDirty = true;
-        parentTransform = null;
+        lastTransform = null;
     }
 
     public boolean isDirty(){
@@ -106,14 +106,13 @@ public class SpriteRenderer extends Component {
     // region Component overrides
     @Override
     public void start(){
-        parentTransform = gameObject.getTransform();
+        lastTransform = gameObject.getTransform().copy();
     }
 
     @Override
     public void update() {
-        Transform latestTransform = gameObject.getTransform();
-        if(!parentTransform .equals(latestTransform)){
-            parentTransform = latestTransform;
+        if(!lastTransform.equals(gameObject.getTransform())){
+            lastTransform = gameObject.getTransform().copy();
             isDirty = true;
         }
     }

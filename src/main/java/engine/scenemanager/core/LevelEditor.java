@@ -2,6 +2,7 @@ package engine.scenemanager.core;
 
 import engine.assetmanager.AssetPool;
 import engine.ecp.GameObject;
+import engine.ecp.components.internal.MouseControls;
 import engine.ecp.components.ui.leveleditor.UISpritePickerWindow;
 import engine.events.MouseListener;
 import engine.renderer.sprite.SpriteSheet;
@@ -11,16 +12,25 @@ import org.joml.Vector3f;
 public class LevelEditor extends Scene {
 
     private transient SpriteSheet gameSprites;
+    private transient MouseControls ddControls;
 
     public LevelEditor(){
         System.out.println("Inside Level editor!");
+    }
+
+    public MouseControls getDDControls(){
+        return ddControls;
     }
 
     @Override
     public void onInit() {
         sceneCamera.setPosition(new Vector3f(-250, 0, 0));
         GameObject LevelEditor = new GameObject("LVL_EDITOR");
+
         LevelEditor.addComponent(new UISpritePickerWindow(gameSprites));
+
+        ddControls = new MouseControls(this);
+        LevelEditor.addComponent(ddControls);
 
         addGameObjectToScene(LevelEditor);
     }

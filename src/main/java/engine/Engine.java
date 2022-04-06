@@ -35,11 +35,11 @@ public class Engine {
         gameWindow.run();
     }
 
-    public int getState(){
-        return state.hashCode();
+    public State getState(){
+        return state;
     }
 
     public boolean isState(@NotNull State other){
-        return other.hashCode() == state.hashCode();
+        return other == state;
     }
 }

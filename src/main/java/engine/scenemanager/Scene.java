@@ -31,7 +31,7 @@ public abstract class Scene implements IUpdateFrameListener {
 
     }
 
-    //<editor-fold desc="Abstract methods">
+    //region Abstract methods
     /**
      * Called once on scene load
      */
@@ -45,9 +45,9 @@ public abstract class Scene implements IUpdateFrameListener {
     protected abstract void onClear();
 
     protected abstract void loadResources();
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Public methods">
+    //region Public methods
     public void init(){
         sceneCamera = Camera.createDefaultCamera(this);
         loadResources();
@@ -106,6 +106,8 @@ public abstract class Scene implements IUpdateFrameListener {
         return new ArrayList<>(gameObjects);
     }
 
+    public GameObject findGameObjectByName(String name){ return gameObjects.stream().filter(obj -> obj.getName() == name).findFirst().get();}
+
     @Override
     public void onFrameUpdate() {
         for ( GameObject go : gameObjects) {
@@ -114,5 +116,5 @@ public abstract class Scene implements IUpdateFrameListener {
 
         onUpdate();
     }
-    //</editor-fold>
+    //endregion
 }

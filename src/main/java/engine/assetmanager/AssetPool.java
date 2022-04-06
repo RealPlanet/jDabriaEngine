@@ -94,7 +94,7 @@ public class AssetPool {
         return engineSpriteSheet.getOrDefault(file.getAbsolutePath(), null);
     }
 
-    //<editor-fold desc="Scene assets methods">
+    //region Scene assets methods
 
     /**
      * Gets a new instance of a scene
@@ -120,5 +120,5 @@ public class AssetPool {
 
         return null;
     }
-    //</editor-fold>
+    //endregion
 }

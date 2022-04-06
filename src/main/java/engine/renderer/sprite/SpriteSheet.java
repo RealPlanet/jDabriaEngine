@@ -1,10 +1,12 @@
 package engine.renderer.sprite;
 
+import commons.StringUtils;
 import engine.assetmanager.AssetPool;
 import engine.assetmanager.resources.Texture;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +57,10 @@ public class SpriteSheet {
 
     @SuppressWarnings("unused")
     public String getFilepath() {return parentTexture.getFilepath();}
+
+    public String getParentTextureName(){
+        return StringUtils.getFileName(Paths.get(parentTexture.getFilepath()).toFile());
+    }
 
     public int size(){
         return sprites.size();

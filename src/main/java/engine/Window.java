@@ -1,6 +1,7 @@
 package engine;
 
 import commons.Color;
+import engine.events.GLFWEventHandler;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
 import engine.events.window.IBeginFrameListener;
@@ -29,12 +30,15 @@ public class Window {
     // ImGUI Layer
     private ImGUILayer imGUILayer;
 
+    // GLFW Event handler
+    private GLFWEventHandler glfwEventHandler;
+
     private int width;
     private int height;
     private final String title;
     private long glfwWindow; // Window mem address
 
-    //<editor-fold desc="Singleton">
+    //region Singleton
     private Window(){
         width = 1920;
         height = 1080;
@@ -48,7 +52,7 @@ public class Window {
     public static @NotNull Window getWindow(){
         return WINDOW;
     }
-    //</editor-fold>
+    //endregion
 
     // region Window getter / setter
     public static int getWidth() {
@@ -57,9 +61,10 @@ public class Window {
     public static int getHeight() {
         return getWindow().height;
     }
+    public static GLFWEventHandler getGLFWEventHandler(){ return getWindow().glfwEventHandler; }
     // endregion
 
-    //<editor-fold desc="Window execution methods">
+    // region Window execution methods
 
     /**
      * Initiates window logic for the window instance. Handles allocating the window and the think loop.
@@ -92,33 +97,35 @@ public class Window {
             throw  new IllegalStateException("GLFW onInit failed!!!!");
         }
 
-        //<editor-fold desc="Window base settings">
+        // region Window base settings
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);   //      Hide window until we are ready
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);  //      Allow resize
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);  //      start maximize
-        //</editor-fold>
+        // endregion
 
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if(glfwWindow == NULL){
             throw new IllegalStateException("Failed to create GLFW Window");
         }
 
-        //<editor-fold desc="Window Callbacks">
-        // Mouse
-        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePositionCallback);
-        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
-        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwEventHandler = new GLFWEventHandler(glfwWindow);
+
+        // region Window Callbacks
+        glfwEventHandler.glfwSetCursorPosCallback(MouseListener::mousePositionCallback);
+        glfwEventHandler.glfwSetMouseButtonCallback(MouseListener::mouseButtonCallback);
+        glfwEventHandler.glfwSetScrollCallback(MouseListener::mouseScrollCallback);
+        glfwEventHandler.glfwSetKeyCallback(KeyListener::keyCallback);
 
         // Technically this isn't needed, but better safe than sorry!
-        glfwSetWindowSizeCallback(glfwWindow, (w, nWidth, nHeight) -> Window.setDimension(nWidth, nHeight));
+        glfwEventHandler.glfwSetWindowSizeCallback((w, nWidth, nHeight) -> {
+            Window.setDimension(nWidth, nHeight);
+        });
 
-        //Keyboard
-        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+        // endregion
 
-        //</editor-fold>
+        //region Window Finalize
 
-        //<editor-fold desc="Window Finalize">
         // Set OpenGL Context
         glfwMakeContextCurrent(glfwWindow);
 
@@ -138,12 +145,11 @@ public class Window {
         // Enable alpha
         glEnable(GL_BLEND);
         glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA );
-        //glClearColor(0.0F,0.0F,0.0F,0.0F);
 
         // Setup GUI
         imGUILayer = ImGUILayer.getImGUILayer(glfwWindow);
 
-        //</editor-fold>
+        //endregion
     }
 
     private static void setDimension(int nWidth, int nHeight) {
@@ -160,26 +166,26 @@ public class Window {
         while ( !glfwWindowShouldClose(glfwWindow) ) {
             signalNewFrame();
 
-            //<editor-fold desc="Begin frame operations">
+            //region Begin frame operations
             // Poll events
             glfwPollEvents();
             // clear the framebuffer
             glClear(GL_COLOR_BUFFER_BIT);
-            //</editor-fold>
+            //endregion
 
             signalUpdateFrame();
-            //<editor-fold desc="End frame operations">
+            //region End frame operations
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
-            //</editor-fold>
+            //endregion
 
             signalEndFrame();
         }
 
     }
-    //</editor-fold>
+    // endregion
 
-    //<editor-fold desc="Debug methods">
+    //region Debug methods
 
     /**
      * Sets the clear color this window should use when nothing is being renderer
@@ -188,9 +194,9 @@ public class Window {
     public static void setWindowClearColor(@NotNull Color color){
         glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
-    //</editor-fold>
+    //endregion
 
-    //<editor-fold desc="Window Events">
+    //region Window Events
     private final ArrayList<IUpdateFrameListener> updateFrameListeners = new ArrayList<>();
     private final ArrayList<IBeginFrameListener> beginFrameListeners = new ArrayList<>();
     private final ArrayList<IEndFrameListener> endFrameListeners = new ArrayList<>();
@@ -277,5 +283,5 @@ public class Window {
             endFrameListener.onEndFrame();
         }
     }
-    //</editor-fold>
+    //endregion
 }
