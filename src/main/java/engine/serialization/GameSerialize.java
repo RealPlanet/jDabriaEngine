@@ -4,15 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import commons.StringUtils;
 import commons.io.FileUtil;
+import engine.assetmanager.resources.Texture;
 import engine.ecp.GameObject;
 import engine.ecp.base.Component;
-import engine.assetmanager.resources.Texture;
 import engine.scenemanager.Scene;
 import engine.serialization.adapter.ComponentSerialization;
 import engine.serialization.adapter.GameObjectSerialization;
 import engine.serialization.adapter.TextureSerialization;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -98,7 +99,24 @@ public class GameSerialize {
             }
         }
 
-        Component.setIdCount(maxComponentCount);
-        GameObject.setIdCount(maxGameobjectCount);
+        // Serialization has the responsability to update the counters once the game is loaded, to avoid having public methods
+        // it is achieved with reflection
+        try {
+            Field componentCount    = Component.class.getDeclaredField("ID_COUNT");
+            Field objectCount       = GameObject.class.getDeclaredField("ID_COUNT");
+            componentCount.setAccessible(true);
+            objectCount.setAccessible(true);
+
+            componentCount.setLong(null, maxComponentCount);
+            objectCount.setLong(null, maxGameobjectCount);
+
+            componentCount.setAccessible(false);
+            objectCount.setAccessible(false);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

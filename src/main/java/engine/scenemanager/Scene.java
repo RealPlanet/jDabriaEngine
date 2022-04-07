@@ -1,7 +1,6 @@
 package engine.scenemanager;
 
 import engine.ecp.GameObject;
-import engine.ecp.components.Camera;
 import engine.events.window.IUpdateFrameListener;
 import engine.renderer.batcher.Renderer;
 import org.jetbrains.annotations.Contract;
@@ -23,6 +22,7 @@ public abstract class Scene implements IUpdateFrameListener {
     private final List<GameObject> gameObjects = new ArrayList<>();
 
     @Nullable
+    // FIXME :: Each scene should handle the camera as it wants
     protected GameObject sceneCamera = null;// Stores the location of the player camera, can be null if multiple scenes are active
     protected int sceneIndex = -1; //Store the position in the SceneManager array list of active scenes
     protected Renderer sceneRenderer = new Renderer();
@@ -49,7 +49,6 @@ public abstract class Scene implements IUpdateFrameListener {
 
     //region Public methods
     public void init(){
-        sceneCamera = Camera.createDefaultCamera(this);
         loadResources();
 
         if(isLoaded){

@@ -2,6 +2,7 @@ package engine.scenemanager.core;
 
 import engine.assetmanager.AssetPool;
 import engine.ecp.GameObject;
+import engine.ecp.components.Camera;
 import engine.ecp.components.internal.MouseControls;
 import engine.ecp.components.ui.leveleditor.UISpritePickerWindow;
 import engine.events.MouseListener;
@@ -24,6 +25,8 @@ public class LevelEditor extends Scene {
 
     @Override
     public void onInit() {
+        sceneCamera = Camera.createDefaultCamera(this);
+
         sceneCamera.setPosition(new Vector3f(-250, 0, 0));
         GameObject LevelEditor = new GameObject("LVL_EDITOR");
 

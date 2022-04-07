@@ -4,6 +4,7 @@ import commons.io.FileUtil;
 import commons.math.GMath;
 import engine.assetmanager.AssetPool;
 import engine.ecp.GameObject;
+import engine.ecp.components.Camera;
 import engine.ecp.components.sprite.SpriteRenderer;
 import engine.renderer.sprite.SpriteSheet;
 import engine.scenemanager.Scene;
@@ -17,11 +18,12 @@ public class LevelTestObjects extends Scene {
 
     @Override
     protected void onInit() {
-        if(FileUtil.exists(LevelTestObjects.class.getCanonicalName())){
+        sceneCamera = Camera.createDefaultCamera(this);
+
+        if(FileUtil.exists(LevelTestObjects.class.getCanonicalName()+ ".json")){
             new GameSerialize().read(this, LevelTestObjects.class.getCanonicalName());
             return;
         }
-
 
         ArrayList<GameObject> objects = new ArrayList<>(50);
         for(int i = 0; i < 50; i++){

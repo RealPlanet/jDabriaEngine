@@ -9,8 +9,7 @@ import engine.events.window.IEndFrameListener;
 import engine.events.window.IUpdateFrameListener;
 import engine.renderer.imgui.ImGUILayer;
 import engine.scenemanager.SceneManager;
-import engine.scenemanager.core.LevelTestObjects;
-import engine.serialization.GameSerialize;
+import engine.scenemanager.core.LevelEditor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -119,9 +118,7 @@ public class Window {
         glfwEventHandler.glfwSetKeyCallback(KeyListener::keyCallback);
 
         // Technically this isn't needed, but better safe than sorry!
-        glfwEventHandler.glfwSetWindowSizeCallback((w, nWidth, nHeight) -> {
-            Window.setDimension(nWidth, nHeight);
-        });
+        glfwEventHandler.glfwSetWindowSizeCallback((w, nWidth, nHeight) -> Window.setDimension(nWidth, nHeight));
 
         // endregion
 
@@ -160,9 +157,9 @@ public class Window {
 
     private void loop() {
         Window.setWindowClearColor(new Color(1, 1, 1, 1));
-        SceneManager.loadScene(LevelTestObjects.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
+        SceneManager.loadScene(LevelEditor.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
 
-        GameSerialize gs = new GameSerialize();
+        //GameSerialize gs = new GameSerialize();
 
         // run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -185,7 +182,7 @@ public class Window {
             signalEndFrame();
         }
 
-        gs.write(SceneManager.GetActiveScene(LevelTestObjects.class.getCanonicalName()).getGameObjects(), LevelTestObjects.class.getCanonicalName());
+        //gs.write(SceneManager.GetActiveScene(LevelTestObjects.class.getCanonicalName()).getGameObjects(), LevelTestObjects.class.getCanonicalName());
     }
     // endregion
 

@@ -6,7 +6,6 @@ import engine.ecp.components.Transform;
 import engine.ecp.interfaces.RequiredComponent;
 import engine.ecp.interfaces.SingleComponent;
 import engine.exception.MultipleOwnerException;
-import engine.exception.ReinitializationException;
 import engine.exception.RequiredComponentException;
 import engine.exception.SingleComponentException;
 import org.jetbrains.annotations.NotNull;
@@ -16,20 +15,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 public class GameObject{
-    private static long ID_COUNT = -1;
-
-    // region Static methods
-
-    public static void setIdCount(long newCount){
-        if(ID_COUNT < 0){
-            ID_COUNT = newCount;
-            return;
-        }
-
-        throw new ReinitializationException("ID_COUNT was already set for gameobject!");
-    }
-
-    // endregion
+    private transient static long ID_COUNT = 0;
 
     private long UID = -1;
     private String name;
@@ -57,7 +43,7 @@ public class GameObject{
 
     public GameObject(String name, @NotNull Vector3f position, Vector3f scale){
         this.name = name;
-        this.UID = ++ID_COUNT;
+        this.UID = ID_COUNT++;
 
         Transform tmp = new Transform(new Vector3f(position), new Vector3f(scale));
         this.addComponent(tmp);

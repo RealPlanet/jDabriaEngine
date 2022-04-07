@@ -1,6 +1,10 @@
 package engine;
 
+import commons.logging.EngineLogger;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class Engine {
 
@@ -15,6 +19,7 @@ public class Engine {
     }
 
     private static Engine instance = null;
+    private static Thread engineThread = null;
 
     private Window gameWindow;
     private State state = State.ERR;
@@ -32,7 +37,22 @@ public class Engine {
     }
 
     public void run(){
-        gameWindow.run();
+        engineThread = new Thread(() -> {
+            gameWindow.run();
+        });
+        engineThread.setUncaughtExceptionHandler((myThread, e) -> {
+            StringWriter stringWriter = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            e.printStackTrace(printWriter);
+            EngineLogger.logError("[[ "+myThread.getName()+" ]] :: has uncaught exception:\n" + e + "\n" + stringWriter.toString());
+        });
+        // This is intention for now. I want to handle uncaught exceptions and stop the execution of this method
+        engineThread.start();
+        try {
+            engineThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public State getState(){

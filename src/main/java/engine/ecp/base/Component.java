@@ -1,22 +1,15 @@
 package engine.ecp.base;
 
 import engine.ecp.GameObject;
-import engine.exception.ReinitializationException;
 
 @SuppressWarnings("EmptyMethod")
 public abstract class Component{
-    private static long ID_COUNT = -1;
+    private transient static long ID_COUNT = 0;
     private long UID = -1;
-    // region static methods
-    public static void setIdCount(long newCount){
-        if(ID_COUNT < 0){
-            ID_COUNT = newCount;
-            return;
-        }
 
-        throw new ReinitializationException("ID_COUNT was already set for components!");
+    public Component(){
+        UID = -1;
     }
-    // endregion
 
     // This field is marked as transient to avoid a circular reference when serializing the component.
     // This means that serializing a component will lose the game object reference!
@@ -34,11 +27,8 @@ public abstract class Component{
 
     public void generateID(){
         if(UID < 0){
-            UID = ++ID_COUNT;
-            return;
+            UID = ID_COUNT++;
         }
-
-        throw new ReinitializationException("Component already has ID.");
     }
 
     public long getUID(){ return UID; }
