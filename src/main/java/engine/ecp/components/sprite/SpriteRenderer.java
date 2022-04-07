@@ -12,7 +12,7 @@ public class SpriteRenderer extends Component {
     //region Member variables
     private Sprite sprite;
     private Color color;
-    private Transform lastTransform;
+    private transient Transform lastTransform;
     private transient boolean isDirty;
     //endregion
 

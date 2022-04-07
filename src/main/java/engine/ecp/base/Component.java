@@ -35,6 +35,7 @@ public abstract class Component{
     public void generateID(){
         if(UID < 0){
             UID = ++ID_COUNT;
+            return;
         }
 
         throw new ReinitializationException("Component already has ID.");

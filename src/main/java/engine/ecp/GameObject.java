@@ -213,6 +213,7 @@ public class GameObject{
 
             if(component instanceof Transform){
                 setTransform((Transform) component);
+                component.generateID();
                 return;
             }
 
