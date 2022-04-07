@@ -86,12 +86,19 @@ public class GameSerialize {
             serializedContents = StringUtils.decode64(serializedContents);
         }
 
+        long maxComponentCount = 0;
+        long maxGameobjectCount = 0;
         GameObject[] objects = FileUtil.jsonSafeParse(gson, GameObject[].class, serializedContents);
 
         if (objects != null){
             for (GameObject object : objects) {
                 scene.addGameObjectToScene(object);
+                maxComponentCount += object.getAllComponents().size();
+                maxGameobjectCount++;
             }
         }
+
+        Component.setIdCount(maxComponentCount);
+        GameObject.setIdCount(maxGameobjectCount);
     }
 }
