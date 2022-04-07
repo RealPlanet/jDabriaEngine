@@ -2,13 +2,15 @@ package engine.ecp.base;
 
 import engine.ecp.GameObject;
 
+import java.util.UUID;
+
 @SuppressWarnings("EmptyMethod")
 public abstract class Component{
     private transient static long ID_COUNT = 0;
-    private long UID = -1;
+    private UUID UID;
 
     public Component(){
-        UID = -1;
+        UID = null;
     }
 
     // This field is marked as transient to avoid a circular reference when serializing the component.
@@ -26,10 +28,10 @@ public abstract class Component{
     // endregion
 
     public void generateID(){
-        if(UID < 0){
-            UID = ID_COUNT++;
+        if(UID == null){
+            UID = UUID.randomUUID();
         }
     }
 
-    public long getUID(){ return UID; }
+    public UUID getUID(){ return UID; }
 }

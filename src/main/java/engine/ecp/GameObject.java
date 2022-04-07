@@ -13,11 +13,10 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class GameObject{
-    private transient static long ID_COUNT = 0;
-
-    private long UID = -1;
+    private UUID UID;
     private String name;
 
     private final ArrayList<Component> components = new ArrayList<>(2);
@@ -43,7 +42,7 @@ public class GameObject{
 
     public GameObject(String name, @NotNull Vector3f position, Vector3f scale){
         this.name = name;
-        this.UID = ID_COUNT++;
+        UID = UUID.randomUUID();
 
         Transform tmp = new Transform(new Vector3f(position), new Vector3f(scale));
         this.addComponent(tmp);
@@ -159,7 +158,7 @@ public class GameObject{
         return transform.scale;
     }
 
-    public long getUID(){ return UID; }
+    public UUID getUID(){ return UID; }
     //endregion
 
     // region Component operations

@@ -12,6 +12,7 @@ public class ComponentSerialization implements JsonSerializer<Component>,
     public Component deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get("type").getAsString();
+
         JsonElement element = jsonObject.get("properties");
 
         try {
