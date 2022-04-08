@@ -1,4 +1,4 @@
-package commons.util;
+package commons;
 
 public class Settings {
     public static int GRID_WIDTH = 32;

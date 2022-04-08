@@ -1,6 +1,6 @@
 package engine.ecp.components.internal;
 
-import commons.util.Settings;
+import commons.Settings;
 import engine.ecp.GameObject;
 import engine.ecp.base.Component;
 import engine.ecp.interfaces.SingleComponent;

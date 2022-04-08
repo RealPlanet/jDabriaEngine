@@ -37,7 +37,7 @@ public class SpriteSheet {
             };
 
             Sprite sprite = new Sprite(parentTexture, texCoords);
-            sprite.setSize((int)((topY - bottomY) * pHeight), (int)((rightX - leftX) * pWidth));
+            sprite.setSize(spriteWidth, spriteHeight);
 
             sprites.add(sprite);
             currentX += spriteWidth + spacing;

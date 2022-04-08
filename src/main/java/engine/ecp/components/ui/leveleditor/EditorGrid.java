@@ -1,7 +1,7 @@
 package engine.ecp.components.ui.leveleditor;
 
 import commons.Color;
-import commons.util.Settings;
+import commons.Settings;
 import engine.ecp.base.Component;
 import engine.renderer.debug.DebugDraw;
 import engine.scenemanager.SceneManager;
