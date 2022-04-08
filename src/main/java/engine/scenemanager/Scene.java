@@ -75,17 +75,6 @@ public abstract class Scene implements IUpdateFrameListener {
         onUnload();
     }
 
-    public void addGameObjectToScene(GameObject go){
-        gameObjects.add(go);
-
-        if(!isStarted){
-         go.setActive(false);
-            return;
-        }
-
-        go.setActive(true);
-        sceneRenderer.add(go);
-    }
 
     public void clearScene(){
         onClear();
@@ -100,12 +89,6 @@ public abstract class Scene implements IUpdateFrameListener {
         sceneRenderer = new Renderer();
     }
 
-    @Contract(" -> new")
-    public ArrayList<GameObject> getGameObjects(){
-        return new ArrayList<>(gameObjects);
-    }
-
-    public GameObject findGameObjectByName(String name){ return gameObjects.stream().filter(obj -> obj.getName() == name).findFirst().get();}
 
     @Override
     public void onFrameUpdate() {
@@ -115,5 +98,26 @@ public abstract class Scene implements IUpdateFrameListener {
 
         onUpdate();
     }
+    //endregion
+    @Contract(" -> new")
+    public ArrayList<GameObject> getGameObjects(){
+        return new ArrayList<>(gameObjects);
+    }
+
+    public GameObject findGameObjectByName(String name){ return gameObjects.stream().filter(obj -> obj.getName().equals(name)).findFirst().get();}
+
+    public void addGameObjectToScene(GameObject go){
+        gameObjects.add(go);
+
+        if(!isStarted){
+            go.setActive(false);
+            return;
+        }
+
+        go.setActive(true);
+        sceneRenderer.add(go);
+    }
+
+    //region Gameobject methods
     //endregion
 }

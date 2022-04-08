@@ -1,6 +1,7 @@
 package engine;
 
 import commons.logging.EngineLogger;
+import engine.renderer.debug.DebugDrawer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintWriter;
@@ -38,7 +39,12 @@ public class Engine {
 
     public void run(){
         engineThread = new Thread(() -> {
-            gameWindow.run();
+            EngineLogger.log("Beginning engine thread!");
+            gameWindow.init(); // Also handles glfw capabilities setup, so needs to be called first!
+            DebugDrawer.init(); //Init the debug drawer
+
+            gameWindow.run(); // Start application
+            EngineLogger.log("Exiting engine thread!");
         });
         engineThread.setUncaughtExceptionHandler((myThread, e) -> {
             StringWriter stringWriter = new StringWriter();

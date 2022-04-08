@@ -1,6 +1,7 @@
 package engine;
 
 import commons.Color;
+import commons.logging.EngineLogger;
 import engine.events.GLFWEventHandler;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
@@ -39,6 +40,8 @@ public class Window {
     private final String title;
     private long glfwWindow; // Window mem address
 
+    private boolean wasInit = false;
+
     //region Singleton
     private Window(){
         width = 1920;
@@ -72,8 +75,6 @@ public class Window {
      */
     public void run(){
         System.out.println("Starting LWJG " + Version.getVersion());
-        init();
-
         loop();
 
         stop();
@@ -87,13 +88,19 @@ public class Window {
 
         glfwTerminate();
         Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+        wasInit = false;
     }
 
-    private void init() {
+    public void init() {
+        if(wasInit){
+            EngineLogger.logWarning("Window was already initialized!");
+            return;
+        }
+
         // Error Callback output
         GLFWErrorCallback.createPrint(System.err).set();
 
-        // onInit our boy
+        // init our boy
         if(!glfwInit()){
             throw  new IllegalStateException("GLFW onInit failed!!!!");
         }
@@ -147,7 +154,7 @@ public class Window {
 
         // Setup GUI
         imGUILayer = ImGUILayer.getImGUILayer(glfwWindow);
-
+        wasInit = true;
         //endregion
     }
 
@@ -157,6 +164,11 @@ public class Window {
     }
 
     private void loop() {
+        if(!wasInit){
+            EngineLogger.logError("Window was not initialized!");
+            return;
+        }
+
         Window.setWindowClearColor(new Color(1, 1, 1, 1));
         SceneManager.loadScene(LevelTestObjects.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
 

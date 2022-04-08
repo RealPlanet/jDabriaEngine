@@ -21,14 +21,14 @@ public class AssetPool {
     private transient static final Map<String, SpriteSheet> engineSpriteSheet = new HashMap<>();
     //endregion
 
+    public static final String DEFAULT_FALLBACK_SHADER = "assets/shader/defShader.glsl";
+
+
     static{
         // This is always loaded by default
-        AssetPool.getShader(AssetPool.DEFAULT_FALLBACK_SHADER);
+        getShader(DEFAULT_FALLBACK_SHADER);
     }
 
-    // Prefix for assets which are compiled and included as a package
-    private static final String ASSET_PACKAGE_PREFIX = "jAssets.";
-    public static final String DEFAULT_FALLBACK_SHADER = "assets/shaders/defShader.glsl";
 
     /**
      * Looks up a shader in the engine asset pools, if not found a new one is created, added and returned.

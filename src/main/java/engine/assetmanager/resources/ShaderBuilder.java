@@ -159,7 +159,7 @@ public class ShaderBuilder {
         glUniform3f(varLocation, Vector.x, Vector.y, Vector.z);
     }
 
-    public void uploadMat4F(String varName, @NotNull Matrix4f matrix){
+    public void uploadMat4f(String varName, @NotNull Matrix4f matrix){
         use();
 
         int varLocation = glGetUniformLocation(shaderProgram, varName);

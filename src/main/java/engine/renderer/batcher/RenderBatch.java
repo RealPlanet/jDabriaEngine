@@ -6,6 +6,7 @@ import engine.assetmanager.resources.ShaderBuilder;
 import engine.assetmanager.resources.Texture;
 import engine.ecp.components.sprite.SpriteRenderer;
 import engine.ecp.components.Transform;
+import engine.renderer.ShaderConstants;
 import engine.scenemanager.SceneManager;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
@@ -240,8 +241,8 @@ public class RenderBatch implements Comparable<RenderBatch>{
         shader.use();
 
         assert SceneManager.getActiveCamera() != null;
-        shader.uploadMat4F("uProj", SceneManager.getActiveCamera().getProjMatrix());
-        shader.uploadMat4F("uView", SceneManager.getActiveCamera().getViewMatrix());
+        shader.uploadMat4f(ShaderConstants.projectionMatrix, SceneManager.getActiveCamera().getProjMatrix());
+        shader.uploadMat4f(ShaderConstants.viewMatrix, SceneManager.getActiveCamera().getViewMatrix());
         for (int i = 0; i < textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
             textures.get(i).bind();
