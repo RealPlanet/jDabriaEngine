@@ -1,6 +1,6 @@
 package engine.ecp;
 
-import commons.StringUtils;
+import commons.util.StringUtils;
 import engine.ecp.base.Component;
 import engine.ecp.components.Transform;
 import engine.ecp.interfaces.RequiredComponent;

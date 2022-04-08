@@ -1,6 +1,6 @@
-package commons.logging;
+package commons.util.logging;
 
-import commons.StringUtils;
+import commons.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

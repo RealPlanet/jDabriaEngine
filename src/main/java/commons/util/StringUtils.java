@@ -1,6 +1,6 @@
-package commons;
+package commons.util;
 
-import commons.logging.EngineLogger;
+import commons.util.logging.EngineLogger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

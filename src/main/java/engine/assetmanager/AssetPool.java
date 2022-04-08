@@ -1,7 +1,7 @@
 package engine.assetmanager;
 
-import commons.StringUtils;
-import commons.logging.EngineLogger;
+import commons.util.StringUtils;
+import commons.util.logging.EngineLogger;
 import engine.assetmanager.resources.ShaderBuilder;
 import engine.assetmanager.resources.Texture;
 import engine.renderer.sprite.SpriteSheet;

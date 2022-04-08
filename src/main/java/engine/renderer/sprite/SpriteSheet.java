@@ -1,6 +1,6 @@
 package engine.renderer.sprite;
 
-import commons.StringUtils;
+import commons.util.StringUtils;
 import engine.assetmanager.AssetPool;
 import engine.assetmanager.resources.Texture;
 import org.jetbrains.annotations.NotNull;

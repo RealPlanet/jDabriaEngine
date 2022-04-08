@@ -1,7 +1,7 @@
 package engine;
 
-import commons.logging.EngineLogger;
-import engine.renderer.debug.DebugDrawer;
+import commons.util.logging.EngineLogger;
+import engine.renderer.debug.DebugDraw;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintWriter;
@@ -41,17 +41,19 @@ public class Engine {
         engineThread = new Thread(() -> {
             EngineLogger.log("Beginning engine thread!");
             gameWindow.init(); // Also handles glfw capabilities setup, so needs to be called first!
-            DebugDrawer.init(); //Init the debug drawer
+            DebugDraw.init(); //Init the debug drawer
 
             gameWindow.run(); // Start application
             EngineLogger.log("Exiting engine thread!");
         });
+
         engineThread.setUncaughtExceptionHandler((myThread, e) -> {
             StringWriter stringWriter = new StringWriter();
             PrintWriter printWriter = new PrintWriter(stringWriter);
             e.printStackTrace(printWriter);
             EngineLogger.logError("[[ "+myThread.getName()+" ]] :: has uncaught exception:\n" + e + "\n" + stringWriter.toString());
         });
+
         // This is intention for now. I want to handle uncaught exceptions and stop the execution of this method
         engineThread.start();
         try {

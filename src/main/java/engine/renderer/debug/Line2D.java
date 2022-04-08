@@ -13,7 +13,7 @@ public class Line2D implements IUpdateFrameListener {
     private Vector3f origin;
     private Vector3f end;
     private Color color;
-    private float lifetime;
+    protected float lifetime;
 
     public Line2D(Vector3f origin, Vector3f end, Color color, float lifetime) {
         this.origin = origin;
@@ -26,7 +26,7 @@ public class Line2D implements IUpdateFrameListener {
 
     public void destroyLine(){
         Window.removeUpdateFrameListener(this);
-        DebugDrawer.removeLine2D(this);
+        DebugDraw.removeLine2D(this);
     }
 
     //region Getters
@@ -42,13 +42,19 @@ public class Line2D implements IUpdateFrameListener {
         return color;
     }
 
+    //endregion
+
     @Override
     public void onFrameUpdate() {
-        lifetime -= Time.deltaTime();
+        tickLifetime();
+
         if(lifetime <= 0){
             destroyLine();
             return;
         }
     }
-    //endregion
+
+    protected void tickLifetime(){
+        lifetime -= Time.deltaTime();
+    }
 }

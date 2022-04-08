@@ -1,7 +1,7 @@
 package engine;
 
 import commons.Color;
-import commons.logging.EngineLogger;
+import commons.util.logging.EngineLogger;
 import engine.events.GLFWEventHandler;
 import engine.events.KeyListener;
 import engine.events.MouseListener;
@@ -10,6 +10,7 @@ import engine.events.window.IEndFrameListener;
 import engine.events.window.IUpdateFrameListener;
 import engine.renderer.imgui.ImGUILayer;
 import engine.scenemanager.SceneManager;
+import engine.scenemanager.core.LevelEditor;
 import engine.scenemanager.core.LevelTestObjects;
 import engine.serialization.GameSerialize;
 import org.jetbrains.annotations.NotNull;
@@ -170,7 +171,7 @@ public class Window {
         }
 
         Window.setWindowClearColor(new Color(1, 1, 1, 1));
-        SceneManager.loadScene(LevelTestObjects.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
+        SceneManager.loadScene(LevelEditor.class.getCanonicalName(), SceneManager.LoadType.SINGLE);
 
         GameSerialize gs = new GameSerialize();
 
@@ -195,7 +196,7 @@ public class Window {
             signalEndFrame();
         }
 
-        gs.write(SceneManager.GetActiveScene(LevelTestObjects.class.getCanonicalName()).getGameObjects(), LevelTestObjects.class.getCanonicalName());
+        gs.write(SceneManager.GetActiveScene(LevelEditor.class.getCanonicalName()).getGameObjects(), LevelTestObjects.class.getCanonicalName());
     }
     // endregion
 

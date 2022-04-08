@@ -1,13 +1,13 @@
 package engine.scenemanager.core;
 
 import commons.Color;
-import commons.io.FileUtil;
-import commons.math.GMath;
+import commons.util.io.FileUtil;
+import commons.util.math.GMath;
 import engine.assetmanager.AssetPool;
 import engine.ecp.GameObject;
 import engine.ecp.components.Camera;
 import engine.ecp.components.sprite.SpriteRenderer;
-import engine.renderer.debug.DebugDrawer;
+import engine.renderer.debug.DebugDraw;
 import engine.renderer.sprite.SpriteSheet;
 import engine.scenemanager.Scene;
 import engine.serialization.GameSerialize;
@@ -21,7 +21,8 @@ public class LevelTestObjects extends Scene {
     @Override
     protected void onInit() {
 
-        DebugDrawer.drawLine2D(new Vector3f(0, 0,0), new Vector3f(800, 800, 0), Color.RED, 2f);
+        DebugDraw.drawLine2D(new Vector3f(0, 0,0), new Vector3f(800, 800, 0), Color.RED, 2f);
+        DebugDraw.drawLine2D(new Vector3f(0, 0,0), new Vector3f(1920, 1080, 0), Color.GREEN, 9999);
 
         if(FileUtil.exists(LevelTestObjects.class.getCanonicalName()+ ".json")){
             new GameSerialize().read(this, LevelTestObjects.class.getCanonicalName());
@@ -48,7 +49,7 @@ public class LevelTestObjects extends Scene {
         float y = (float) (Math.cos(t) * 200.0f + 400);
 
         t += 0.05f;
-        DebugDrawer.drawLine2D(new Vector3f(600, 400, 0), new Vector3f(x, y, 0), Color.PURPLE, 0.0001f);
+        DebugDraw.drawLine2D(new Vector3f(600, 400, 0), new Vector3f(x, y, 0), Color.PURPLE, 0.0001f);
     }
 
     @Override

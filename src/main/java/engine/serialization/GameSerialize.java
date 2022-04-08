@@ -2,8 +2,8 @@ package engine.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import commons.StringUtils;
-import commons.io.FileUtil;
+import commons.util.StringUtils;
+import commons.util.io.FileUtil;
 import engine.assetmanager.resources.Texture;
 import engine.ecp.GameObject;
 import engine.ecp.base.Component;

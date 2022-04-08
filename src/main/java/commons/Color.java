@@ -1,6 +1,6 @@
 package commons;
 
-import commons.math.GMath;
+import commons.util.math.GMath;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.ConstructorProperties;

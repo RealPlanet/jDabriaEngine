@@ -6,14 +6,12 @@ import engine.ecp.interfaces.UniqueComponent;
 import engine.scenemanager.Scene;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Camera extends Component implements UniqueComponent {
-    private final Matrix4f projectionMatrix = new Matrix4f();
-    private final Matrix4f viewMatrix = new Matrix4f();
-
-    private final Matrix4f inverseProjMatrix = new Matrix4f();
-    private final Matrix4f inverseViewMatrix = new Matrix4f();
+    private final Matrix4f projectionMatrix = new Matrix4f(), viewMatrix = new Matrix4f(), inverseProjMatrix = new Matrix4f(), inverseViewMatrix = new Matrix4f();
+    private final Vector2f projectionSize = new Vector2f(32.0f * 40.f, 32.0f * 21.0f);
 
     private transient Transform parentTransform = null;
     private transient Vector3f lastPosition = new Vector3f();
@@ -61,7 +59,7 @@ public class Camera extends Component implements UniqueComponent {
      */
     public void adjustWindowProjection(){
         projectionMatrix.identity();
-        projectionMatrix.ortho(0.0f, 32.0f * 40.f, 0.0f, 32.0f * 21.0f, 0, 100.0f);
+        projectionMatrix.ortho(0.0f, projectionSize.x, 0.0f, projectionSize.y, 0, 100.0f);
         projectionMatrix.invert(inverseProjMatrix);
     }
 
@@ -96,6 +94,8 @@ public class Camera extends Component implements UniqueComponent {
     public Vector3f getPosition(){
         return parentTransform.position;
     }
+
+    public Vector2f getProjectionSize() {return projectionSize;}
 
     public void setPosition(Vector3f newPosition){
         parentTransform.position = newPosition;

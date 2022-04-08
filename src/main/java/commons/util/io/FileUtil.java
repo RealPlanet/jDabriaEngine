@@ -1,8 +1,8 @@
-package commons.io;
+package commons.util.io;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import commons.logging.EngineLogger;
+import commons.util.logging.EngineLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

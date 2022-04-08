@@ -1,6 +1,6 @@
 package engine.scenemanager.core;
 
-import commons.logging.EngineLogger;
+import commons.util.logging.EngineLogger;
 import engine.scenemanager.Scene;
 import engine.Engine;
 

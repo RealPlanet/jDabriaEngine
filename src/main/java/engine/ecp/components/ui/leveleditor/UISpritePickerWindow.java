@@ -54,7 +54,7 @@ public class UISpritePickerWindow extends ImGUIComponent {
 
                 // copy is needed, otherwise generateSpriteObject will change the sprite pallet sprite size once it calls setSprite
                 Sprite copySprite = new Sprite(sprite.getTexture(), sprite.getTexCoords());
-                GameObject obj = Prefabs.generateSpriteObject(copySprite, spriteWidth, spriteHeight);
+                GameObject obj = Prefabs.generateSpriteObject(copySprite, spriteWidth / 2, spriteHeight / 2);
                 parentControls.pickupObject(obj);
             }
             ImGui.popID();

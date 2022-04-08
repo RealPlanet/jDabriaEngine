@@ -1,6 +1,6 @@
-package commons.imgui;
+package commons.util.imgui;
 
-import commons.Utils;
+import commons.util.Utils;
 import imgui.ImGui;
 import engine.renderer.imgui.UIHelper;
 import org.jetbrains.annotations.NotNull;

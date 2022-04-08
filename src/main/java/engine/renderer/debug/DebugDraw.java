@@ -1,7 +1,7 @@
 package engine.renderer.debug;
 
 import commons.Color;
-import commons.logging.EngineLogger;
+import commons.util.logging.EngineLogger;
 import engine.Window;
 import engine.assetmanager.AssetPool;
 import engine.assetmanager.resources.ShaderBuilder;
@@ -9,6 +9,7 @@ import engine.renderer.ShaderConstants;
 import engine.scenemanager.SceneManager;
 import org.joml.Vector3f;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  * This class handles the drawing of debug information on the screen such as lines, shapes, colors, ecc...
  * BINDING NOTICE :: Z-Index is indipendent from non-debug objects and as such debug and non-debug objects will be rendered in the order they've been created.
  */
-public class DebugDrawer {
+public class DebugDraw {
     private static final int MAX_LINES = 500;
     private static final float LINE_WIDTH = 2.5f;
 
@@ -125,6 +126,10 @@ public class DebugDrawer {
 
     public static void drawLine2D(Vector3f from, Vector3f to, Color color, float lifetime){
         addLine2D(new Line2D(from, to, color, lifetime));
+    }
+
+    public static void drawFrameLine2D(Vector3f from, Vector3f to, Color color, int frameLifetime){
+        addLine2D(new FrameLine2D(from, to, color, frameLifetime));
     }
 
     private static void addLine2D(Line2D line){

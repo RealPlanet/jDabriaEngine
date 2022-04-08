@@ -1,6 +1,6 @@
 package engine.ecp.base;
 
-import commons.imgui.ImGuiUtility;
+import commons.util.imgui.ImGuiUtility;
 import engine.Engine;
 
 public class EditorComponent<T> extends ImGUIComponent {

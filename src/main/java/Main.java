@@ -1,4 +1,4 @@
-import commons.logging.EngineLogger;
+import commons.util.logging.EngineLogger;
 import engine.Engine;
 
 public class Main {

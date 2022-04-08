@@ -1,7 +1,7 @@
 package engine.renderer.imgui;
 
-import commons.StringUtils;
-import commons.logging.EngineLogger;
+import commons.util.StringUtils;
+import commons.util.logging.EngineLogger;
 import imgui.ImGui;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;

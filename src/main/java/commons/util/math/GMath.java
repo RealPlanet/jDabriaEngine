@@ -1,4 +1,4 @@
-package commons.math;
+package commons.util.math;
 
 public class GMath {
     public static float clamp(float Min, float Max, float Value){

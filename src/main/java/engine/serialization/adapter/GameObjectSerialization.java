@@ -18,11 +18,12 @@ public class GameObjectSerialization implements JsonDeserializer<GameObject>{
         JsonArray components = jsonObject.getAsJsonArray("components");
 
         GameObject go = new GameObject(name);
+
         try {
             Field gameObjectUUID = GameObject.class.getDeclaredField("UID");
-            gameObjectUUID.setAccessible(true);
-
             UUID uuid = context.deserialize(UID, UUID.class);
+
+            gameObjectUUID.setAccessible(true);
             gameObjectUUID.set(go, uuid);
             gameObjectUUID.setAccessible(false);
         } catch (NoSuchFieldException e) {
