@@ -1,6 +1,0 @@
-[2022-04-08 13:31:28] [INFO   ] Beginning engine thread!. From: engine.Engine::lambda$run$0 at line number 42 
-[2022-04-08 13:31:29] [INFO   ] Beginning debug drawer initialization!. From: engine.renderer.debug.DebugDrawer::init at line number 42 
-[2022-04-08 13:31:29] [INFO   ] Debug drawer has been initialized!. From: engine.renderer.debug.DebugDrawer::init at line number 70 
-[2022-04-08 13:31:29] [INFO   ] Attempt to read file from "engine.scenemanager.core.LevelTestObjects.json". From: commons.io.FileUtil::readFromFile at line number 49 
-[2022-04-08 13:31:36] [INFO   ] Attempt to write file to "engine.scenemanager.core.LevelTestObjects.json". From: commons.io.FileUtil::WriteToFile at line number 19 
-[2022-04-08 13:31:36] [INFO   ] Exiting engine thread!. From: engine.Engine::lambda$run$0 at line number 47 
