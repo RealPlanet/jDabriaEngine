@@ -1,5 +1,7 @@
 package engine.scenemanager;
 
+import commons.util.StringUtils;
+import commons.util.logging.EngineLogger;
 import engine.Window;
 import engine.assetmanager.AssetPool;
 import engine.ecp.components.Camera;
@@ -86,13 +88,20 @@ public class SceneManager {
      * @return Camera Object
      */
     public static @Nullable Camera getActiveCamera(){
+        int cameraCount = 0;
+        Camera activeCam = null;
         for (Scene ActiveScene: gameScenes) {
            if(ActiveScene.sceneCamera != null){
-               return ActiveScene.sceneCamera.getComponent(Camera.class);
+               activeCam = ActiveScene.sceneCamera.getComponent(Camera.class);
+               cameraCount++;
            }
         }
 
-        return null;
+        if(cameraCount > 1){
+            EngineLogger.logWarning(StringUtils.format("Multiple cameras detected [{0}] using latest found", cameraCount));
+        }
+
+        return activeCam;
     }
 
     /**

@@ -30,11 +30,11 @@ public class EditorGrid extends Component {
             int y = firstY + (Settings.GRID_HEIGHT * i);
 
             if(i < verticalLines){
-                DebugDraw.drawFrameLine2D(new Vector3f(x, firstY, 0), new Vector3f(x, firstY + height, 0), Color.BLACK, 1);
+                DebugDraw.drawLine2D(new Vector3f(x, firstY, 0), new Vector3f(x, firstY + height, 0), Color.BLACK, Float.MIN_VALUE);
             }
 
             if(i < horizontalLines){
-                DebugDraw.drawFrameLine2D(new Vector3f(firstX, y, 0), new Vector3f(firstX + width, y, 0), Color.BLACK, 1);
+                DebugDraw.drawLine2D(new Vector3f(firstX, y, 0), new Vector3f(firstX + width, y, 0), Color.BLACK, Float.MIN_VALUE);
             }
         }
     }

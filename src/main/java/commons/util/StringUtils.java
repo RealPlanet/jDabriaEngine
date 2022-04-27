@@ -70,7 +70,7 @@ public class StringUtils {
         return result.toString();
     }
 
-    public static @Nullable String encode64(String str){
+    public static @Nullable String encode64(@NotNull String str){
         try {
             return Base64.getEncoder()
                     .encodeToString(str.getBytes(StandardCharsets.UTF_8.toString()));

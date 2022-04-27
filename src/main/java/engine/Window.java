@@ -13,6 +13,7 @@ import engine.scenemanager.SceneManager;
 import engine.scenemanager.core.LevelEditor;
 import engine.scenemanager.core.LevelTestObjects;
 import engine.serialization.GameSerialize;
+import imgui.ImGui;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -162,6 +163,7 @@ public class Window {
     private static void setDimension(int nWidth, int nHeight) {
         WINDOW.width = nWidth;
         WINDOW.height = nHeight;
+        ImGui.getIO().setDisplaySize((float)nWidth, (float)nHeight);
     }
 
     private void loop() {

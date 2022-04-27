@@ -16,6 +16,7 @@ import imgui.gl3.ImGuiImplGl3;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 public class ImGUILayer implements IUpdateFrameListener {
     //region ImGUI variables
@@ -69,6 +70,7 @@ public class ImGUILayer implements IUpdateFrameListener {
         glfwGetCursorPos(glfwWindow, mousePosX, mousePosY);
 
         // We SHOULD call those methods to Update Dear ImGui state for the current frame
+        ImGui.setNextWindowSize(winWidth[0], winHeight[0]);
         final ImGuiIO io = ImGui.getIO();
         io.setDisplaySize(winWidth[0], winHeight[0]);
         io.setDisplayFramebufferScale(1f, 1f);
@@ -89,15 +91,26 @@ public class ImGUILayer implements IUpdateFrameListener {
 
         signalStartFrameListeners();
 
-        ImGui.render();
+
 
         endFrame();
     }
 
     private void endFrame() {
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, Window.getWidth(), Window.getHeight());
+        //glClearColor(1, 1, 1, 1);
+        //glClear(GL_COLOR_BUFFER_BIT);
+
         // After Dear ImGui prepared a draw data, we use it in the LWJGL3 renderer.
         // At that moment ImGui will be rendered to the current OpenGL context.
+        ImGui.render();
         imGuiGl3.render(ImGui.getDrawData());
+
+        long backupWindowPtr = glfwGetCurrentContext();
+        //ImGui.updatePlatformWindows();
+        //ImGui.renderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backupWindowPtr);
     }
     // endregion
 
@@ -116,6 +129,9 @@ public class ImGUILayer implements IUpdateFrameListener {
         io.setIniFilename("ImGUI.ini"); // We don't want to save .ini file
         io.setConfigFlags(ImGuiConfigFlags.NavEnableKeyboard); // Navigation with keyboard
         io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
+        //io.setConfigFlags(ImGuiConfigFlags.);
+        //io.setConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+
         io.setBackendPlatformName("imgui_java_impl_glfw");
 
         // ------------------------------------------------------------
@@ -232,7 +248,6 @@ public class ImGUILayer implements IUpdateFrameListener {
 
         // Glyphs could be added per-font as well as per config used globally like here
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
-
         fontConfig.setPixelSnapH(true);
         fontAtlas.addFontFromFileTTF("Assets/Fonts/segoeui.ttf", 32, fontConfig);
 
@@ -248,7 +263,6 @@ public class ImGUILayer implements IUpdateFrameListener {
         // This method SHOULD be called after you've initialized your ImGui configuration (fonts and so on).
         // ImGui context should be created as well.
         imGuiGl3.init(glslVersion);
-        ImGui.getStyle().scaleAllSizes(0.25f);
         // Add to onUpdate loop only after init
         Window.addUpdateFrameListener(this);
     }

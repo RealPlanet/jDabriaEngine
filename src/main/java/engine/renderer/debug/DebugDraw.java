@@ -2,14 +2,16 @@ package engine.renderer.debug;
 
 import commons.Color;
 import commons.util.logging.EngineLogger;
+import commons.util.math.GMath;
 import engine.Window;
 import engine.assetmanager.AssetPool;
 import engine.assetmanager.resources.ShaderBuilder;
 import engine.renderer.ShaderConstants;
 import engine.scenemanager.SceneManager;
+import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +33,7 @@ public class DebugDraw {
 
     // 6 floats & 2 verts per line then
     private static final float[] vertexArray = new float[MAX_LINES * 6 * 2];
-    private static ShaderBuilder lineShader = AssetPool.getShader("assets/shader/debug/debugLine2D.glsl");
+    private static final ShaderBuilder lineShader = AssetPool.getShader("assets/shader/debug/debugLine2D.glsl");
 
     private static int VAO_ID;
     private static int VBO_ID;
@@ -63,9 +65,7 @@ public class DebugDraw {
 
         glLineWidth(LINE_WIDTH);
 
-        Window.addUpdateFrameListener(()->{
-            renderDebugLines();
-        });
+        Window.addUpdateFrameListener(DebugDraw::renderDebugLines);
 
         wasInit = true;
         EngineLogger.log("Debug drawer has been initialized!");
@@ -117,19 +117,15 @@ public class DebugDraw {
 
     //region Line2D Drawer
     public static void drawLine2D(Vector3f from, Vector3f to){
-        drawLine2D(from, to, Color.BLUE, 1);
+        drawLine2D(from, to, Color.BLUE, Float.MIN_VALUE);
     }
 
     public static void drawLine2D(Vector3f from, Vector3f to, Color color){
-        drawLine2D(from, to, color, 1);
+        drawLine2D(from, to, color, Float.MIN_VALUE);
     }
 
     public static void drawLine2D(Vector3f from, Vector3f to, Color color, float lifetime){
         addLine2D(new Line2D(from, to, color, lifetime));
-    }
-
-    public static void drawFrameLine2D(Vector3f from, Vector3f to, Color color, int frameLifetime){
-        addLine2D(new FrameLine2D(from, to, color, frameLifetime));
     }
 
     private static void addLine2D(Line2D line){
@@ -142,6 +138,75 @@ public class DebugDraw {
 
     protected static void removeLine2D(Line2D line){
         currentLines.remove(line);
+    }
+    //endregion
+
+    //region Box2D Drawer
+    public static void drawBox2D(@NotNull Vector3f center, @NotNull Vector2f dimensions){
+        drawBox2D(center, dimensions, 0, Color.PURPLE, Float.MIN_VALUE);
+    }
+
+    public static void drawBox2D(@NotNull Vector3f center, @NotNull Vector2f dimensions, float rotation){
+        drawBox2D(center, dimensions, rotation, Color.PURPLE, Float.MIN_VALUE);
+    }
+
+    public static void drawBox2D(@NotNull Vector3f center, @NotNull Vector2f dimensions, float rotation, @NotNull Color color){
+        drawBox2D(center, dimensions, rotation, color, Float.MIN_VALUE);
+    }
+
+    public static void drawBox2D(@NotNull Vector3f center, @NotNull Vector2f dimensions, float rotation, @NotNull Color color, float lifetime){
+
+        Vector2f halfDimensions = new Vector2f(dimensions).mul(0.5f);
+        Vector2f min = new Vector2f(center.x, center.y).sub(halfDimensions);
+        Vector2f max = new Vector2f(center.x, center.y).add(halfDimensions);
+
+        Vector3f[] verticies = {
+                new Vector3f(min.x, min.y, 0), new Vector3f(min.x, max.y, 0),
+                new Vector3f(max.x, max.y, 0), new Vector3f(max.x, min.y, 0),
+        };
+
+        if(rotation != 0.0f){
+            for(Vector3f vert : verticies){
+                GMath.rotate(vert, rotation, center);
+            }
+        }
+
+        drawLine2D(verticies[0], verticies[1], color, lifetime);
+        drawLine2D(verticies[0], verticies[3], color, lifetime);
+        drawLine2D(verticies[1], verticies[2], color, lifetime);
+        drawLine2D(verticies[2], verticies[3], color, lifetime);
+    }
+    //endregion
+
+    //region Circle2D
+    public static void drawCircle2D(Vector3f center, float radius){
+        drawCircle2D(center, radius, Color.RED, Float.MIN_VALUE);
+    }
+
+    public static void drawCircle2D(Vector3f center, float radius, Color color){
+        drawCircle2D(center, radius, color, Float.MIN_VALUE);
+    }
+
+    public static void drawCircle2D(Vector3f center, float radius, Color color, float lifetime){
+        Vector3f[] points = new Vector3f[20];
+        Vector3f zero = new Vector3f();
+
+        int increment = 360 / points.length;
+        int currentAngle = 0;
+        for (int i = 0; i < points.length; i++) {
+            Vector3f tmp = new Vector3f(radius, 0f, 0f);
+            GMath.rotate(tmp, currentAngle, zero);
+            points[i] = new Vector3f(tmp).add(center);
+
+            if(i > 0){
+                drawLine2D(points[i-1], points[i], color, lifetime);
+            }
+
+            currentAngle += increment;
+        }
+
+        drawLine2D(points[points.length - 1], points[0], color, lifetime);
+
     }
     //endregion
 }
