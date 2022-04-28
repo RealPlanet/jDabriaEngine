@@ -4,10 +4,7 @@ import commons.Time;
 import engine.Window;
 import engine.events.imGUI.IImGUIStartFrame;
 import engine.events.window.IUpdateImGUIListener;
-import imgui.ImFontAtlas;
-import imgui.ImFontConfig;
-import imgui.ImGui;
-import imgui.ImGuiIO;
+import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.flag.*;
@@ -153,9 +150,7 @@ public class ImGUILayer implements IUpdateImGUIListener {
         io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
-
         io.setBackendPlatformName("imgui_java_impl_glfw");
-
         // ------------------------------------------------------------
         // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
 
@@ -305,6 +300,10 @@ public class ImGUILayer implements IUpdateImGUIListener {
     //endregion
 
     //region Static Events
+    public static float getImGUIScale(){
+        return 1f;
+    }
+
     private static final ArrayList<IImGUIStartFrame> imGUIStartFrameListeners = new ArrayList<>();
     private void signalStartFrameListeners(){
         for (int i = imGUIStartFrameListeners.size() - 1; i >= 0; i--)

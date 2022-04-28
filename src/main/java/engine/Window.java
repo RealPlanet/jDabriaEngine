@@ -43,7 +43,7 @@ public class Window {
     private int height;
     private final String title;
     private long glfwWindow; // Window mem address
-    private Framebuffer frameBuffer;
+    private Framebuffer frameBuffer; // Frame buffer
 
     private boolean wasInit = false;
 
@@ -70,7 +70,28 @@ public class Window {
     public static int getHeight() {
         return getWindow().height;
     }
+
     public static GLFWEventHandler getGLFWEventHandler(){ return getWindow().glfwEventHandler; }
+
+    public static Framebuffer getFramebuffer(){
+        return getWindow().frameBuffer;
+    }
+
+    public static float getTargetAspectRatio(){
+        return 16.0f / 9.0f;
+    }
+
+    // TODO :: move to ImGUIHelper
+    public static float @NotNull [] getWindowProportion() {
+        float[] result = {1.0f, 1.0f};
+
+        // x
+        result[0] = (getWidth() / 1920f) * 0.5f;
+        // y
+        result[1] = (getHeight() / 1080f) * 0.5f;
+
+        return result;
+    }
     // endregion
 
     // region Window execution methods
@@ -121,6 +142,7 @@ public class Window {
         if(glfwWindow == NULL){
             throw new IllegalStateException("Failed to create GLFW Window");
         }
+        glfwSetWindowSizeLimits(glfwWindow, 800, 900, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
         glfwEventHandler = new GLFWEventHandler(glfwWindow);
 
@@ -132,6 +154,7 @@ public class Window {
 
         // Technically this isn't needed, but better safe than sorry!
         glfwEventHandler.glfwSetWindowSizeCallback((w, nWidth, nHeight) -> Window.setDimension(nWidth, nHeight));
+
 
         // endregion
 
@@ -163,11 +186,13 @@ public class Window {
         //endregion
 
         frameBuffer = new Framebuffer(1920, 1080);
+        glViewport(0, 0, 1920, 1080);
     }
 
     private static void setDimension(int nWidth, int nHeight) {
         WINDOW.width = nWidth;
         WINDOW.height = nHeight;
+
         ImGui.getIO().setDisplaySize((float)nWidth, (float)nHeight);
     }
 
@@ -190,14 +215,16 @@ public class Window {
             //region Begin frame operations
             // Poll events
             glfwPollEvents();
+            frameBuffer.bindBuffer();
+
             // clear the framebuffer
             glClear(GL_COLOR_BUFFER_BIT);
             //endregion
 
             // UI and Standard Updates are decouple
-            //frameBuffer.bindBuffer();
+
             signalUpdateFrame();
-            //frameBuffer.unbindBuffer();
+            frameBuffer.unbindBuffer();
 
             signalImGUIUpdate();
 

@@ -1,5 +1,6 @@
 package engine.ecp.components.ui.leveleditor;
 
+import engine.Window;
 import engine.ecp.GameObject;
 import engine.ecp.Prefabs;
 import engine.ecp.base.ImGUIComponent;
@@ -9,7 +10,8 @@ import engine.renderer.sprite.SpriteSheet;
 import engine.scenemanager.SceneManager;
 import engine.scenemanager.core.LevelEditor;
 import imgui.ImGui;
-import imgui.ImVec2;import imgui.flag.ImGuiCond;
+import imgui.ImVec2;
+import imgui.flag.ImGuiCond;
 import org.joml.Vector2f;
 
 public class UISpritePickerWindow extends ImGUIComponent {
@@ -46,14 +48,14 @@ public class UISpritePickerWindow extends ImGUIComponent {
             Vector2f[] texCoords = sprite.getTexCoords();
 
             ImGui.pushID(i);
-            if(ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y) ){
+            if(ImGui.imageButton(id, spriteWidth * Window.getWindowProportion()[1], spriteHeight * Window.getWindowProportion()[1], texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y) ){
                 if(parentControls == null){
                     parentControls =  ((LevelEditor)SceneManager.GetActiveScene(LevelEditor.class.getCanonicalName())).getDDControls();
                 }
 
                 // copy is needed, otherwise generateSpriteObject will change the sprite pallet sprite size once it calls setSprite
                 Sprite copySprite = new Sprite(sprite.getTexture(), sprite.getTexCoords());
-                GameObject obj = Prefabs.generateSpriteObject(copySprite, spriteWidth / 2 , spriteHeight / 2 );
+                GameObject obj = Prefabs.generateSpriteObject(copySprite, spriteWidth / 2, spriteHeight / 2);
                 parentControls.pickupObject(obj);
             }
             ImGui.popID();

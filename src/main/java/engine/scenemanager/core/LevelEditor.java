@@ -8,6 +8,7 @@ import engine.ecp.components.Camera;
 import engine.ecp.components.internal.MouseControls;
 import engine.ecp.components.ui.leveleditor.EditorGrid;
 import engine.ecp.components.ui.leveleditor.UISpritePickerWindow;
+import engine.editor.GameViewWindow;
 import engine.events.MouseListener;
 import engine.renderer.debug.DebugDraw;
 import engine.renderer.sprite.SpriteSheet;
@@ -43,6 +44,7 @@ public class LevelEditor extends Scene {
         levelEditorObject.addComponent(grid);
 
         addGameObjectToScene(levelEditorObject);
+        GameViewWindow.init();
     }
 
     float rotation = 30f, x = 0f, y = 0f;
