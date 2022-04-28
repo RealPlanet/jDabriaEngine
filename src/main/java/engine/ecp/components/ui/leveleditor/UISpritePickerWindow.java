@@ -9,8 +9,7 @@ import engine.renderer.sprite.SpriteSheet;
 import engine.scenemanager.SceneManager;
 import engine.scenemanager.core.LevelEditor;
 import imgui.ImGui;
-import imgui.ImVec2;
-import imgui.enums.ImGuiCond;
+import imgui.ImVec2;import imgui.flag.ImGuiCond;
 import org.joml.Vector2f;
 
 public class UISpritePickerWindow extends ImGUIComponent {

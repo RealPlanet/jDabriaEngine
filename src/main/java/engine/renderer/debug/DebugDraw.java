@@ -27,7 +27,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
  */
 public class DebugDraw {
     private static final int MAX_LINES = 500;
-    private static final float LINE_WIDTH = 2.5f;
+    private static final float LINE_WIDTH = 1.5f;
 
     private static final List<Line2D> currentLines = new ArrayList<>();
 
@@ -178,7 +178,7 @@ public class DebugDraw {
     }
     //endregion
 
-    //region Circle2D
+    //region Circle2D Drawer
     public static void drawCircle2D(Vector3f center, float radius){
         drawCircle2D(center, radius, Color.RED, Float.MIN_VALUE);
     }

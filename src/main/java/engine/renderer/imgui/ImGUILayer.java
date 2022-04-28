@@ -3,22 +3,23 @@ package engine.renderer.imgui;
 import commons.Time;
 import engine.Window;
 import engine.events.imGUI.IImGUIStartFrame;
-import engine.events.window.IUpdateFrameListener;
-import imgui.*;
-import imgui.callbacks.ImStrConsumer;
-import imgui.callbacks.ImStrSupplier;
-import imgui.enums.ImGuiBackendFlags;
-import imgui.enums.ImGuiConfigFlags;
-import imgui.enums.ImGuiKey;
-import imgui.enums.ImGuiMouseCursor;
+import engine.events.window.IUpdateImGUIListener;
+import imgui.ImFontAtlas;
+import imgui.ImFontConfig;
+import imgui.ImGui;
+import imgui.ImGuiIO;
+import imgui.callback.ImStrConsumer;
+import imgui.callback.ImStrSupplier;
+import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
+import imgui.type.ImBoolean;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glViewport;
 
-public class ImGUILayer implements IUpdateFrameListener {
+public class ImGUILayer implements IUpdateImGUIListener {
     //region ImGUI variables
     private static final String glslVersion = "#version 330 core";
 
@@ -30,9 +31,8 @@ public class ImGUILayer implements IUpdateFrameListener {
     private final long glfwWindow;
     //endregion
 
-    private static ImGUILayer _instance = null;
-
     //region Singleton
+    private static ImGUILayer _instance = null;
     public static void destroyImGUILayer(){
         if(_instance == null){
             return;
@@ -84,28 +84,50 @@ public class ImGUILayer implements IUpdateFrameListener {
     }
 
     @Override
-    public void onFrameUpdate() {
+    public void onImGUIUpdate() {
         startFrame();
         // Any IMGUI code should go between newFrame and render methods
         ImGui.newFrame();
 
+        setupDockSpace();
         signalStartFrameListeners();
-
-
-
-        endFrame();
-    }
-
-    private void endFrame() {
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, Window.getWidth(), Window.getHeight());
-        //glClearColor(1, 1, 1, 1);
-        //glClear(GL_COLOR_BUFFER_BIT);
+        endDockSpace();
 
         // After Dear ImGui prepared a draw data, we use it in the LWJGL3 renderer.
         // At that moment ImGui will be rendered to the current OpenGL context.
         ImGui.render();
-        imGuiGl3.render(ImGui.getDrawData());
+
+        endFrame();
+    }
+
+    private void setupDockSpace() {
+        int windowFlags =   ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize |
+                            ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
+
+        ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.Always);
+        ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight(), ImGuiCond.Always);
+
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+
+        ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
+        ImGui.popStyleVar(2);
+
+        // DockSpace
+        ImGui.dockSpace(ImGui.getID("Dockspace"));
+    }
+
+    private void endDockSpace(){
+        ImGui.end();
+    }
+
+    private void endFrame() {
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glViewport(0, 0, Window.getWidth(), Window.getHeight());
+        //glClearColor(1, 1, 1, 1);
+        //glClear(GL_COLOR_BUFFER_BIT);
+
+        imGuiGl3.renderDrawData(ImGui.getDrawData());
 
         long backupWindowPtr = glfwGetCurrentContext();
         //ImGui.updatePlatformWindows();
@@ -129,13 +151,14 @@ public class ImGUILayer implements IUpdateFrameListener {
         io.setIniFilename("ImGUI.ini"); // We don't want to save .ini file
         io.setConfigFlags(ImGuiConfigFlags.NavEnableKeyboard); // Navigation with keyboard
         io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
-        //io.setConfigFlags(ImGuiConfigFlags.);
-        //io.setConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
 
         io.setBackendPlatformName("imgui_java_impl_glfw");
 
         // ------------------------------------------------------------
         // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
+
         final int[] keyMap = new int[ImGuiKey.COUNT];
         keyMap[ImGuiKey.Tab] = GLFW_KEY_TAB;
         keyMap[ImGuiKey.LeftArrow] = GLFW_KEY_LEFT;
@@ -193,11 +216,13 @@ public class ImGUILayer implements IUpdateFrameListener {
             io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
             io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
         });
+
         Window.getGLFWEventHandler().glfwSetCharCallback((w, c) -> {
             if (c != GLFW_KEY_DELETE) {
                 io.addInputCharacter(c);
             }
         });
+
         Window.getGLFWEventHandler().glfwSetMouseButtonCallback((w, button, action, mods) -> {
             final boolean[] mouseDown = new boolean[5];
 
@@ -209,10 +234,15 @@ public class ImGUILayer implements IUpdateFrameListener {
 
             io.setMouseDown(mouseDown);
 
+            if(!io.getWantCaptureMouse() && mouseDown[1]){
+                ImGui.setWindowFocus(null);
+            }
+
             if (!io.getWantCaptureMouse() && mouseDown[1]) {
                 ImGui.setWindowFocus(null);
             }
         });
+
         Window.getGLFWEventHandler().glfwSetScrollCallback((w, xOffset, yOffset) -> {
             io.setMouseWheelH(io.getMouseWheelH() + (float) xOffset);
             io.setMouseWheel(io.getMouseWheel() + (float) yOffset);
@@ -242,20 +272,19 @@ public class ImGUILayer implements IUpdateFrameListener {
         // ------------------------------------------------------------
         // Fonts configuration
         // read: https://raw.githubusercontent.com/ocornut/imgui/master/docs/FONTS.txt
+        final String defaultFontPath = "assets/fonts/segoeui.ttf";
+        if (new File(defaultFontPath).isFile()) {
+            final ImFontAtlas fontAtlas = io.getFonts();
+            final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
 
-        final ImFontAtlas fontAtlas = io.getFonts();
-        final ImFontConfig fontConfig = new ImFontConfig(); // Natively allocated object, should be explicitly destroyed
+            // Glyphs could be added per-font as well as per config used globally like here
+            fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
 
-        // Glyphs could be added per-font as well as per config used globally like here
-        fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesCyrillic());
-        fontConfig.setPixelSnapH(true);
-        fontAtlas.addFontFromFileTTF("Assets/Fonts/segoeui.ttf", 32, fontConfig);
-
-        fontConfig.destroy(); // After all fonts were added we don't need this config more
-
-        // ------------------------------------------------------------
-        // Use freetype instead of stb_truetype to build a fonts texture
-        ImGuiFreeType.buildFontAtlas(fontAtlas, ImGuiFreeType.RasterizerFlags.LightHinting);
+            // Fonts merge example
+            fontConfig.setPixelSnapH(true);
+            fontAtlas.addFontFromFileTTF(defaultFontPath, 32, fontConfig);
+            fontConfig.destroy(); // After all fonts were added we don't need this config more
+        }
 
         // endregion
 
@@ -264,12 +293,12 @@ public class ImGUILayer implements IUpdateFrameListener {
         // ImGui context should be created as well.
         imGuiGl3.init(glslVersion);
         // Add to onUpdate loop only after init
-        Window.addUpdateFrameListener(this);
+        Window.addImGUIUpdateFrameListener(this);
     }
 
     // If you want to clean a room after yourself - do it by yourself
     public void destroyImGui() {
-        Window.removeUpdateFrameListener(this);
+        Window.removeImGUIUpdateFrameListener(this);
         imGuiGl3.dispose();
         ImGui.destroyContext();
     }

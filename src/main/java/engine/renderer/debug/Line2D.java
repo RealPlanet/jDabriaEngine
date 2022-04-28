@@ -3,13 +3,13 @@ package engine.renderer.debug;
 import commons.Color;
 import commons.Time;
 import engine.Window;
-import engine.events.window.IUpdateFrameListener;
+import engine.events.window.IUpdateImGUIListener;
 import org.joml.Vector3f;
 
 /**
  * A 2D line which is rendered within the debug loop and is indipendent by "standard" objects.
  */
-public class Line2D implements IUpdateFrameListener {
+public class Line2D implements IUpdateImGUIListener {
     private Vector3f origin;
     private Vector3f end;
     private Color color;
@@ -21,11 +21,11 @@ public class Line2D implements IUpdateFrameListener {
         this.color = color;
         this.lifetime = lifetime;
 
-        Window.addUpdateFrameListener(this);
+        Window.addImGUIUpdateFrameListener(this);
     }
 
     public void destroyLine(){
-        Window.removeUpdateFrameListener(this);
+        Window.removeImGUIUpdateFrameListener(this);
         DebugDraw.removeLine2D(this);
     }
 
@@ -45,7 +45,7 @@ public class Line2D implements IUpdateFrameListener {
     //endregion
 
     @Override
-    public void onFrameUpdate() {
+    public void onImGUIUpdate() {
         tickLifetime();
 
         if(lifetime <= 0){

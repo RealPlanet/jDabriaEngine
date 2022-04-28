@@ -8,6 +8,8 @@ import engine.events.MouseListener;
 import engine.events.window.IBeginFrameListener;
 import engine.events.window.IEndFrameListener;
 import engine.events.window.IUpdateFrameListener;
+import engine.events.window.IUpdateImGUIListener;
+import engine.renderer.Framebuffer;
 import engine.renderer.imgui.ImGUILayer;
 import engine.scenemanager.SceneManager;
 import engine.scenemanager.core.LevelEditor;
@@ -41,6 +43,7 @@ public class Window {
     private int height;
     private final String title;
     private long glfwWindow; // Window mem address
+    private Framebuffer frameBuffer;
 
     private boolean wasInit = false;
 
@@ -158,6 +161,8 @@ public class Window {
         imGUILayer = ImGUILayer.getImGUILayer(glfwWindow);
         wasInit = true;
         //endregion
+
+        frameBuffer = new Framebuffer(1920, 1080);
     }
 
     private static void setDimension(int nWidth, int nHeight) {
@@ -189,7 +194,13 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT);
             //endregion
 
+            // UI and Standard Updates are decouple
+            //frameBuffer.bindBuffer();
             signalUpdateFrame();
+            //frameBuffer.unbindBuffer();
+
+            signalImGUIUpdate();
+
             //region End frame operations
             // swap the color buffers
             glfwSwapBuffers(glfwWindow);
@@ -217,6 +228,16 @@ public class Window {
     private final ArrayList<IUpdateFrameListener> updateFrameListeners = new ArrayList<>();
     private final ArrayList<IBeginFrameListener> beginFrameListeners = new ArrayList<>();
     private final ArrayList<IEndFrameListener> endFrameListeners = new ArrayList<>();
+    private final ArrayList<IUpdateImGUIListener> updateImGUIFrameListeners = new ArrayList<>();
+
+    // region sub/unsub events
+    public static void addImGUIUpdateFrameListener(IUpdateImGUIListener updateFrameListener){
+        getWindow().updateImGUIFrameListeners.add(updateFrameListener);
+    }
+
+    public static void removeImGUIUpdateFrameListener(IUpdateImGUIListener updateFrameListener){
+        getWindow().updateImGUIFrameListeners.remove(updateFrameListener);
+    }
 
     /**
      * Adds an object which implements the IUpdateFrameListener interface to the event list
@@ -265,6 +286,7 @@ public class Window {
     public static void removeEndFrameListener(IEndFrameListener endFrameListener){
         getWindow().endFrameListeners.remove(endFrameListener);
     }
+    //endregion
 
     private void signalNewFrame(){
         for (int i = beginFrameListeners.size() - 1; i >= 0; i--) {
@@ -286,6 +308,18 @@ public class Window {
             }
 
             updateFrameListener.onFrameUpdate();
+        }
+    }
+
+    private void signalImGUIUpdate(){
+        for (int i = updateImGUIFrameListeners.size() - 1; i >= 0; i--) {
+            IUpdateImGUIListener updateFrameListener = updateImGUIFrameListeners.get(i);
+
+            if (updateFrameListener == null) {
+                throw new RuntimeException("OnUpdateFrameListener was null");
+            }
+
+            updateFrameListener.onImGUIUpdate();
         }
     }
 

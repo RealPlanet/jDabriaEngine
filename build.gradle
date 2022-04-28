@@ -3,22 +3,20 @@ plugins {
 }
 
 version '1.0-SNAPSHOT'
-sourceCompatibility = 1.8
+
 ext {
     lwjglVersion = "3.3.1"
     jomlVersion = "1.10.4"
     lwjglNatives = "natives-windows"
-    imguiVersion = '1.76-0.9'
 }
 
 repositories {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 dependencies {
@@ -26,14 +24,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
 
     // region ImGUI
-    implementation "io.imgui.java:binding:$imguiVersion"
-    implementation "io.imgui.java:lwjgl3:$imguiVersion"
 
     // Include all available natives, but it's likely that you want something specific
-    runtimeOnly "io.imgui.java:natives-windows:$imguiVersion"
-    //runtimeOnly "io.imgui.java:natives-windows-x86:$imguiVersion"
-    //runtimeOnly "io.imgui.java:natives-linux:$imguiVersion"
-    //runtimeOnly "io.imgui.java:natives-linux-x86:$imguiVersion"
+    implementation "io.github.spair:imgui-java-app:1.86.4"
     // endregion
     // region LWJGL
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
@@ -54,5 +47,5 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
     implementation "org.joml:joml:${jomlVersion}"
     // endregion
-    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
 }

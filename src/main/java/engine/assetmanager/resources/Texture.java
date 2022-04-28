@@ -9,15 +9,26 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.*;
 
 public class Texture {
-    private final String filepath;
+    private String filepath = "";
+    private static int generatedHash = "Engine generated Image".hashCode();
     private transient int texID, width, height;
 
     public Texture(String filepath){
         this.filepath = filepath;
-        init();
+        initImageTexture();
     }
 
-    private void init(){
+    public Texture(int width, int height){
+        this.width = width;
+        this.height = height;
+        this.filepath = "" + generatedHash;
+        // Generate texture
+        texID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    }
+
+    private void initImageTexture(){
         // Generate texture
         texID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texID);
@@ -34,6 +45,7 @@ public class Texture {
         IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
         IntBuffer channelsBuffer = BufferUtils.createIntBuffer(1);
         stbi_set_flip_vertically_on_load(true);
+
         ByteBuffer image = stbi_load(this.filepath, widthBuffer, heightBuffer, channelsBuffer, 0);
         if(image == null){
             assert false : "ERROR: (Texture) -> Could not load image '" + this.filepath + "'";
@@ -74,4 +86,15 @@ public class Texture {
     public int getHeight() { return height; }
     public String getFilepath(){ return filepath;}
     public int getTexID() { return texID;}
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Texture)){
+            return false;
+        }
+        Texture other = (Texture)obj;
+        return  this.getWidth() == other.getWidth() &&
+                this.getHeight() == other.getHeight() &&
+                this.getFilepath().equals(other.getFilepath());
+    }
 }
